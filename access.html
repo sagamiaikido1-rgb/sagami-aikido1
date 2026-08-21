@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アクセス｜相模合気道連盟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#1a2744;--gold:#9a7b0a;--gold-light:#c4960e;--white:#ffffff;--cream:#fafaf7;--gray:#6b7280;--light:#f2efe8;--border:#e8e2d6;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;}
+    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--white);color:var(--navy);line-height:1.8;}
+    header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+    .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:2px;text-decoration:none;}
+    .logo span{font-size:10px;color:var(--gold-light);display:block;letter-spacing:2px;font-weight:400;}
+    nav{display:flex;}nav a{color:var(--gray);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;}
+    nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
+    nav a:hover::after,nav a.active::after{left:8px;right:8px;}nav a:hover,nav a.active{color:var(--navy);}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--navy);}
+    .mobile-nav{display:none;background:var(--white);border-top:1px solid var(--border);}
+    .mobile-nav a{display:block;padding:14px 24px;color:var(--navy);text-decoration:none;font-size:14px;border-bottom:1px solid var(--border);}
+    .mobile-nav.open{display:block;}
+    .page-hero{background:linear-gradient(160deg,#f8f6f0 0%,var(--white) 100%);padding:64px 24px 48px;text-align:center;border-bottom:1px solid var(--border);}
+    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);margin-bottom:10px;}
+    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:var(--navy);}
+    .page-line{width:40px;height:2px;background:var(--gold-light);margin:14px auto 0;}
+    main{max-width:1000px;margin:0 auto;padding:64px 24px;}
+    .dojo-section{margin-bottom:64px;}
+    .dojo-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:2px solid var(--light);}
+    .dojo-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+    .dojo-section-name{font-family:'Noto Serif JP',serif;font-size:22px;color:var(--navy);letter-spacing:3px;}
+    .dojo-section-sub{font-size:12px;color:var(--gray);letter-spacing:1px;margin-top:2px;}
+    .access-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    .access-info{background:var(--cream);border:1px solid var(--border);padding:24px;}
+    .access-info h4{font-size:11px;color:var(--gold);letter-spacing:2px;margin-bottom:14px;font-weight:700;}
+    .access-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;align-items:flex-start;}
+    .access-row:last-child{border-bottom:none;}
+    .access-row-label{color:var(--gold);font-size:11px;font-weight:700;min-width:50px;margin-top:2px;}
+    .access-row-val{color:var(--navy);line-height:1.8;}
+    .map-wrap{border:1px solid var(--border);overflow:hidden;}
+    .map-wrap iframe{width:100%;height:300px;border:none;display:block;}
+    .closed-badge{display:inline-block;background:var(--light);color:var(--gray);font-size:11px;padding:3px 10px;font-weight:700;margin-left:8px;vertical-align:middle;}
+    footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:48px 20px;font-size:12px;line-height:2.4;}
+    .footer-logo{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
+    footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
+    .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
+    @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}.access-grid{grid-template-columns:1fr;}.map-wrap iframe{height:240px;}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">相模合気道連盟<span>SAGAMI AIKIDO FEDERATION</span></a>
+    <nav>
+      <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html">指導者</a><a href="schedule.html">スケジュール</a><a href="contact.html">ご連絡先</a><a href="access.html" class="active">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+    </nav>
+    <div class="hamburger" onclick="document.getElementById('mn').classList.toggle('open')"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" id="mn">
+    <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html">指導者</a><a href="schedule.html">スケジュール</a><a href="contact.html">ご連絡先</a><a href="access.html">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-label">ACCESS</div>
+  <h1 class="page-title">アクセス</h1>
+  <div class="page-line"></div>
+</div>
+
+<main>
+
+  <!-- 茅ヶ崎道場 -->
+  <div class="dojo-section">
+    <div class="dojo-header">
+      <div class="dojo-dot" style="background:var(--chigasaki)"></div>
+      <div>
+        <div class="dojo-section-name">茅ヶ崎道場</div>
+        <div class="dojo-section-sub">茅ヶ崎合気会　／　日曜 09:30〜　水曜 18:30〜</div>
+      </div>
+    </div>
+    <div class="access-grid">
+      <div class="access-info">
+        <h4>道場情報</h4>
+        <div class="access-row"><span class="access-row-label">施設</span><span class="access-row-val">茅ヶ崎市総合体育館　柔道場</span></div>
+        <div class="access-row"><span class="access-row-label">住所</span><span class="access-row-val">神奈川県茅ヶ崎市茅ヶ崎1-9-63</span></div>
+        <div class="access-row"><span class="access-row-label">稽古日</span><span class="access-row-val">日曜日　09:30〜11:30<br>水曜日　18:30〜20:30</span></div>
+      </div>
+      <div class="map-wrap">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3254.8334074439963!2d139.40067687581126!3d35.334958172701064!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018528bad91f907%3A0x6414c31db10a3f21!2z6IyF44O25bSO5biC57eP5ZCI5L2T6IKy6aSo!5e0!3m2!1sja!2sjp!4v1777430486784!5m2!1sja!2sjp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 平塚道場 -->
+  <div class="dojo-section">
+    <div class="dojo-header">
+      <div class="dojo-dot" style="background:var(--hiratsuka)"></div>
+      <div>
+        <div class="dojo-section-name">平塚道場</div>
+        <div class="dojo-section-sub">平塚合気会　／　日曜 15:30〜</div>
+      </div>
+    </div>
+    <div class="access-grid">
+      <div class="access-info">
+        <h4>道場情報</h4>
+        <div class="access-row"><span class="access-row-label">施設</span><span class="access-row-val">トッケイセキュリティ平塚総合体育館<br>地下　第1武道場</span></div>
+        <div class="access-row"><span class="access-row-label">住所</span><span class="access-row-val">神奈川県平塚市大原1-1</span></div>
+        <div class="access-row"><span class="access-row-label">稽古日</span><span class="access-row-val">日曜日　15:30〜17:30</span></div>
+      </div>
+      <div class="map-wrap">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3254.5632630436685!2d139.33629327581139!3d35.34166527269877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6019acef2003de21%3A0x89732c6111b2cc64!2z44OI44OD44Kx44Kk44K744Kt44Ol44Oq44OG44Kj5bmz5aGa57eP5ZCI5L2T6IKy6aSo!5e0!3m2!1sja!2sus!4v1777429383803!5m2!1sja!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 寒川道場 -->
+  <div class="dojo-section">
+    <div class="dojo-header">
+      <div class="dojo-dot" style="background:var(--samukawa)"></div>
+      <div>
+        <div class="dojo-section-name">寒川道場</div>
+        <div class="dojo-section-sub">相模合気会　／　土曜 12:30〜</div>
+      </div>
+    </div>
+    <div class="access-grid">
+      <div class="access-info">
+        <h4>道場情報</h4>
+        <div class="access-row"><span class="access-row-label">施設</span><span class="access-row-val">シンコースポーツ寒川アリーナ<br>3階　武道場</span></div>
+        <div class="access-row"><span class="access-row-label">住所</span><span class="access-row-val">神奈川県高座郡寒川町宮山275番地</span></div>
+        <div class="access-row"><span class="access-row-label">稽古日</span><span class="access-row-val">土曜日　12:30〜14:30</span></div>
+      </div>
+      <div class="map-wrap">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3253.2061798049845!2d139.3823160758128!3d35.37534197268753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60185342a2864ded%3A0x1a0369845a147cbd!2z5a-S5bed44Ki44Oq44O844OK!5e0!3m2!1sja!2sus!4v1777429065302!5m2!1sja!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 藤沢道場 -->
+  <div class="dojo-section">
+    <div class="dojo-header">
+      <div class="dojo-dot" style="background:var(--fujisawa)"></div>
+      <div>
+        <div class="dojo-section-name">藤沢道場　<span class="closed-badge">現在休止中</span></div>
+        <div class="dojo-section-sub">湘南台合気会</div>
+      </div>
+    </div>
+    <div class="access-grid">
+      <div class="access-info">
+        <h4>道場情報</h4>
+        <div class="access-row"><span class="access-row-label">施設</span><span class="access-row-val">秋葉台文化体育館　第3体育室（武道室畳）</span></div>
+        <div class="access-row"><span class="access-row-label">住所</span><span class="access-row-val">神奈川県藤沢市遠藤2000-1</span></div>
+        <div class="access-row"><span class="access-row-label">備考</span><span class="access-row-val" style="color:var(--gray)">現在休止中です。再開時にお知らせします。</span></div>
+      </div>
+      <div class="map-wrap">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3252.6471298034244!2d139.44165007581356!3d35.389206972682935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x601853dfac7b4845%3A0xe6e10279cf55349d!2z6Jek5rKi5biC56eL6JGJ5Y-w5paH5YyW5L2T6IKy6aSo!5e0!3m2!1sja!2sjp!4v1777431121270!5m2!1sja!2sjp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">相模合気道連盟</div>
+  <div>神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市</div>
+  <div class="footer-divider"></div>
+  <div><a href="index.html">ホーム</a> ／ <a href="schedule.html">スケジュール</a> ／ <a href="contact.html">ご連絡先</a></div>
+  <div style="margin-top:12px">© 2026 相模合気道連盟</div>
+</footer>
+</body></html>

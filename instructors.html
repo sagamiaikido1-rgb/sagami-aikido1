@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>指導者｜相模合気道連盟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#1a2744;--gold:#9a7b0a;--gold-light:#c4960e;--white:#ffffff;--cream:#fafaf7;--gray:#6b7280;--light:#f2efe8;--border:#e8e2d6;}
+    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--white);color:var(--navy);line-height:1.8;}
+    header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+    .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:2px;text-decoration:none;}
+    .logo span{font-size:10px;color:var(--gold-light);display:block;letter-spacing:2px;font-weight:400;}
+    nav{display:flex;}nav a{color:var(--gray);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;}
+    nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
+    nav a:hover::after,nav a.active::after{left:8px;right:8px;}nav a:hover,nav a.active{color:var(--navy);}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--navy);}
+    .mobile-nav{display:none;background:var(--white);border-top:1px solid var(--border);}
+    .mobile-nav a{display:block;padding:14px 24px;color:var(--navy);text-decoration:none;font-size:14px;border-bottom:1px solid var(--border);}
+    .mobile-nav.open{display:block;}
+    .page-hero{background:linear-gradient(160deg,#f8f6f0 0%,var(--white) 100%);padding:64px 24px 48px;text-align:center;border-bottom:1px solid var(--border);}
+    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);margin-bottom:10px;}
+    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:var(--navy);}
+    .page-line{width:40px;height:2px;background:var(--gold-light);margin:14px auto 0;}
+    main{max-width:900px;margin:0 auto;padding:64px 24px;}
+    /* 顧問カード */
+    .advisor-card{border:1px solid var(--border);border-left:4px solid var(--gold-light);padding:36px;margin-bottom:48px;background:var(--cream);}
+    .advisor-role{font-size:11px;letter-spacing:3px;color:var(--gold-light);margin-bottom:8px;}
+    .advisor-name{font-family:'Noto Serif JP',serif;font-size:26px;color:var(--navy);letter-spacing:3px;margin-bottom:4px;}
+    .advisor-rank{font-size:14px;color:var(--gray);margin-bottom:8px;letter-spacing:1px;}
+    .advisor-desc{font-size:14px;color:var(--navy);border-top:1px solid var(--border);padding-top:16px;margin-top:16px;}
+    /* 道場セクション */
+    .dojo-section{margin-bottom:48px;}
+    .dojo-section h3{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--light);}
+    .dojo-subtitle{font-size:12px;color:var(--gold-light);letter-spacing:2px;margin-bottom:16px;font-weight:700;}
+    table{width:100%;border-collapse:collapse;margin-bottom:8px;}
+    th{background:var(--navy);color:var(--white);font-size:12px;padding:10px 16px;text-align:left;letter-spacing:1px;font-weight:500;}
+    td{padding:12px 16px;font-size:14px;border-bottom:1px solid var(--border);color:var(--navy);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:var(--cream);}
+    .role-badge{display:inline-block;font-size:11px;padding:2px 10px;font-weight:700;border-radius:0;}
+    .role-instructor{background:var(--navy);color:var(--white);}
+    .role-sub{background:var(--light);color:var(--navy);}
+    /* 段位説明 */
+    .notice-box{background:var(--light);border-left:3px solid var(--gold-light);padding:20px 24px;margin-top:48px;font-size:13px;color:var(--gray);line-height:2;}
+    footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:48px 20px;font-size:12px;line-height:2.4;}
+    .footer-logo{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
+    footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
+    .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
+    @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}.advisor-card{padding:24px;}table{font-size:13px;}td,th{padding:10px 12px;}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">相模合気道連盟<span>SAGAMI AIKIDO FEDERATION</span></a>
+    <nav>
+      <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html" class="active">指導者</a><a href="schedule.html">スケジュール</a><a href="contact.html">ご連絡先</a><a href="access.html">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+    </nav>
+    <div class="hamburger" onclick="document.getElementById('mn').classList.toggle('open')"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" id="mn">
+    <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html">指導者</a><a href="schedule.html">スケジュール</a><a href="contact.html">ご連絡先</a><a href="access.html">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-label">INSTRUCTORS</div>
+  <h1 class="page-title">指導者</h1>
+  <div class="page-line"></div>
+</div>
+
+<main>
+  <!-- 顧問 -->
+  <div class="advisor-card">
+    <div class="advisor-role">顧　問　／　Honorary Advisor</div>
+    <div class="advisor-name">安野 正敏</div>
+    <div class="advisor-rank">八段　合気会本部道場師範</div>
+    <div class="advisor-desc">公益財団法人合気会 本部道場師範として長年にわたり合気道の普及・発展に尽力されています。相模合気道連盟の顧問として各道場の指導・監修をいただいています。
+      <a href="https://sagamiaikido1-rgb.github.io/sagami-aikido-philosophy/" style="color:var(--gold-light);font-size:13px;text-decoration:none;white-space:nowrap;margin-left:6px;border-bottom:1px solid transparent;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold-light)'" onmouseout="this.style.borderColor='transparent'">安野師範の教えを読む →</a>
+    </div>
+  </div>
+
+  <!-- 茅ヶ崎道場 -->
+
+  <div class="dojo-section">
+    <h3>茅ヶ崎道場　<span style="font-size:14px;color:var(--gold-light);letter-spacing:1px;">茅ヶ崎合気会</span></h3>
+    <table>
+      <thead><tr><th>氏　名</th><th>段　位</th><th>役　割</th></tr></thead>
+      <tbody>
+        <tr><td>菱田 司朗</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>小島 和枝</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>小島 三男</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>小林 千里</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>山岸 吉文</td><td>六段</td><td><span class="role-badge role-sub">副指導者</span></td></tr>
+        <tr><td>大谷 暢</td><td>六段</td><td><span class="role-badge role-sub">副指導者</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 平塚道場 -->
+
+  <div class="dojo-section">
+    <h3>平塚道場　<span style="font-size:14px;color:var(--gold-light);letter-spacing:1px;">平塚合気会</span></h3>
+    <table>
+      <thead><tr><th>氏　名</th><th>段　位</th><th>役　割</th></tr></thead>
+      <tbody>
+        <tr><td>小島 三男</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>小島 和枝</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>小林 千里</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>大谷 暢</td><td>六段</td><td><span class="role-badge role-sub">副指導者</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 寒川道場 -->
+
+  <div class="dojo-section">
+    <h3>寒川道場　<span style="font-size:14px;color:var(--gold-light);letter-spacing:1px;">相模合気会</span></h3>
+    <table>
+      <thead><tr><th>氏　名</th><th>段　位</th><th>役　割</th></tr></thead>
+      <tbody>
+        <tr><td>小島 三男</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+        <tr><td>村田 義則</td><td>六段</td><td><span class="role-badge role-sub">副指導者</span></td></tr>
+        <tr><td>大谷 暢</td><td>六段</td><td><span class="role-badge role-sub">副指導者</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 藤沢道場 -->
+
+  <div class="dojo-section">
+    <h3>藤沢道場　<span style="font-size:14px;color:var(--gold-light);letter-spacing:1px;">湘南台合気会</span></h3>
+    <table>
+      <thead><tr><th>氏　名</th><th>段　位</th><th>役　割</th></tr></thead>
+      <tbody>
+        <tr><td>小島 三男</td><td>七段</td><td><span class="role-badge role-instructor">指導者</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--gray);margin-top:12px;">※ 現在休止中</p>
+  </div>
+
+  <div class="notice-box">
+    <strong>段位について</strong><br>
+    合気道の段位は公益財団法人合気会が認定します。七段・八段は合気道の最高位に近い段位であり、長年の修練と深い技術・精神の習得を証明するものです。当連盟の指導者はすべて合気会公認の資格を持ち、安全で質の高い指導を行っています。初心者から有段者まで、それぞれのレベルに合わせた丁寧な指導を心がけています。
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">相模合気道連盟</div>
+  <div>神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市</div>
+  <div class="footer-divider"></div>
+  <div><a href="index.html">ホーム</a> ／ <a href="schedule.html">スケジュール</a> ／ <a href="contact.html">ご連絡先</a></div>
+  <div style="margin-top:12px">© 2026 相模合気道連盟</div>
+</footer>
+</body></html>

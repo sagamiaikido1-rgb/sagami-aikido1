@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スケジュール｜相模合気道連盟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#1a2744;--gold:#9a7b0a;--gold-light:#c4960e;--white:#ffffff;--cream:#fafaf7;--gray:#6b7280;--light:#f2efe8;--border:#e8e2d6;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;}
+    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--white);color:var(--navy);line-height:1.8;}
+    header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+    .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:2px;text-decoration:none;}
+    .logo span{font-size:10px;color:var(--gold-light);display:block;letter-spacing:2px;font-weight:400;}
+    nav{display:flex;}nav a{color:var(--gray);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;}
+    nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
+    nav a:hover::after,nav a.active::after{left:8px;right:8px;}nav a:hover,nav a.active{color:var(--navy);}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--navy);}
+    .mobile-nav{display:none;background:var(--white);border-top:1px solid var(--border);}
+    .mobile-nav a{display:block;padding:14px 24px;color:var(--navy);text-decoration:none;font-size:14px;border-bottom:1px solid var(--border);}
+    .mobile-nav.open{display:block;}
+    .page-hero{background:linear-gradient(160deg,#f8f6f0 0%,var(--white) 100%);padding:64px 24px 48px;text-align:center;border-bottom:1px solid var(--border);}
+    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);margin-bottom:10px;}
+    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:var(--navy);}
+    .page-line{width:40px;height:2px;background:var(--gold-light);margin:14px auto 0;}
+    main{max-width:1000px;margin:0 auto;padding:64px 24px;}
+    .section-title{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid var(--light);}
+    .regular-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:56px;}
+    .regular-card{border-top:4px solid;padding:24px 20px;}
+    .regular-card.chigasaki{border-color:var(--chigasaki);background:#f0fdf7;}
+    .regular-card.hiratsuka{border-color:var(--hiratsuka);background:#eff6ff;}
+    .regular-card.samukawa{border-color:var(--samukawa);background:#fff7f3;}
+    .dojo-label{font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:8px;}
+    .regular-card.chigasaki .dojo-label{color:var(--chigasaki);}
+    .regular-card.hiratsuka .dojo-label{color:var(--hiratsuka);}
+    .regular-card.samukawa .dojo-label{color:var(--samukawa);}
+    .regular-day{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--navy);font-weight:700;margin-bottom:4px;}
+    .regular-time{font-size:13px;color:var(--gray);}
+
+    /* カレンダー */
+    .cal-wrap{position:relative;}
+    .cal-loading{text-align:center;padding:48px;color:var(--gray);}
+    .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .cal-header h2{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);}
+    .cal-nav button{background:var(--white);border:1px solid var(--border);color:var(--navy);border-radius:4px;padding:6px 14px;cursor:pointer;font-size:15px;margin-left:4px;}
+    .dojo-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+    .dojo-chip{border:2px solid transparent;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:.35;transition:opacity .2s;font-family:inherit;}
+    .dojo-chip.active{opacity:1;}
+    .dojo-chip.all{background:#e0e4ec;color:#333;border-color:#ccc;}
+    .dojo-chip.chigasaki{background:var(--chigasaki);color:#fff;}
+    .dojo-chip.hiratsuka{background:var(--hiratsuka);color:#fff;}
+    .dojo-chip.samukawa{background:var(--samukawa);color:#fff;}
+    .dojo-chip.fujisawa{background:var(--fujisawa);color:#fff;}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    .cal-day-header{background:var(--light);text-align:center;padding:8px 4px;font-size:11px;color:var(--gray);font-weight:700;}
+    .cal-day-header:first-child{color:#e53e3e;}.cal-day-header:last-child{color:#3182ce;}
+    .cal-cell{background:var(--white);min-height:80px;padding:4px;}
+    .cal-cell.other-month{background:#fafaf7;}.cal-cell.other-month .cal-date{color:#ccc;}
+    .cal-cell.today{background:#f0f7f4;}
+    .cal-date{font-size:12px;font-weight:700;color:var(--gray);text-align:right;margin-bottom:3px;}
+    .cal-cell.today .cal-date{background:var(--navy);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+    .cal-event{border-radius:3px;padding:2px 5px;font-size:10px;margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600;}
+    .cal-event.chigasaki{background:#d4f0e5;color:#0d6e4e;}
+    .cal-event.hiratsuka{background:#dbeafe;color:#1e40af;}
+    .cal-event.samukawa{background:#fde8df;color:#9a3412;}
+    .cal-event.fujisawa{background:#ede9fe;color:#5b21b6;}
+    .cal-event.special{background:#fef9c3;color:#713f12;}
+
+    footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:48px 20px;font-size:12px;line-height:2.4;}
+    .footer-logo{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
+    footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
+    .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
+    @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">相模合気道連盟<span>SAGAMI AIKIDO FEDERATION</span></a>
+    <nav>
+      <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html">指導者</a>
+      <a href="schedule.html" class="active">スケジュール</a><a href="contact.html">ご連絡先</a>
+      <a href="access.html">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+    </nav>
+    <div class="hamburger" onclick="document.getElementById('mn').classList.toggle('open')"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" id="mn">
+    <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html">指導者</a>
+    <a href="schedule.html">スケジュール</a><a href="contact.html">ご連絡先</a>
+    <a href="access.html">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-label">SCHEDULE</div>
+  <h1 class="page-title">スケジュール</h1>
+  <div class="page-line"></div>
+</div>
+
+<main>
+  <h2 class="section-title">定期稽古スケジュール</h2>
+  <div class="regular-grid">
+    <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">日曜日</div><div class="regular-time">09:30 〜 11:30</div></div>
+    <div class="regular-card hiratsuka"><div class="dojo-label">平塚道場</div><div class="regular-day">日曜日</div><div class="regular-time">15:30 〜 16:30</div></div>
+    <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">水曜日</div><div class="regular-time">18:30 〜 20:30</div></div>
+    <div class="regular-card samukawa"><div class="dojo-label">寒川道場</div><div class="regular-day">土曜日</div><div class="regular-time">12:30 〜 14:30</div></div>
+  </div>
+
+  <h2 class="section-title">月別スケジュール</h2>
+  <div class="cal-wrap">
+    <div class="cal-header">
+      <h2 id="calTitle">読み込み中...</h2>
+      <div class="cal-nav">
+        <button onclick="prevMonth()">◀</button>
+        <button onclick="nextMonth()">▶</button>
+      </div>
+    </div>
+    <div class="dojo-filter">
+      <button class="dojo-chip all active" onclick="filterDojo('all',this)">全て</button>
+      <button class="dojo-chip chigasaki active" onclick="filterDojo('茅ヶ崎',this)">茅ヶ崎</button>
+      <button class="dojo-chip hiratsuka active" onclick="filterDojo('平塚',this)">平塚</button>
+      <button class="dojo-chip samukawa active" onclick="filterDojo('寒川',this)">寒川</button>
+      <button class="dojo-chip fujisawa active" onclick="filterDojo('藤沢',this)">藤沢</button>
+    </div>
+    <div class="cal-grid" id="calGrid">
+      <div style="grid-column:span 7;text-align:center;padding:48px;color:var(--gray)">読み込み中...</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">相模合気道連盟</div>
+  <div>神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市</div>
+  <div class="footer-divider"></div>
+  <div><a href="index.html">ホーム</a> ／ <a href="schedule.html">スケジュール</a> ／ <a href="contact.html">ご連絡先</a></div>
+  <div style="margin-top:12px">© 2026 相模合気道連盟</div>
+</footer>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, query, orderBy }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  // ★★★ firebaseConfig を admin.html と同じ値に設定してください ★★★
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfhzD-KOcyAneUEHDeAYx1WB7Tcefc1So",
+    authDomain: "sagami-aikido-b5961.firebaseapp.com",
+    projectId: "sagami-aikido-b5961",
+    storageBucket: "sagami-aikido-b5961.firebasestorage.app",
+    messagingSenderId: "770248355445",
+    appId: "1:770248355445:web:3104563942dfed363d923c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const DOJO_CLASS = {'茅ヶ崎':'chigasaki','平塚':'hiratsuka','寒川':'samukawa','藤沢':'fujisawa'};
+
+  let allEvents = [], activeFilter = 'all';
+  let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth();
+
+  async function loadEvents(){
+    const q = query(collection(db,'events'), orderBy('date'));
+    const snap = await getDocs(q);
+    allEvents = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderCalendar();
+  }
+
+  function renderCalendar(){
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    ['日','月','火','水','木','金','土'].forEach(d=>{
+      const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);
+    });
+    const year=currentYear, month=currentMonth;
+    const first=new Date(year,month,1).getDay();
+    const last=new Date(year,month+1,0).getDate();
+    const today=new Date();
+    document.getElementById('calTitle').textContent=`${year}年${month+1}月`;
+    for(let i=0;i<first;i++){const c=makeCell(new Date(year,month,0).getDate()-first+1+i,year,month-1);c.classList.add('other-month');grid.appendChild(c);}
+    for(let d=1;d<=last;d++){
+      const c=makeCell(d,year,month);
+      if(d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear())c.classList.add('today');
+      grid.appendChild(c);
+    }
+    for(let i=1;i<=42-first-last;i++){const c=makeCell(i,year,month+1);c.classList.add('other-month');grid.appendChild(c);}
+  }
+
+  function makeCell(day,year,month){
+    const cell=document.createElement('div');cell.className='cal-cell';
+    const dd=document.createElement('div');dd.className='cal-date';dd.textContent=day;cell.appendChild(dd);
+    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    allEvents.filter(e=>e.date===ds).forEach(ev=>{
+      if(activeFilter!=='all'&&ev.dojo!==activeFilter)return;
+      const cls=DOJO_CLASS[ev.dojo]||'special';
+      const evDiv=document.createElement('div');evDiv.className=`cal-event ${cls}`;
+      const dispText=ev.dojo?`${ev.start} ${ev.title}`:(ev.memo||ev.title);
+      evDiv.textContent=dispText.substring(0,12);
+      cell.appendChild(evDiv);
+    });
+    return cell;
+  }
+
+  window.prevMonth=function(){currentMonth--;if(currentMonth<0){currentMonth=11;currentYear--;}renderCalendar();}
+  window.nextMonth=function(){currentMonth++;if(currentMonth>11){currentMonth=0;currentYear++;}renderCalendar();}
+  window.filterDojo=function(dojo,btn){
+    activeFilter=dojo;
+    document.querySelectorAll('.dojo-filter .dojo-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');renderCalendar();
+  };
+
+  loadEvents();
+</script>
+</body>
+</html>

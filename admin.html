@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スケジュール管理｜相模合気道連盟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#1a2744;--navy2:#243258;--gold:#9a7b0a;--gold-light:#c4960e;
+      --chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;
+      --white:#ffffff;--cream:#fafaf7;--surface2:#f0ede6;--border:#e8e2d6;
+      --text:#1a2744;--text2:#6b7280;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+    /* ログイン画面 */
+    #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--navy);}
+    .login-box{background:var(--white);padding:48px 40px;width:360px;border-top:4px solid var(--gold-light);}
+    .login-box h1{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:6px;}
+    .login-box p{font-size:12px;color:var(--text2);margin-bottom:28px;}
+    .login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+    .login-field label{font-size:12px;color:var(--text2);font-weight:700;}
+    .login-field input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:10px 12px;font-size:14px;font-family:inherit;}
+    .login-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:4px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;transition:background .2s;}
+    .login-btn:hover{background:var(--navy2);}
+    .login-error{font-size:13px;color:#e53e3e;margin-top:10px;text-align:center;display:none;}
+
+    /* メイン画面 */
+    #mainScreen{display:none;}
+    header{background:var(--navy);border-bottom:2px solid var(--gold-light);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    .header-left{display:flex;align-items:center;gap:16px;}
+    .header-logo{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:var(--gold-light);letter-spacing:2px;text-decoration:none;}
+    .header-logo span{font-size:11px;color:rgba(255,255,255,0.5);font-weight:400;margin-left:6px;}
+    .back-link{font-size:12px;color:rgba(255,255,255,0.6);text-decoration:none;border:1px solid rgba(255,255,255,0.2);padding:4px 10px;border-radius:4px;transition:all .2s;}
+    .back-link:hover{color:var(--gold-light);border-color:var(--gold);}
+    #logoutBtn{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;}
+
+    nav{display:flex;gap:4px;padding:10px 16px;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto;}
+    nav button{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s;}
+    nav button.active,nav button:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+    main{padding:20px;max-width:960px;margin:0 auto;}
+    .tab-content{display:none;}.tab-content.active{display:block;}
+
+    /* カレンダー */
+    .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .cal-header h2{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--navy);}
+    .cal-nav button{background:var(--white);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:6px 14px;cursor:pointer;font-size:15px;margin-left:4px;}
+    .dojo-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+    .dojo-chip{border:2px solid transparent;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:.35;transition:opacity .2s;font-family:inherit;}
+    .dojo-chip.active{opacity:1;}
+    .dojo-chip.all{background:#e0e4ec;color:#333;border-color:#ccc;}
+    .dojo-chip.chigasaki{background:var(--chigasaki);color:#fff;}
+    .dojo-chip.hiratsuka{background:var(--hiratsuka);color:#fff;}
+    .dojo-chip.samukawa{background:var(--samukawa);color:#fff;}
+    .dojo-chip.fujisawa{background:var(--fujisawa);color:#fff;}
+    .cal-wrap{position:relative;}
+    .loading-overlay{display:none;position:absolute;inset:0;background:rgba(255,255,255,.75);border-radius:8px;align-items:center;justify-content:center;z-index:10;}
+    .loading-overlay.show{display:flex;}
+    .spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    .cal-day-header{background:var(--surface2);text-align:center;padding:8px 4px;font-size:11px;color:var(--text2);font-weight:700;}
+    .cal-day-header:first-child{color:#e53e3e;}.cal-day-header:last-child{color:#3182ce;}
+    .cal-cell{background:var(--white);min-height:76px;padding:4px;}
+    .cal-cell.other-month{background:#fafaf7;}.cal-cell.other-month .cal-date{color:#ccc;}
+    .cal-cell.today{background:#f0f7f4;}
+    .cal-date{font-size:12px;font-weight:700;color:var(--text2);text-align:right;margin-bottom:3px;}
+    .cal-cell.today .cal-date{background:var(--navy);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+    .cal-event{border-radius:3px;padding:2px 5px;font-size:10px;margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600;cursor:pointer;}
+    .cal-event.chigasaki{background:#d4f0e5;color:#0d6e4e;}
+    .cal-event.hiratsuka{background:#dbeafe;color:#1e40af;}
+    .cal-event.samukawa{background:#fde8df;color:#9a3412;}
+    .cal-event.fujisawa{background:#ede9fe;color:#5b21b6;}
+    .cal-event.special{background:#fef9c3;color:#713f12;}
+
+    /* セクションカード */
+    .section-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+    .section-card h3{font-size:11px;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:2px;font-weight:700;}
+    .schedule-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+    .schedule-item:last-child{border-bottom:none;}
+    .schedule-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .schedule-info .title{font-size:14px;font-weight:600;}
+    .schedule-info .time{font-size:12px;color:var(--text2);margin-top:2px;}
+    .month-select{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
+    .month-select input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:8px 12px;font-size:14px;font-family:inherit;}
+    .btn-primary{background:var(--navy);color:#fff;border:none;border-radius:4px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;transition:background .2s;}
+    .btn-primary:hover{background:var(--navy2);}
+    .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:11px 20px;font-size:14px;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;}
+    .btn-danger{background:transparent;color:#e53e3e;border:1px solid #e53e3e;border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;}
+    #previewList{display:none;margin-top:14px;}
+    #previewList h4{font-size:13px;color:var(--text2);margin-bottom:8px;}
+    .preview-item{font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text2);}
+    .event-list-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--white);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;}
+    .event-list-item input[type=checkbox]{width:16px;height:16px;}
+    .event-list-info{flex:1;}
+    .event-list-info .etitle{font-size:14px;font-weight:600;}
+    .event-list-info .etime{font-size:12px;color:var(--text2);}
+    #deleteSelectedBtn{background:#e53e3e;color:#fff;border:none;border-radius:4px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+    #selectAllBtn{background:var(--white);color:var(--text2);border:1px solid var(--border);border-radius:4px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
+    .dojo-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+    .dojo-tab{border:2px solid transparent;border-radius:6px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;opacity:.45;font-family:inherit;color:#fff;transition:opacity .2s;}
+    .dojo-tab.active{opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+    .dojo-tab.chigasaki{background:var(--chigasaki);}
+    .dojo-tab.hiratsuka{background:var(--hiratsuka);}
+    .dojo-tab.samukawa{background:var(--samukawa);}
+    .dojo-tab.fujisawa{background:var(--fujisawa);}
+    .form-grid{display:grid;gap:12px;}
+    .form-group{display:flex;flex-direction:column;gap:5px;}
+    .form-group label{font-size:12px;color:var(--text2);font-weight:700;}
+    .form-group input,.form-group select,.form-group textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:10px 12px;font-size:14px;font-family:inherit;}
+    .form-group textarea{resize:vertical;min-height:60px;}
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999;transition:transform .3s ease;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+    #toast.show{transform:translateX(-50%) translateY(0);}
+    .login-notice{text-align:center;padding:40px 20px;color:var(--text2);}
+    @media(max-width:768px){.login-box{width:90%;padding:32px 24px;}}
+
+    /* 写真管理 */
+    .gallery-cat-badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;}
+    .cat-演武大会{background:#fee2e2;color:#991b1b;}
+    .cat-昇段祝い{background:#fef3c7;color:#92400e;}
+    .cat-懇親会{background:#dbeafe;color:#1e40af;}
+    .cat-講習会{background:#ede9fe;color:#5b21b6;}
+    .cat-合宿{background:#d1fae5;color:#065f46;}
+    .cat-その他{background:#f1f5f9;color:#475569;}
+    .photo-upload-area{border:2px dashed var(--border);border-radius:8px;padding:32px 16px;text-align:center;cursor:pointer;color:var(--text2);font-size:13px;transition:.2s;}
+    .photo-upload-area:hover,.photo-upload-area.drag{background:var(--surface2);border-color:var(--gold-light);}
+    .photo-preview-grid,.event-photos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:14px;}
+    .photo-preview-item{position:relative;border-radius:6px;overflow:hidden;background:var(--surface2);aspect-ratio:1;}
+    .photo-preview-item img{width:100%;height:100%;object-fit:cover;display:block;}
+    .photo-preview-item .rm-btn{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:13px;line-height:1;cursor:pointer;}
+    .photo-preview-item .caption-inp{position:absolute;bottom:0;left:0;right:0;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:4px 6px;font-family:inherit;width:100%;}
+    .gallery-event-card{background:var(--white);border:1px solid var(--border);border-radius:6px;margin-bottom:10px;overflow:hidden;}
+    .gallery-event-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+    .gallery-event-meta{font-size:12px;color:var(--text2);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;}
+    .gallery-event-card .event-photos-grid{padding:12px 14px;}
+
+    /* お問い合わせ管理 */
+    .contact-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+    .contact-filter button{background:var(--white);border:1px solid var(--border);color:var(--text2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+    .contact-filter button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+    .contact-card{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:6px;margin-bottom:10px;padding:14px 16px;}
+    .contact-card.status-unread{border-left-color:#e53e3e;}
+    .contact-card.status-in_progress{border-left-color:#c4960e;}
+    .contact-card.status-done{border-left-color:#38a169;}
+    .contact-card.important{background:#fffdf5;}
+    .contact-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+    .contact-name{font-size:14px;font-weight:700;color:var(--navy);}
+    .contact-star{background:none;border:none;font-size:16px;cursor:pointer;padding:0 2px;line-height:1;}
+    .contact-meta{font-size:11px;color:var(--text2);margin-top:3px;}
+    .contact-badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;margin-left:6px;}
+    .status-unread .contact-badge{background:#fee2e2;color:#991b1b;}
+    .status-in_progress .contact-badge{background:#fef3c7;color:#92400e;}
+    .status-done .contact-badge{background:#d1fae5;color:#065f46;}
+    .contact-message{font-size:13px;color:var(--text);margin-top:10px;line-height:1.7;white-space:pre-wrap;background:var(--surface2);border-radius:6px;padding:10px 12px;}
+    .contact-actions{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;}
+    .contact-actions select{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-size:12px;font-family:inherit;}
+  </style>
+</head>
+<body>
+
+<!-- ログイン画面 -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>相模合気道連盟</h1>
+    <p>スケジュール管理システム　管理者ログイン</p>
+    <div class="login-field">
+      <label>メールアドレス</label>
+      <input type="email" id="loginEmail" placeholder="admin@example.com">
+    </div>
+    <div class="login-field">
+      <label>パスワード</label>
+      <input type="password" id="loginPassword" placeholder="パスワード">
+    </div>
+    <button class="login-btn" onclick="doLogin()">ログイン</button>
+    <div class="login-error" id="loginError">メールアドレスまたはパスワードが正しくありません</div>
+  </div>
+</div>
+
+<!-- メイン画面 -->
+<div id="mainScreen">
+  <header>
+    <div class="header-left">
+      <a class="header-logo" href="index.html">相模合気道連盟<span>スケジュール管理</span></a>
+      <a class="back-link" href="index.html">← サイトへ戻る</a>
+    </div>
+    <button id="logoutBtn" onclick="doLogout()">ログアウト</button>
+  </header>
+  <nav>
+    <button class="active" onclick="showTab('cal')">📅 カレンダー</button>
+    <button onclick="showTab('bulk')">🔄 月次生成</button>
+    <button onclick="showTab('list')">📋 一覧・削除</button>
+    <button onclick="showTab('add')">➕ 個別追加</button>
+    <button onclick="showTab('news')">📢 お知らせ</button>
+    <button onclick="showTab('photo')">📷 写真管理</button>
+    <button onclick="showTab('contact')">📩 お問い合わせ<span id="contactUnreadBadge" style="display:none;background:#e53e3e;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:5px;"></span></button>
+    <button onclick="showTab('manual')">📖 マニュアル</button>
+  </nav>
+  <main>
+    <!-- カレンダー -->
+    <div id="tab-cal" class="tab-content active">
+      <div class="cal-header">
+        <h2 id="calTitle"></h2>
+        <div class="cal-nav"><button onclick="prevMonth()">◀</button><button onclick="nextMonth()">▶</button></div>
+      </div>
+      <div class="dojo-filter">
+        <button class="dojo-chip all active" onclick="filterDojo('all',this)">全て</button>
+        <button class="dojo-chip chigasaki active" onclick="filterDojo('茅ヶ崎',this)">茅ヶ崎</button>
+        <button class="dojo-chip hiratsuka active" onclick="filterDojo('平塚',this)">平塚</button>
+        <button class="dojo-chip samukawa active" onclick="filterDojo('寒川',this)">寒川</button>
+        <button class="dojo-chip fujisawa active" onclick="filterDojo('藤沢',this)">藤沢</button>
+      </div>
+      <div class="cal-wrap">
+        <div class="loading-overlay" id="calLoading"><div class="spinner"></div></div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </div>
+
+    <!-- 月次生成 -->
+    <div id="tab-bulk" class="tab-content">
+      <div class="section-card">
+        <h3>定期稽古スケジュール</h3>
+        <div class="schedule-item"><div class="schedule-dot" style="background:var(--chigasaki)"></div><div class="schedule-info"><div class="title">日曜　茅ヶ崎　朝</div><div class="time">9:30 〜 11:30</div></div></div>
+        <div class="schedule-item"><div class="schedule-dot" style="background:var(--hiratsuka)"></div><div class="schedule-info"><div class="title">日曜　平塚　昼</div><div class="time">15:30 〜 16:30</div></div></div>
+        <div class="schedule-item"><div class="schedule-dot" style="background:var(--chigasaki)"></div><div class="schedule-info"><div class="title">水曜　茅ヶ崎　夜</div><div class="time">18:30 〜 20:30</div></div></div>
+        <div class="schedule-item"><div class="schedule-dot" style="background:var(--samukawa)"></div><div class="schedule-info"><div class="title">土曜　寒川　昼</div><div class="time">12:30 〜 14:30</div></div></div>
+      </div>
+      <div class="section-card">
+        <h3>月次一括生成</h3>
+        <div class="month-select"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="bulkMonth"></div>
+        <button class="btn-secondary" onclick="previewBulk()">📋 プレビュー</button>
+        <div id="previewList">
+          <h4>登録予定の予定</h4>
+          <div id="previewItems"></div>
+          <button id="execBulkBtn" class="btn-primary" onclick="executeBulk()">💾 一括登録</button>
+          <button id="cancelBulkBtn" class="btn-secondary" onclick="cancelPreview()">キャンセル</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 一覧・削除 -->
+    <div id="tab-list" class="tab-content">
+      <div class="dojo-filter" style="margin-bottom:12px">
+        <button class="dojo-chip all active" onclick="filterListDojo('all',this)">全て</button>
+        <button class="dojo-chip chigasaki active" onclick="filterListDojo('茅ヶ崎',this)">茅ヶ崎</button>
+        <button class="dojo-chip hiratsuka active" onclick="filterListDojo('平塚',this)">平塚</button>
+        <button class="dojo-chip samukawa active" onclick="filterListDojo('寒川',this)">寒川</button>
+        <button class="dojo-chip fujisawa active" onclick="filterListDojo('藤沢',this)">藤沢</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+        <button id="selectAllBtn" onclick="toggleSelectAll()">全選択</button>
+        <button id="deleteSelectedBtn" onclick="deleteSelected()">🗑 選択を削除</button>
+        <button id="pastToggleBtn" onclick="togglePast()" style="background:var(--white);color:var(--text2);border:1px solid var(--border);border-radius:4px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;margin-left:auto">📅 過去も表示</button>
+      </div>
+      <div id="eventList"><div class="login-notice"><p>読み込み中...</p></div></div>
+    </div>
+
+    <!-- 個別追加 -->
+    <div id="tab-add" class="tab-content">
+      <div class="dojo-tabs">
+        <button class="dojo-tab chigasaki active" onclick="selectDojo('茅ヶ崎',this)">茅ヶ崎</button>
+        <button class="dojo-tab hiratsuka" onclick="selectDojo('平塚',this)">平塚</button>
+        <button class="dojo-tab samukawa" onclick="selectDojo('寒川',this)">寒川</button>
+        <button class="dojo-tab fujisawa" onclick="selectDojo('藤沢',this)">藤沢</button>
+      </div>
+      <div class="section-card">
+        <h3 id="addDojoTitle">茅ヶ崎道場　個別追加</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>日付</label><input type="date" id="addDate"></div>
+          <div class="form-group">
+            <label>種別</label>
+            <select id="addType">
+              <option>一般稽古</option><option>少年稽古</option><option>師範稽古</option>
+              <option>昇段審査</option><option>特別稽古</option><option>演武大会</option>
+              <option>鏡開き</option><option>行事</option><option>合宿</option><option>その他</option>
+            </select>
+          </div>
+          <div class="form-group"><label>開始時間</label><input type="time" id="addStart" value="09:30"></div>
+          <div class="form-group"><label>終了時間</label><input type="time" id="addEnd" value="11:30"></div>
+          <div class="form-group"><label>メモ（任意）</label><textarea id="addMemo" placeholder="備考など"></textarea></div>
+        </div>
+        <button class="btn-primary" onclick="addEvent()">＋ 追加する</button>
+        <button class="btn-secondary" onclick="clearAddForm()">キャンセル</button>
+      </div>
+    </div>
+
+    <!-- お知らせ管理 -->
+    <div id="tab-news" class="tab-content">
+      <div class="section-card">
+        <h3>お知らせを追加</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>日付（例：2026.05.09）</label>
+            <input type="text" id="newsDate" placeholder="2026.05.09">
+          </div>
+          <div class="form-group">
+            <label>カテゴリ</label>
+            <select id="newsCategory">
+              <option value="新着">新着</option>
+              <option value="行事">行事</option>
+              <option value="お知らせ">お知らせ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>内容</label>
+            <textarea id="newsText" placeholder="お知らせの内容を入力してください"></textarea>
+          </div>
+          <div class="form-group">
+            <label>リンクURL（任意）</label>
+            <input type="url" id="newsUrl" placeholder="https://例：詳細ページのURLがあれば入力">
+            <div style="font-size:11px;color:var(--text2);margin-top:4px;">入力すると「詳細を見る」リンクが表示されます</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="addNews()">➕ 追加する</button>
+      </div>
+      <div class="section-card">
+        <h3>登録済みお知らせ一覧</h3>
+        <div id="newsList"><div class="login-notice"><p>読み込み中...</p></div></div>
+      </div>
+    </div>
+
+    <!-- 写真管理 -->
+    <div id="tab-photo" class="tab-content">
+
+      <!-- GitHub PAT設定 -->
+      <div class="section-card" id="patCard" style="background:#f8f6f0;border:1px solid #e8e2d6;">
+        <h3 style="font-size:13px;margin-bottom:8px;">🔑 GitHub アクセストークン設定</h3>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="password" id="githubPat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            style="flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--border);border-radius:4px;font-family:monospace;font-size:13px;">
+          <button class="btn-primary" style="width:auto;margin:0;padding:8px 16px;" onclick="savePat()">保存</button>
+          <button class="btn-secondary" style="width:auto;margin:0;padding:8px 16px;font-size:12px;" onclick="testPat()">接続テスト</button>
+          <span id="patStatus" style="font-size:12px;color:var(--text2);"></span>
+        </div>
+        <div id="patError" style="display:none;margin-top:10px;padding:10px 14px;background:#fee2e2;border-radius:6px;font-size:12px;color:#991b1b;line-height:1.7;"></div>
+        <p style="font-size:11px;color:var(--text2);margin-top:8px;">
+          ※ トークンはこの端末のみに保存されます。
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=sagami-aikido-gallery" target="_blank" style="color:var(--gold-light);">トークンを発行する →</a>
+        </p>
+      </div>
+
+      <div class="section-card">
+        <h3>撮影イベント登録</h3>
+        <input type="hidden" id="geEditId">
+        <div class="form-grid">
+          <div class="form-group"><label>イベント名</label><input type="text" id="geName" placeholder="例：令和8年度 演武大会"></div>
+          <div class="form-group"><label>撮影日</label><input type="date" id="geDate"></div>
+          <div class="form-group">
+            <label>分類</label>
+            <select id="geCat">
+              <option value="演武大会">演武大会</option>
+              <option value="昇段祝い">昇段祝い</option>
+              <option value="懇親会">懇親会</option>
+              <option value="講習会">講習会</option>
+              <option value="合宿">合宿</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+          <div class="form-group"><label>説明（任意）</label><textarea id="geDesc" placeholder="イベントの概要・補足"></textarea></div>
+          <div class="form-group">
+            <label>公開設定</label>
+            <select id="gePub"><option value="true">公開する</option><option value="false">下書き（非公開）</option></select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveGalleryEvent()">イベントを保存</button>
+        <button class="btn-secondary" onclick="resetGalleryEventForm()">リセット</button>
+      </div>
+
+      <div class="section-card">
+        <h3>写真をアップロード</h3>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>対象イベント</label>
+          <select id="photoTargetEvent"><option value="">— イベントを選んでください —</option></select>
+        </div>
+        <div class="photo-upload-area" id="photoDropArea" onclick="document.getElementById('photoFileInput').click()">
+          📷<br>クリックまたはドラッグ＆ドロップで写真を選択<br>
+          <span style="font-size:11px;">JPG・PNG・WEBP対応　1枚あたり最大5MB</span>
+          <input type="file" id="photoFileInput" accept="image/*" multiple style="display:none;">
+        </div>
+        <div class="photo-preview-grid" id="photoPreviewGrid"></div>
+        <button class="btn-primary" id="btnPhotoSave" onclick="saveGalleryPhotos()" style="margin-top:12px;">写真を保存</button>
+      </div>
+
+      <div class="section-card">
+        <h3>登録済みイベント一覧</h3>
+        <div id="galleryEventList"><div class="login-notice"><p>読み込み中...</p></div></div>
+      </div>
+    </div>
+
+    <!-- お問い合わせ管理 -->
+    <div id="tab-contact" class="tab-content">
+      <div class="section-card">
+        <h3>お問い合わせ一覧</h3>
+        <div class="contact-filter">
+          <button class="active" onclick="filterContacts('all',this)">すべて</button>
+          <button onclick="filterContacts('unread',this)">未対応</button>
+          <button onclick="filterContacts('in_progress',this)">対応中</button>
+          <button onclick="filterContacts('done',this)">対応済み</button>
+          <button onclick="filterContacts('important',this)">⭐ 重要のみ</button>
+        </div>
+        <div id="contactList"><div class="login-notice"><p>読み込み中...</p></div></div>
+      </div>
+    </div>
+
+    <!-- マニュアル -->
+    <div id="tab-manual" class="tab-content">
+      <div class="section-card" style="border-top:3px solid var(--gold-light); background:#fdf9ef;">
+        <h3 style="font-size:13px;">📘 図解つき操作マニュアル（PDF）</h3>
+        <p style="font-size:14px; margin-bottom:14px; line-height:1.8;">
+          画面のイラストと赤い矢印つきで、より分かりやすく解説したマニュアルをご用意しました。
+          初めての方は、まずこちらのPDFをご覧いただくのがおすすめです。
+        </p>
+        <a href="manual.pdf" target="_blank"
+           style="display:inline-block; background:var(--navy); color:#fff; text-decoration:none; font-weight:700; padding:12px 24px; border-radius:4px; font-size:14px;">
+          📄 PDFマニュアルを開く（新しいタブ）
+        </a>
+        <p style="font-size:11px; color:var(--text2); margin-top:10px;">
+          ※ 印刷して手元に置いておくこともできます。内容は随時このページにも反映されます。
+        </p>
+      </div>
+
+      <div class="section-card">
+        <h3>重要なURL一覧</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+          <div style="background:#f0f7f4;border:2px solid #1D9E75;border-radius:6px;padding:12px 16px;">
+            <div style="font-size:11px;color:#0d6e4e;font-weight:bold;margin-bottom:4px;">🌐 公式サイト（一般公開）</div>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/</a>
+          </div>
+          <div style="background:#f0f7f4;border:2px solid #1D9E75;border-radius:6px;padding:12px 16px;">
+            <div style="font-size:11px;color:#0d6e4e;font-weight:bold;margin-bottom:4px;">📅 スケジュールページ（一般公開）</div>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/schedule.html" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/schedule.html</a>
+          </div>
+          <div style="background:#f0f7f4;border:2px solid #1D9E75;border-radius:6px;padding:12px 16px;">
+            <div style="font-size:11px;color:#0d6e4e;font-weight:bold;margin-bottom:4px;">📢 お知らせページ（一般公開）</div>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/news.html" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/news.html</a>
+          </div>
+          <div style="background:#f0f0f8;border:2px solid #1a2744;border-radius:6px;padding:12px 16px;">
+            <div style="font-size:11px;color:#1a2744;font-weight:bold;margin-bottom:4px;">🔐 管理アプリ（このページ）</div>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/admin.html" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/admin.html</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>📅 スケジュール一括登録（毎月末の作業）</h3>
+        <div style="background:#fffbeb;border-left:4px solid #c4960e;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;font-size:13px;">
+          <b>定期稽古の時間</b><br>
+          日曜：茅ヶ崎 9:30〜11:30 ／ 平塚 15:30〜16:30<br>
+          水曜：茅ヶ崎 18:30〜20:30<br>
+          土曜：寒川 12:30〜14:30
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="font-size:14px;">「🔄 月次生成」タブをクリック</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="font-size:14px;">対象年月を確認（翌月になっているか確認）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="font-size:14px;">「📋 プレビュー」ボタンをクリックして内容を確認</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="font-size:14px;">「💾 一括登録」ボタンをクリックして完了</div>
+          </div>
+        </div>
+        <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;">
+          ⚠️ 同じ月を2回登録すると重複します。必ず一覧で確認してから登録してください。
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>➕ スケジュール個別追加（行事・特別稽古）</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="font-size:14px;">「➕ 個別追加」タブをクリック</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="font-size:14px;">道場（茅ヶ崎・平塚・寒川・藤沢）を選択</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="font-size:14px;">日付・種別・時間・メモを入力</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="font-size:14px;">「＋ 追加する」ボタンをクリックして完了</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>🗑 スケジュールの削除・変更</h3>
+        <p style="font-size:14px;margin-bottom:12px;"><b>削除：</b>「📋 一覧・削除」タブ → 対象の予定の「削除」ボタンをクリック</p>
+        <p style="font-size:14px;"><b>変更：</b>古い予定を削除 → 「➕ 個別追加」タブで正しい内容を再登録</p>
+      </div>
+
+      <div class="section-card">
+        <h3>📢 お知らせの登録・削除</h3>
+        <p style="font-size:14px;margin-bottom:10px;"><b>登録：</b>「📢 お知らせ」タブ → 日付・カテゴリ・内容を入力 → 「➕ 追加する」</p>
+        <p style="font-size:14px;margin-bottom:12px;"><b>削除：</b>「📢 お知らせ」タブ下部の一覧 → 「削除」ボタンをクリック</p>
+        <div style="font-size:13px;background:#f8f8f8;border-radius:6px;padding:10px 14px;">
+          カテゴリの種類：
+          <span style="background:#1a2744;color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:bold;margin:0 4px;">新着</span>
+          <span style="background:#9a7b0a;color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:bold;margin:0 4px;">行事</span>
+          <span style="background:#e8e2d6;color:#1a2744;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:bold;margin:0 4px;">お知らせ</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>📩 お問い合わせ管理</h3>
+        <p style="font-size:14px;margin-bottom:10px;">
+          サイトの「お問い合わせ」ページから送信された内容は、この管理画面の「📩 お問い合わせ」タブに自動で届きます。
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="font-size:14px;">「📩 お問い合わせ」タブをクリックすると、新着順に一覧が表示されます</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="font-size:14px;">各お問い合わせの右上にある選択欄で「未対応／対応中／対応済み」を切り替えられます</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="font-size:14px;">☆マークをクリックすると「重要」マークを付けられます（⭐に変化）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="font-size:14px;">対応が完了し不要になったお問い合わせは「削除」ボタンで削除できます</div>
+          </div>
+        </div>
+        <div style="background:#fffbeb;border-left:4px solid #c4960e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;">
+          💡 上部の絞り込みボタン（すべて／未対応／対応中／対応済み／⭐重要のみ）で表示を絞り込めます。
+        </div>
+        <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:10px;font-size:13px;">
+          ⚠️ お問い合わせフォームはサイト上の誰でも送信できます。定期的にこのタブを確認してください（メール通知を設定している場合はそちらでも気づけます）。
+        </div>
+      </div>
+
+      <div class="section-card" style="border-top:3px solid #38a169;">
+        <h3>💰 料金について</h3>
+        <div style="background:#f0fff4;border:2px solid #38a169;border-radius:6px;padding:14px 18px;font-size:14px;">
+          ✅ このサイトは<b>完全無料</b>で運用できます。<br>
+          GitHub Pages・Firebase ともに無料プランで十分対応できます。
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, serverTimestamp }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  // Firebase Storage は無料プラン非対応のため不使用。画像はFirestoreに圧縮保存。
+
+  // ★★★ 以下をFirebaseコンソールの設定値に置き換えてください ★★★
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfhzD-KOcyAneUEHDeAYx1WB7Tcefc1So",
+    authDomain: "sagami-aikido-b5961.firebaseapp.com",
+    projectId: "sagami-aikido-b5961",
+    storageBucket: "sagami-aikido-b5961.firebasestorage.app",
+    messagingSenderId: "770248355445",
+    appId: "1:770248355445:web:3104563942dfed363d923c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const DOJO_CLASS = {'茅ヶ崎':'chigasaki','平塚':'hiratsuka','寒川':'samukawa','藤沢':'fujisawa'};
+  const SPECIAL_TYPES = ['昇段審査','演武大会','鏡開き','行事','合宿','その他'];
+  const REGULAR_SCHEDULES = [
+    {dojo:'茅ヶ崎',day:0,start:'09:30',end:'11:30'},
+    {dojo:'平塚',  day:0,start:'15:30',end:'16:30'},
+    {dojo:'茅ヶ崎',day:3,start:'18:30',end:'20:30'},
+    {dojo:'寒川',  day:6,start:'12:30',end:'14:30'},
+  ];
+
+  let allEvents=[], activeFilter='all', listFilter='all', selectedDojo='茅ヶ崎';
+  let bulkPreviewEvents=[], showPast=false;
+  let currentYear=new Date().getFullYear(), currentMonth=new Date().getMonth();
+  let allGalleryEvents=[], allGalleryPhotos=[], pendingGalleryPhotos=[];
+  let allContacts=[], contactFilter='all';
+
+  function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+  // 認証状態監視
+  onAuthStateChanged(auth, user => {
+    if(user){
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('mainScreen').style.display='block';
+      loadEvents();
+      loadNews();
+      loadGalleryEvents();
+      loadContacts();
+      loadPat();
+      renderCalendar();
+      const t=new Date(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
+      document.getElementById('bulkMonth').value=`${t.getFullYear()}-${m}`;
+      document.getElementById('addDate').value=`${t.getFullYear()}-${m}-${d}`;
+      document.getElementById('geDate').value=`${t.getFullYear()}-${m}-${d}`;
+    } else {
+      document.getElementById('loginScreen').style.display='flex';
+      document.getElementById('mainScreen').style.display='none';
+    }
+  });
+
+  // ログイン
+  window.doLogin = async function(){
+    const email=document.getElementById('loginEmail').value;
+    const pass=document.getElementById('loginPassword').value;
+    const errEl=document.getElementById('loginError');
+    errEl.style.display='none';
+    try{
+      await signInWithEmailAndPassword(auth, email, pass);
+    }catch(e){
+      errEl.style.display='block';
+    }
+  };
+
+  // ログアウト
+  window.doLogout = async function(){
+    await signOut(auth);
+    allEvents=[];
+    document.getElementById('loginEmail').value='';
+    document.getElementById('loginPassword').value='';
+  };
+
+  // Firestoreからイベント読み込み
+  async function loadEvents(){
+    const overlay=document.getElementById('calLoading');
+    overlay.classList.add('show');
+    try{
+      const q = query(collection(db,'events'), orderBy('date'));
+      const snap = await getDocs(q);
+      allEvents = snap.docs.map(d=>({id:d.id, ...d.data()}));
+      renderCalendar();
+      renderEventList();
+      showToast(`✅ ${allEvents.length}件の予定を読み込みました`);
+    }catch(e){
+      showToast('読み込みに失敗しました');
+    }finally{
+      overlay.classList.remove('show');
+    }
+  }
+
+  // カレンダー描画
+  window.renderCalendar = function(){
+    const grid=document.getElementById('calGrid');
+    grid.innerHTML='';
+    ['日','月','火','水','木','金','土'].forEach(d=>{
+      const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);
+    });
+    const year=currentYear,month=currentMonth;
+    const first=new Date(year,month,1).getDay();
+    const last=new Date(year,month+1,0).getDate();
+    const today=new Date();
+    document.getElementById('calTitle').textContent=`${year}年${month+1}月`;
+    for(let i=0;i<first;i++){const c=makeCell(new Date(year,month,0).getDate()-first+1+i,year,month-1);c.classList.add('other-month');grid.appendChild(c);}
+    for(let d=1;d<=last;d++){
+      const c=makeCell(d,year,month);
+      if(d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear())c.classList.add('today');
+      grid.appendChild(c);
+    }
+    for(let i=1;i<=42-first-last;i++){const c=makeCell(i,year,month+1);c.classList.add('other-month');grid.appendChild(c);}
+  };
+
+  function makeCell(day,year,month){
+    const cell=document.createElement('div');cell.className='cal-cell';
+    const dd=document.createElement('div');dd.className='cal-date';dd.textContent=day;cell.appendChild(dd);
+    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    allEvents.filter(e=>e.date===ds).forEach(ev=>{
+      const dojoName=Object.keys(DOJO_CLASS).find(d=>ev.dojo===d);
+      if(activeFilter!=='all'&&ev.dojo!==activeFilter)return;
+      const cls=dojoName?DOJO_CLASS[dojoName]:'special';
+      const evDiv=document.createElement('div');evDiv.className=`cal-event ${cls}`;
+      const dispText=dojoName?`${ev.start} ${ev.title}`:(ev.memo||ev.title);
+      evDiv.textContent=dispText.substring(0,12);
+      cell.appendChild(evDiv);
+    });
+    return cell;
+  }
+
+  window.prevMonth=function(){currentMonth--;if(currentMonth<0){currentMonth=11;currentYear--;}renderCalendar();}
+  window.nextMonth=function(){currentMonth++;if(currentMonth>11){currentMonth=0;currentYear++;}renderCalendar();}
+  window.filterDojo=function(dojo,btn){
+    activeFilter=dojo;
+    document.querySelectorAll('.dojo-filter .dojo-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');renderCalendar();
+  };
+
+  function getTimeLabel(startTime){
+    const h=parseInt(startTime.split(':')[0]);
+    if(h<12)return'朝';if(h<16)return'昼';if(h<18)return'夕';return'夜';
+  }
+
+  // 一覧表示
+  window.togglePast=function(){
+    showPast=!showPast;
+    const btn=document.getElementById('pastToggleBtn');
+    btn.style.background=showPast?'#fef3c7':'var(--white)';
+    btn.style.color=showPast?'#92400e':'var(--text2)';
+    btn.style.borderColor=showPast?'#f59e0b':'var(--border)';
+    btn.textContent=showPast?'📅 未来のみ表示':'📅 過去も表示';
+    renderEventList();
+  };
+
+  window.renderEventList=function(){
+    const container=document.getElementById('eventList');
+    const now=new Date().toISOString().substr(0,10);
+    let events=showPast?[...allEvents]:allEvents.filter(e=>e.date>=now);
+    if(listFilter!=='all')events=events.filter(e=>e.dojo===listFilter);
+    events.sort((a,b)=>a.date.localeCompare(b.date)||(a.start||'').localeCompare(b.start||''));
+    if(!events.length){container.innerHTML='<div class="login-notice"><p>予定がありません</p></div>';return;}
+    container.innerHTML=events.map(ev=>{
+      const cls=DOJO_CLASS[ev.dojo]||'special';
+      const isPast=ev.date<now;
+      const dojoBadge=ev.dojo?`<span class="dojo-chip ${cls}" style="flex-shrink:0;opacity:1">${ev.dojo}</span>`:`<span class="dojo-chip" style="flex-shrink:0;opacity:1;background:#fef08a;color:#713f12;">行事</span>`;
+      const typeBadge=`<span style="background:#f0f0f0;color:#555;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;flex-shrink:0">${ev.type||''}</span>`;
+      const dispName=ev.memo?`${ev.title}　${ev.memo}`:ev.title;
+      const pastStyle=isPast?'opacity:0.55;':'';
+      return `<div class="event-list-item" style="${pastStyle}">
+        <input type="checkbox" data-id="${ev.id}">
+        ${dojoBadge}${typeBadge}
+        <div class="event-list-info">
+          <div class="etitle">${dispName}</div>
+          <div class="etime">${ev.date} ${ev.start||''}〜${ev.end||''}${isPast?' 〔済〕':''}</div>
+        </div>
+        <button class="btn-danger" onclick="deleteSingle('${ev.id}')">削除</button>
+      </div>`;
+    }).join('');
+  };
+
+  window.filterListDojo=function(dojo,btn){
+    listFilter=dojo;
+    document.querySelectorAll('#tab-list .dojo-filter .dojo-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');renderEventList();
+  };
+
+  window.toggleSelectAll=function(){
+    const boxes=document.querySelectorAll('#eventList input[type=checkbox]');
+    const allChecked=Array.from(boxes).every(b=>b.checked);
+    boxes.forEach(b=>b.checked=!allChecked);
+  };
+
+  window.deleteSelected=async function(){
+    const ids=Array.from(document.querySelectorAll('#eventList input[type=checkbox]:checked')).map(b=>b.dataset.id);
+    if(!ids.length){showToast('削除する予定を選択してください');return;}
+    if(!confirm(`${ids.length}件を削除しますか？`))return;
+    let count=0;
+    for(const id of ids){
+      try{await deleteDoc(doc(db,'events',id));allEvents=allEvents.filter(e=>e.id!==id);count++;}catch(e){}
+    }
+    renderEventList();renderCalendar();showToast(`🗑 ${count}件を削除しました`);
+  };
+
+  window.deleteSingle=async function(id){
+    if(!confirm('この予定を削除しますか？'))return;
+    try{
+      await deleteDoc(doc(db,'events',id));
+      allEvents=allEvents.filter(e=>e.id!==id);
+      renderEventList();renderCalendar();showToast('🗑 削除しました');
+    }catch(e){showToast('削除に失敗しました');}
+  };
+
+  // 月次生成
+  window.previewBulk=function(){
+    const val=document.getElementById('bulkMonth').value;
+    if(!val){showToast('年月を選択してください');return;}
+    const[year,month]=val.split('-').map(Number);
+    const lastDay=new Date(year,month,0).getDate();
+    bulkPreviewEvents=[];
+    for(let d=1;d<=lastDay;d++){
+      const dow=new Date(year,month-1,d).getDay();
+      REGULAR_SCHEDULES.forEach(s=>{
+        if(s.day===dow){
+          const ds=`${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          const label=getTimeLabel(s.start);
+          bulkPreviewEvents.push({dojo:s.dojo,title:`${s.dojo} ${label}`,type:'一般稽古',date:ds,start:s.start,end:s.end,memo:''});
+        }
+      });
+    }
+    bulkPreviewEvents.sort((a,b)=>a.date.localeCompare(b.date));
+    document.getElementById('previewItems').innerHTML=bulkPreviewEvents.map(e=>
+      `<div class="preview-item"><span class="dojo-chip ${DOJO_CLASS[e.dojo]}" style="font-size:11px;opacity:1">${e.dojo}</span> ${e.date} ${e.start}〜${e.end} ${e.title}</div>`
+    ).join('');
+    document.getElementById('previewList').style.display='block';
+  };
+
+  window.executeBulk=async function(){
+    const execBtn=document.getElementById('execBulkBtn');
+    const cancelBtn=document.getElementById('cancelBulkBtn');
+    execBtn.disabled=true;cancelBtn.disabled=true;
+    const total=bulkPreviewEvents.length;let count=0;
+    execBtn.textContent=`⏳ 登録中... 0/${total}件`;
+    for(const ev of bulkPreviewEvents){
+      try{
+        const docRef=await addDoc(collection(db,'events'),ev);
+        allEvents.push({id:docRef.id,...ev});
+        count++;execBtn.textContent=`⏳ 登録中... ${count}/${total}件`;
+      }catch(e){}
+    }
+    renderCalendar();renderEventList();cancelPreview();
+    execBtn.disabled=false;cancelBtn.disabled=false;
+    execBtn.textContent='💾 一括登録';
+    showToast(`✅ ${count}件を登録しました`);
+  };
+
+  window.cancelPreview=function(){document.getElementById('previewList').style.display='none';bulkPreviewEvents=[];}
+
+  // 個別追加
+  window.selectDojo=function(dojo,btn){
+    selectedDojo=dojo;
+    document.querySelectorAll('.dojo-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+    document.getElementById('addDojoTitle').textContent=`${dojo}道場　個別追加`;
+    const defaults={'茅ヶ崎':['09:30','11:30'],'平塚':['15:30','16:30'],'寒川':['12:30','14:30'],'藤沢':['09:30','11:30']};
+    if(defaults[dojo]){document.getElementById('addStart').value=defaults[dojo][0];document.getElementById('addEnd').value=defaults[dojo][1];}
+  };
+
+  window.addEvent=async function(){
+    const date=document.getElementById('addDate').value;
+    const type=document.getElementById('addType').value;
+    const start=document.getElementById('addStart').value;
+    const end=document.getElementById('addEnd').value;
+    const memo=document.getElementById('addMemo').value;
+    if(!date||!start||!end){showToast('日付・時刻を入力してください');return;}
+    const isSpecial=SPECIAL_TYPES.includes(type);
+    const label=getTimeLabel(start);
+    const title=isSpecial?type:(type==='一般稽古'?`${selectedDojo} ${label}`:`${selectedDojo} ${type}`);
+    const dojo=isSpecial?'':selectedDojo;
+    const eventData={dojo,title,type,date,start,end,memo:memo||''};
+    try{
+      const docRef=await addDoc(collection(db,'events'),eventData);
+      allEvents.push({id:docRef.id,...eventData});
+      allEvents.sort((a,b)=>a.date.localeCompare(b.date));
+      renderCalendar();renderEventList();clearAddForm();
+      showToast(`✅ 追加しました：${title}`);
+    }catch(e){showToast('追加に失敗しました');}
+  };
+
+  window.clearAddForm=function(){document.getElementById('addMemo').value='';}
+
+  window.showTab=function(tab){
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    ['cal','bulk','list','add','news','photo','contact','manual'].forEach((t,i)=>{if(t===tab)document.querySelectorAll('nav button')[i].classList.add('active');});
+    if(tab==='list')renderEventList();
+    if(tab==='cal')renderCalendar();
+    if(tab==='news')renderNewsList();
+    if(tab==='photo'){loadPat();renderGalleryEventList();}
+    if(tab==='contact'){loadContacts();}
+  };
+
+  window.showToast=function(msg){
+    const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
+  };
+
+  // お知らせ読み込み
+  let allNews = [];
+  async function loadNews(){
+    try{
+      const q = query(collection(db,'news'), orderBy('date','desc'));
+      const snap = await getDocs(q);
+      allNews = snap.docs.map(d=>({id:d.id, ...d.data()}));
+      renderNewsList();
+    }catch(e){}
+  }
+
+  window.renderNewsList = function(){
+    const container = document.getElementById('newsList');
+    if(!container) return;
+    allNews.sort((a,b)=>b.date.localeCompare(a.date));
+    if(!allNews.length){container.innerHTML='<div class="login-notice"><p>お知らせがありません</p></div>';return;}
+    const TAG_COLORS = {'新着':'background:#1a2744;color:#fff;','行事':'background:#9a7b0a;color:#fff;','お知らせ':'background:#e8e2d6;color:#1a2744;'};
+    container.innerHTML = allNews.map(n=>{
+      const tagStyle = TAG_COLORS[n.category]||'background:#e8e2d6;color:#1a2744;';
+      const linkHtml = n.url
+        ? `<a href="${escH(n.url)}" target="_blank" rel="noopener"
+             style="display:inline-block;margin-top:6px;font-size:12px;color:var(--gold-light);
+                    text-decoration:none;border:1px solid var(--gold-light);padding:2px 10px;
+                    border-radius:3px;transition:.2s;"
+             onmouseover="this.style.background='var(--gold-light)';this.style.color='#fff'"
+             onmouseout="this.style.background='';this.style.color='var(--gold-light)'">
+             🔗 詳細を見る</a>` : '';
+      return `<div class="event-list-item">
+        <div class="event-list-info" style="flex:1">
+          <div class="etitle"><span style="font-size:12px;color:#9a7b0a;margin-right:8px">${n.date}</span><span style="padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;${tagStyle}">${n.category}</span></div>
+          <div class="etime" style="margin-top:4px">${n.text}</div>
+          ${linkHtml}
+        </div>
+        <button class="btn-danger" onclick="deleteNews('${n.id}')">削除</button>
+      </div>`;
+    }).join('');
+  };
+
+  window.addNews = async function(){
+    const date     = document.getElementById('newsDate').value.trim();
+    const category = document.getElementById('newsCategory').value;
+    const text     = document.getElementById('newsText').value.trim();
+    const url      = document.getElementById('newsUrl').value.trim();
+    if(!date||!text){showToast('日付と内容を入力してください');return;}
+    const data = {date, category, text, createdAt: new Date().toISOString()};
+    if(url) data.url = url;
+    try{
+      const docRef = await addDoc(collection(db,'news'), data);
+      allNews.unshift({id:docRef.id, ...data});
+      renderNewsList();
+      document.getElementById('newsDate').value='';
+      document.getElementById('newsText').value='';
+      document.getElementById('newsUrl').value='';
+      showToast('✅ お知らせを追加しました');
+    }catch(e){showToast('追加に失敗しました');}
+  };
+
+  window.deleteNews = async function(id){
+    if(!confirm('このお知らせを削除しますか？'))return;
+    try{
+      await deleteDoc(doc(db,'news',id));
+      allNews = allNews.filter(n=>n.id!==id);
+      renderNewsList();
+      showToast('🗑 削除しました');
+    }catch(e){showToast('削除に失敗しました');}
+  };
+
+  /* =============================================
+     お問い合わせ管理
+     ============================================= */
+  async function loadContacts(){
+    try{
+      const q = query(collection(db,'contacts'), orderBy('createdAt','desc'));
+      const snap = await getDocs(q);
+      allContacts = snap.docs.map(d=>({id:d.id, ...d.data()}));
+      renderContactList();
+      updateContactUnreadBadge();
+    }catch(e){showToast('お問い合わせの読み込みに失敗しました');}
+  }
+
+  function updateContactUnreadBadge(){
+    const badge = document.getElementById('contactUnreadBadge');
+    const n = allContacts.filter(c=>c.status==='unread').length;
+    if(n>0){badge.textContent=n;badge.style.display='inline-block';}
+    else{badge.style.display='none';}
+  }
+
+  window.filterContacts = function(f, btn){
+    contactFilter = f;
+    document.querySelectorAll('.contact-filter button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderContactList();
+  };
+
+  function fmtContactDate(ts){
+    try{
+      const d = ts && ts.toDate ? ts.toDate() : new Date(ts);
+      if(isNaN(d.getTime())) return '';
+      const p = n=>String(n).padStart(2,'0');
+      return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    }catch(e){return '';}
+  }
+
+  const STATUS_LABEL = {unread:'未対応', in_progress:'対応中', done:'対応済み'};
+
+  function renderContactList(){
+    const container = document.getElementById('contactList');
+    if(!container) return;
+    let list = allContacts;
+    if(contactFilter==='important') list = list.filter(c=>c.isImportant);
+    else if(contactFilter!=='all') list = list.filter(c=>c.status===contactFilter);
+
+    if(!list.length){container.innerHTML='<div class="login-notice"><p>該当するお問い合わせはありません</p></div>';return;}
+
+    container.innerHTML = list.map(c=>{
+      const status = c.status || 'unread';
+      return `<div class="contact-card status-${status} ${c.isImportant?'important':''}">
+        <div class="contact-card-top">
+          <div>
+            <span class="contact-name">${escH(c.name)}</span>
+            <span class="contact-badge">${STATUS_LABEL[status]||status}</span>
+            <div class="contact-meta">${fmtContactDate(c.createdAt)}　${escH(c.email)}${c.phone?'　'+escH(c.phone):''}</div>
+          </div>
+          <button class="contact-star" onclick="toggleContactImportant('${c.id}')" title="重要マーク">${c.isImportant?'⭐':'☆'}</button>
+        </div>
+        <div class="contact-message">${escH(c.message)}</div>
+        <div class="contact-actions">
+          <select onchange="updateContactStatus('${c.id}', this.value)">
+            <option value="unread" ${status==='unread'?'selected':''}>未対応</option>
+            <option value="in_progress" ${status==='in_progress'?'selected':''}>対応中</option>
+            <option value="done" ${status==='done'?'selected':''}>対応済み</option>
+          </select>
+          <button class="btn-danger" onclick="deleteContact('${c.id}')">削除</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  window.updateContactStatus = async function(id, status){
+    try{
+      await updateDoc(doc(db,'contacts',id), {status});
+      const c = allContacts.find(x=>x.id===id);
+      if(c) c.status = status;
+      renderContactList();
+      updateContactUnreadBadge();
+      showToast('✅ 対応状況を更新しました');
+    }catch(e){showToast('更新に失敗しました');renderContactList();}
+  };
+
+  window.toggleContactImportant = async function(id){
+    const c = allContacts.find(x=>x.id===id);
+    if(!c) return;
+    const next = !c.isImportant;
+    try{
+      await updateDoc(doc(db,'contacts',id), {isImportant: next});
+      c.isImportant = next;
+      renderContactList();
+    }catch(e){showToast('更新に失敗しました');}
+  };
+
+  window.deleteContact = async function(id){
+    if(!confirm('このお問い合わせを削除しますか？'))return;
+    try{
+      await deleteDoc(doc(db,'contacts',id));
+      allContacts = allContacts.filter(c=>c.id!==id);
+      renderContactList();
+      updateContactUnreadBadge();
+      showToast('🗑 削除しました');
+    }catch(e){showToast('削除に失敗しました');}
+  };
+
+  /* =============================================
+     写真ギャラリー管理
+     ============================================= */
+  async function loadGalleryEvents(){
+    try{
+      const q=query(collection(db,'gallery_events'),orderBy('shoot_date','desc'));
+      const snap=await getDocs(q);
+      allGalleryEvents=snap.docs.map(d=>({id:d.id,...d.data()}));
+      const psnap=await getDocs(collection(db,'gallery_photos'));
+      allGalleryPhotos=psnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+      renderGalleryEventList();
+    }catch(e){showToast('写真データの読み込みに失敗しました');}
+  }
+
+  function renderGalleryEventList(){
+    const sel=document.getElementById('photoTargetEvent');
+    const cur=sel.value;
+    sel.innerHTML='<option value="">— イベントを選んでください —</option>'+
+      allGalleryEvents.map(e=>`<option value="${e.id}" ${e.id===cur?'selected':''}>${escH(e.event_name)}（${e.shoot_date}）</option>`).join('');
+
+    const listEl=document.getElementById('galleryEventList');
+    if(!allGalleryEvents.length){listEl.innerHTML='<div class="login-notice"><p>まだイベントが登録されていません</p></div>';return;}
+    listEl.innerHTML=allGalleryEvents.map(ev=>{
+      const photos=allGalleryPhotos.filter(p=>p.event_id===ev.id);
+      return `<div class="gallery-event-card">
+        <div class="gallery-event-card-header">
+          <div>
+            <div style="font-weight:700;font-size:14px;">${escH(ev.event_name)}</div>
+            <div class="gallery-event-meta">
+              <span>${ev.shoot_date}</span>
+              <span class="gallery-cat-badge cat-${escH(ev.category)}">${escH(ev.category)}</span>
+              <span>${photos.length}枚</span>
+              ${ev.is_published===false?'<span style="color:#e53e3e">非公開</span>':''}
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-secondary" style="width:auto;margin:0;padding:6px 12px;font-size:12px;" onclick="editGalleryEvent('${ev.id}')">編集</button>
+            <button class="btn-danger" onclick="deleteGalleryEvent('${ev.id}')">削除</button>
+          </div>
+        </div>
+        ${photos.length?`<div class="event-photos-grid">
+          ${photos.map(p=>`<div class="photo-preview-item">
+            <img src="${p.image_url}" alt="${escH(p.caption)}">
+            <button class="rm-btn" onclick="deleteGalleryPhoto('${p.id}')">×</button>
+          </div>`).join('')}
+        </div>`:'<p style="padding:0 14px 14px;color:var(--text2);font-size:13px;">写真がまだありません</p>'}
+      </div>`;
+    }).join('');
+  }
+
+  window.saveGalleryEvent=async function(){
+    const id=document.getElementById('geEditId').value.trim();
+    const name=document.getElementById('geName').value.trim();
+    const date=document.getElementById('geDate').value;
+    const cat=document.getElementById('geCat').value;
+    const desc=document.getElementById('geDesc').value.trim();
+    const pub=document.getElementById('gePub').value==='true';
+    if(!name||!date){showToast('イベント名と撮影日を入力してください');return;}
+    const data={event_name:name,shoot_date:date,category:cat,description:desc,is_published:pub};
+    try{
+      if(id){
+        await updateDoc(doc(db,'gallery_events',id),data);
+        const idx=allGalleryEvents.findIndex(e=>e.id===id);
+        if(idx>=0)allGalleryEvents[idx]={id,...data};
+        showToast('✅ イベントを更新しました');
+      }else{
+        const docRef=await addDoc(collection(db,'gallery_events'),data);
+        allGalleryEvents.unshift({id:docRef.id,...data});
+        showToast('✅ イベントを登録しました');
+      }
+      resetGalleryEventForm();
+      renderGalleryEventList();
+    }catch(e){showToast('保存に失敗しました');}
+  };
+
+  window.resetGalleryEventForm=function(){
+    document.getElementById('geEditId').value='';
+    document.getElementById('geName').value='';
+    document.getElementById('geDesc').value='';
+    document.getElementById('geCat').value='演武大会';
+    document.getElementById('gePub').value='true';
+    const t=new Date();
+    document.getElementById('geDate').value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+  };
+
+  window.editGalleryEvent=function(id){
+    const ev=allGalleryEvents.find(e=>e.id===id);
+    if(!ev)return;
+    document.getElementById('geEditId').value=ev.id;
+    document.getElementById('geName').value=ev.event_name;
+    document.getElementById('geDate').value=ev.shoot_date;
+    document.getElementById('geCat').value=ev.category;
+    document.getElementById('geDesc').value=ev.description||'';
+    document.getElementById('gePub').value=String(ev.is_published!==false);
+    showToast('編集モード：内容を修正して「イベントを保存」を押してください');
+    document.querySelector('#tab-photo .section-card').scrollIntoView({behavior:'smooth'});
+  };
+
+  window.deleteGalleryEvent=async function(id){
+    const ev=allGalleryEvents.find(e=>e.id===id);
+    if(!confirm(`「${ev?ev.event_name:''}」と紐づく写真をすべて削除しますか？`))return;
+    const photos=allGalleryPhotos.filter(p=>p.event_id===id);
+    for(const p of photos){
+      try{ await deleteDoc(doc(db,'gallery_photos',p.id)); }catch(e){}
+    }
+    try{ await deleteDoc(doc(db,'gallery_events',id)); }catch(e){}
+    allGalleryEvents=allGalleryEvents.filter(e=>e.id!==id);
+    allGalleryPhotos=allGalleryPhotos.filter(p=>p.event_id!==id);
+    renderGalleryEventList();
+    showToast('🗑 削除しました');
+  };
+
+  // 写真アップロード（ドラッグ＆ドロップ／複数選択）
+  const galleryDropArea=document.getElementById('photoDropArea');
+  if(galleryDropArea){
+    ['dragenter','dragover'].forEach(ev=>galleryDropArea.addEventListener(ev,e=>{e.preventDefault();galleryDropArea.classList.add('drag');}));
+    ['dragleave','drop'].forEach(ev=>galleryDropArea.addEventListener(ev,e=>{e.preventDefault();galleryDropArea.classList.remove('drag');}));
+    galleryDropArea.addEventListener('drop',e=>handleGalleryFiles(e.dataTransfer.files));
+    document.getElementById('photoFileInput').addEventListener('change',e=>handleGalleryFiles(e.target.files));
+  }
+
+  function handleGalleryFiles(files){
+    [...files].forEach(file=>{
+      if(!file.type.startsWith('image/')){showToast('画像ファイルを選んでください');return;}
+      if(file.size>5*1024*1024){showToast(`${file.name} は5MBを超えています`);return;}
+      const reader=new FileReader();
+      reader.onload=ev=>{pendingGalleryPhotos.push({file,previewUrl:ev.target.result,caption:''});renderGalleryPreview();};
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderGalleryPreview(){
+    const grid=document.getElementById('photoPreviewGrid');
+    grid.innerHTML=pendingGalleryPhotos.map((p,i)=>`
+      <div class="photo-preview-item">
+        <img src="${p.previewUrl}" alt="">
+        <button class="rm-btn" onclick="removePendingGalleryPhoto(${i})">×</button>
+        <input class="caption-inp" type="text" placeholder="説明（任意）" value="${escH(p.caption)}" oninput="updateGalleryCaption(${i},this.value)">
+      </div>
+    `).join('');
+  }
+  window.removePendingGalleryPhoto=function(i){pendingGalleryPhotos.splice(i,1);renderGalleryPreview();};
+  window.updateGalleryCaption=function(i,val){if(pendingGalleryPhotos[i])pendingGalleryPhotos[i].caption=val;};
+
+  /* =============================================
+     GitHub PAT 管理
+     ============================================= */
+  const GH_OWNER  = 'sagamiaikido1-rgb';
+  const GH_REPO   = 'sagami-aiki-renmei';
+  const GH_BRANCH = 'main';
+
+  function showPatError(msg){
+    const el=document.getElementById('patError');
+    if(!el) return;
+    if(msg){ el.innerHTML=msg; el.style.display='block'; }
+    else { el.style.display='none'; }
+  }
+
+  function loadPat(){
+    const pat = localStorage.getItem('gh_pat') || '';
+    const el  = document.getElementById('githubPat');
+    const st  = document.getElementById('patStatus');
+    if(el && !el.value) el.value = pat;
+    if(st) st.textContent = pat ? '✅ 設定済み' : '⚠️ 未設定';
+    return pat;
+  }
+
+  window.savePat = function(){
+    const val = document.getElementById('githubPat').value.trim();
+    if(!val){ showToast('トークンを入力してください'); return; }
+    if(!val.startsWith('ghp_') && !val.startsWith('github_pat_')){
+      showPatError('⚠️ トークンの形式が正しくありません。<br>「ghp_」または「github_pat_」で始まる文字列を入力してください。');
+      return;
+    }
+    localStorage.setItem('gh_pat', val);
+    document.getElementById('patStatus').textContent = '✅ 設定済み';
+    showPatError('');
+    showToast('✅ トークンを保存しました。「接続テスト」で確認してください。');
+  };
+
+  window.testPat = async function(){
+    const pat = document.getElementById('githubPat').value.trim() || localStorage.getItem('gh_pat') || '';
+    if(!pat){ showPatError('⚠️ トークンを入力してから「接続テスト」を押してください。'); return; }
+    const st = document.getElementById('patStatus');
+    st.textContent = '🔄 確認中...';
+    showPatError('');
+    try{
+      const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`, {
+        headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if(res.ok){
+        st.textContent = '✅ 設定済み・接続OK';
+        localStorage.setItem('gh_pat', pat);
+        showPatError('');
+        showToast('✅ GitHubへの接続を確認しました');
+      } else {
+        const code = res.status;
+        st.textContent = '❌ 接続失敗';
+        if(code===401) showPatError('❌ <b>トークンが無効です（401）</b><br>トークンを再発行してください。<br><a href="https://github.com/settings/tokens/new?scopes=repo&description=sagami-aikido-gallery" target="_blank" style="color:#991b1b;">→ 新しいトークンを発行する</a>');
+        else if(code===403) showPatError('❌ <b>権限が不足しています（403）</b><br>「repo」スコープにチェックを入れてトークンを再発行してください。');
+        else if(code===404) showPatError(`❌ <b>リポジトリが見つかりません（404）</b><br>リポジトリ名を確認してください：${GH_OWNER}/${GH_REPO}`);
+        else showPatError(`❌ エラー（${code}）が発生しました。トークンを再発行してください。`);
+      }
+    }catch(e){
+      st.textContent = '❌ 接続失敗';
+      showPatError(`❌ ネットワークエラー：${e.message}`);
+    }
+  };
+
+  /* =============================================
+     画像圧縮（Canvas API）
+     ============================================= */
+  function compressImage(file, maxPx=1200, quality=0.82){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          let w=img.width, h=img.height;
+          if(w>maxPx||h>maxPx){
+            if(w>h){h=Math.round(h*maxPx/w);w=maxPx;}
+            else{w=Math.round(w*maxPx/h);h=maxPx;}
+          }
+          const canvas=document.createElement('canvas');
+          canvas.width=w; canvas.height=h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* =============================================
+     GitHub Contents API で画像をコミット
+     ============================================= */
+  async function uploadToGitHub(base64DataUrl, filePath, pat){
+    // "data:image/jpeg;base64," の prefix を除去
+    const content = base64DataUrl.split(',')[1];
+    const apiUrl  = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`;
+
+    const res = await fetch(apiUrl, {
+      method : 'PUT',
+      headers: {
+        'Authorization': `token ${pat}`,
+        'Content-Type' : 'application/json',
+      },
+      body: JSON.stringify({
+        message: `Add gallery photo: ${filePath}`,
+        content : content,
+        branch  : GH_BRANCH,
+      })
+    });
+
+    if(!res.ok){
+      const err = await res.json().catch(()=>({}));
+      const code = res.status;
+      if(code===401) throw new Error('トークンが無効です。再設定してください');
+      if(code===403) throw new Error('権限が不足しています。トークンに repo 権限があるか確認してください');
+      if(code===422) throw new Error('ファイルパスが不正です');
+      throw new Error(err.message || `GitHub APIエラー(${code})`);
+    }
+
+    // GitHub Pages の CDN URL を返す
+    return `https://${GH_OWNER}.github.io/${GH_REPO}/${filePath}`;
+  }
+
+  /* =============================================
+     写真保存（圧縮 → GitHub → Firestore URL記録）
+     ============================================= */
+  window.saveGalleryPhotos = async function(){
+    const evId = document.getElementById('photoTargetEvent').value;
+    if(!evId){ showToast('対象イベントを選択してください'); return; }
+    if(!pendingGalleryPhotos.length){ showToast('写真を選んでください'); return; }
+
+    const pat = loadPat();
+    if(!pat){
+      showToast('⚠️ GitHubトークンを設定してください');
+      document.getElementById('githubPat').focus();
+      return;
+    }
+
+    const btn = document.getElementById('btnPhotoSave');
+    btn.disabled = true;
+    let saved=0, failed=0;
+    const errors=[];
+    const baseOrder = allGalleryPhotos.filter(p=>p.event_id===evId).length;
+
+    try{
+      for(let i=0; i<pendingGalleryPhotos.length; i++){
+        const p = pendingGalleryPhotos[i];
+        btn.textContent = `保存中... (${i+1}/${pendingGalleryPhotos.length})`;
+        try{
+          // 1. Canvas で圧縮
+          const compressed = await compressImage(p.file);
+
+          // 2. GitHub にコミット
+          const ext      = 'jpg';
+          const safeName = `${Date.now()}_${Math.random().toString(36).slice(2,6)}.${ext}`;
+          const filePath = `images/gallery/${evId}/${safeName}`;
+          const imageUrl = await uploadToGitHub(compressed, filePath, pat);
+
+          // 3. Firestore に URL だけ保存
+          const data = {
+            event_id   : evId,
+            image_url  : imageUrl,
+            file_path  : filePath,
+            caption    : p.caption,
+            sort_order : baseOrder + i,
+            is_published: true,
+          };
+          const docRef = await addDoc(collection(db,'gallery_photos'), data);
+          allGalleryPhotos.push({id:docRef.id, ...data});
+          saved++;
+        }catch(e){
+          failed++;
+          errors.push(`${p.file.name}：${e.message||'不明なエラー'}`);
+          console.error('保存失敗', p.file.name, e);
+        }
+      }
+    }finally{
+      btn.disabled=false; btn.textContent='写真を保存';
+    }
+
+    pendingGalleryPhotos=[];
+    renderGalleryPreview();
+    renderGalleryEventList();
+
+    if(saved>0 && failed===0){
+      showToast(`✅ ${saved}枚を保存しました`);
+      showPatError('');
+    }else if(saved>0){
+      showToast(`⚠️ ${saved}枚保存・${failed}枚失敗`);
+      showPatError(`⚠️ ${failed}枚が失敗しました：<br>${errors.map(e=>`・${e}`).join('<br>')}`);
+    }else{
+      const errMsg = errors[0] || '不明なエラー';
+      showPatError(`❌ アップロード失敗：<br>${errors.map(e=>`・${e}`).join('<br>')}
+        ${errMsg.includes('無効')||errMsg.includes('401')?'<br><br><a href="https://github.com/settings/tokens/new?scopes=repo&description=sagami-aikido-gallery" target="_blank" style="color:#991b1b;">→ トークンを再発行する</a>':''}
+      `);
+      showToast(`❌ 失敗：${errMsg}`);
+    }
+  };
+
+  window.deleteGalleryPhoto=async function(id){
+    if(!confirm('この写真を削除しますか？'))return;
+    try{ await deleteDoc(doc(db,'gallery_photos',id)); }catch(e){}
+    allGalleryPhotos=allGalleryPhotos.filter(x=>x.id!==id);
+    renderGalleryEventList();
+    showToast('🗑 写真を削除しました');
+  };
+
+</script>
+</body>
+</html>

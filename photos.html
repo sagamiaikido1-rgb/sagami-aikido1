@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>写真ギャラリー｜相模合気道連盟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#1a2744;--gold:#9a7b0a;--gold-light:#c4960e;
+      --chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;
+      --white:#ffffff;--cream:#fafaf7;--surface:#f0ede6;--border:#e8e2d6;
+      --text:#1a2744;--text2:#6b7280;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);line-height:1.8;}
+
+    /* ヘッダー */
+    header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+    .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:2px;text-decoration:none;}
+    .logo span{font-size:10px;color:var(--gold-light);display:block;letter-spacing:2px;font-weight:400;}
+    nav{display:flex;}
+    nav a{color:var(--text2);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;}
+    nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
+    nav a:hover::after,nav a.active::after{left:8px;right:8px;}
+    nav a:hover,nav a.active{color:var(--navy);}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--navy);}
+    .mobile-nav{display:none;background:var(--white);border-top:1px solid var(--border);}
+    .mobile-nav a{display:block;padding:14px 24px;color:var(--navy);text-decoration:none;font-size:14px;border-bottom:1px solid var(--border);}
+    .mobile-nav.open{display:block;}
+
+    /* ヒーロー */
+    .page-hero{background:linear-gradient(160deg,#f8f6f0 0%,var(--white) 100%);padding:64px 24px 48px;text-align:center;border-bottom:1px solid var(--border);}
+    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);margin-bottom:10px;}
+    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:var(--navy);}
+    .page-line{width:40px;height:2px;background:var(--gold-light);margin:14px auto 0;}
+
+    /* カテゴリフィルター */
+    .filter-wrap{max-width:1100px;margin:32px auto 0;padding:0 24px;}
+    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;}
+    .filter-btn{padding:7px 18px;border-radius:999px;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:.2s;}
+    .filter-btn:hover{background:var(--surface);}
+    .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+    /* メインコンテンツ */
+    .gallery-main{max-width:1100px;margin:0 auto;padding:36px 24px 80px;}
+
+    /* イベントセクション */
+    .event-section{margin-bottom:52px;}
+    .event-section-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:14px;border-bottom:2px solid var(--surface);margin-bottom:18px;}
+    .event-title{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);font-weight:700;}
+    .event-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--text2);align-items:center;}
+    .cat-badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;}
+    .cat-演武大会{background:#fee2e2;color:#991b1b;}
+    .cat-昇段祝い{background:#fef3c7;color:#92400e;}
+    .cat-懇親会{background:#dbeafe;color:#1e40af;}
+    .cat-講習会{background:#ede9fe;color:#5b21b6;}
+    .cat-合宿{background:#d1fae5;color:#065f46;}
+    .cat-その他{background:#f1f5f9;color:#475569;}
+    .event-desc{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.7;}
+
+    /* フォトグリッド */
+    .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+    .photo-item{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.08);transition:.25s ease;}
+    .photo-item:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.15);}
+    .photo-item img{width:100%;height:100%;object-fit:cover;display:block;}
+    .photo-caption-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 100%);color:#fff;font-size:11px;padding:20px 8px 7px;opacity:0;transition:.2s;}
+    .photo-item:hover .photo-caption-overlay{opacity:1;}
+    .no-photo{color:var(--text2);font-size:13px;padding:8px 0;}
+
+    /* ライトボックス */
+    #lightbox{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.93);align-items:center;justify-content:center;}
+    #lightbox.open{display:flex;}
+    #lbImg{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:6px;display:block;}
+    #lbCaption{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.85);font-size:14px;text-align:center;max-width:80vw;white-space:pre-line;}
+    #lbCounter{position:absolute;top:18px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font-size:12px;}
+    #lbClose{position:absolute;top:16px;right:20px;color:#fff;font-size:28px;cursor:pointer;background:none;border:none;line-height:1;padding:4px 8px;}
+    #lbPrev,#lbNext{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.14);border:none;color:#fff;font-size:22px;cursor:pointer;padding:14px 18px;border-radius:6px;transition:.2s;}
+    #lbPrev{left:12px;}#lbNext{right:12px;}
+    #lbPrev:hover,#lbNext:hover{background:rgba(255,255,255,.28);}
+
+    /* ローディング・空 */
+    .gallery-loading,.gallery-empty{text-align:center;padding:80px 20px;color:var(--text2);}
+    .gallery-loading .spinner{display:inline-block;width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .gallery-empty-icon{font-size:40px;margin-bottom:12px;}
+
+    /* フッター */
+    footer{background:var(--navy);color:rgba(255,255,255,.55);text-align:center;padding:32px 24px;font-size:12px;line-height:2.2;}
+    footer strong{color:rgba(255,255,255,.9);}
+    footer a{color:rgba(255,255,255,.7);text-decoration:none;}
+
+    @media(max-width:768px){
+      nav{display:none;}.hamburger{display:flex;}
+      .photo-grid{grid-template-columns:repeat(2,1fr);}
+    }
+    @media(max-width:480px){
+      .photo-grid{grid-template-columns:repeat(2,1fr);gap:6px;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">相模合気道連盟<span>SAGAMI AIKIDO FEDERATION</span></a>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="news.html">お知らせ</a>
+      <a href="instructors.html">指導者</a>
+      <a href="schedule.html">スケジュール</a>
+      <a href="contact.html">ご連絡先</a>
+      <a href="access.html">アクセス</a>
+      <a href="photos.html" class="active">写真</a>
+      <a href="links.html">リンク</a>
+    </nav>
+    <div class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">ホーム</a>
+    <a href="news.html">お知らせ</a>
+    <a href="instructors.html">指導者</a>
+    <a href="schedule.html">スケジュール</a>
+    <a href="contact.html">ご連絡先</a>
+    <a href="access.html">アクセス</a>
+    <a href="photos.html">写真</a>
+    <a href="links.html">リンク</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-label">GALLERY</div>
+  <h1 class="page-title">写真ギャラリー</h1>
+  <div class="page-line"></div>
+</div>
+
+<!-- カテゴリフィルター -->
+<div class="filter-wrap">
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-cat="all">すべて</button>
+    <button class="filter-btn" data-cat="演武大会">演武大会</button>
+    <button class="filter-btn" data-cat="昇段祝い">昇段祝い</button>
+    <button class="filter-btn" data-cat="懇親会">懇親会</button>
+    <button class="filter-btn" data-cat="講習会">講習会</button>
+    <button class="filter-btn" data-cat="合宿">合宿</button>
+    <button class="filter-btn" data-cat="その他">その他</button>
+  </div>
+</div>
+
+<!-- ギャラリー本体 -->
+<div class="gallery-main">
+  <div id="galleryContainer">
+    <div class="gallery-loading">
+      <div class="spinner"></div>
+      <p>写真を読み込んでいます...</p>
+    </div>
+  </div>
+</div>
+
+<!-- ライトボックス -->
+<div id="lightbox">
+  <div id="lbCounter"></div>
+  <button id="lbClose" onclick="closeLb()">✕</button>
+  <button id="lbPrev" onclick="moveLb(-1)">&#8249;</button>
+  <img id="lbImg" src="" alt="">
+  <button id="lbNext" onclick="moveLb(1)">&#8250;</button>
+  <div id="lbCaption"></div>
+</div>
+
+<footer>
+  <strong>相模合気道連盟</strong><br>
+  神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市<br>
+  <div style="margin-top:8px;">
+    <a href="index.html">ホーム</a> ／ <a href="schedule.html">スケジュール</a> ／ <a href="contact.html">ご連絡先</a>
+  </div>
+  <div style="margin-top:12px;">© 2026 相模合気道連盟</div>
+</footer>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, query, where, orderBy }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfhzD-KOcyAneUEHDeAYx1WB7Tcefc1So",
+    authDomain: "sagami-aikido-b5961.firebaseapp.com",
+    projectId: "sagami-aikido-b5961",
+    storageBucket: "sagami-aikido-b5961.firebasestorage.app",
+    messagingSenderId: "770248355445",
+    appId: "1:770248355445:web:3104563942dfed363d923c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  const escH = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  let allEvents = [];   // gallery_events
+  let allPhotos = {};   // {event_id: [photo,...]}
+  let lbPhotos  = [];   // ライトボックス用フラット配列
+  let lbIdx     = 0;
+  let currentCat = 'all';
+
+  /* ─── データ読み込み ─── */
+  async function loadGallery(){
+    try{
+      // 撮影日降順で取得し、公開フラグはJS側でフィルタ（複合インデックス不要）
+      const evSnap = await getDocs(
+        query(collection(db,'gallery_events'), orderBy('shoot_date','desc'))
+      );
+      allEvents = evSnap.docs.map(d=>({id:d.id,...d.data()})).filter(ev=>ev.is_published!==false);
+
+      // 全写真を取得し、表示順でソート・公開フラグでフィルタ
+      const phSnap = await getDocs(collection(db,'gallery_photos'));
+      const allPhotosList = phSnap.docs.map(d=>({id:d.id,...d.data()}))
+        .filter(p=>p.is_published!==false)
+        .sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+      allEvents.forEach(ev=>{
+        allPhotos[ev.id] = allPhotosList.filter(p=>p.event_id===ev.id);
+      });
+
+      renderGallery();
+    }catch(e){
+      console.error('ギャラリー読み込みエラー:', e);
+      document.getElementById('galleryContainer').innerHTML=
+        '<div class="gallery-empty"><div class="gallery-empty-icon">📷</div><p>写真の読み込みに失敗しました。<br>時間をおいて再度お試しください。</p></div>';
+    }
+  }
+
+  /* ─── 描画 ─── */
+  function renderGallery(){
+    const container = document.getElementById('galleryContainer');
+    const events = allEvents.filter(ev=>
+      currentCat === 'all' || ev.category === currentCat
+    );
+
+    if(!events.length){
+      container.innerHTML =
+        '<div class="gallery-empty"><div class="gallery-empty-icon">📷</div><p>このカテゴリの写真はまだありません。</p></div>';
+      return;
+    }
+
+    // ライトボックス用フラット配列をリセット
+    lbPhotos = [];
+    let html = '';
+
+    events.forEach(ev => {
+      const photos = allPhotos[ev.id] || [];
+      const startIdx = lbPhotos.length;
+      lbPhotos.push(...photos);
+
+      html += `
+        <section class="event-section">
+          <div class="event-section-header">
+            <div>
+              <div class="event-title">${escH(ev.event_name)}</div>
+              <div class="event-meta">
+                <span>${escH(ev.shoot_date)}</span>
+                <span class="cat-badge cat-${escH(ev.category)}">${escH(ev.category)}</span>
+                <span>${photos.length}枚</span>
+              </div>
+              ${ev.description ? `<div class="event-desc">${escH(ev.description)}</div>` : ''}
+            </div>
+          </div>
+          ${photos.length
+            ? `<div class="photo-grid">
+                ${photos.map((p,i) => `
+                  <div class="photo-item" onclick="openLb(${startIdx + i})">
+                    <img src="${escH(p.image_url)}" alt="${escH(p.caption)}" loading="lazy">
+                    ${p.caption ? `<div class="photo-caption-overlay">${escH(p.caption)}</div>` : ''}
+                  </div>
+                `).join('')}
+              </div>`
+            : '<p class="no-photo">写真が登録されていません。</p>'
+          }
+        </section>`;
+    });
+
+    container.innerHTML = html;
+  }
+
+  /* ─── カテゴリフィルター ─── */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCat = btn.dataset.cat;
+      renderGallery();
+    });
+  });
+
+  /* ─── ライトボックス ─── */
+  window.openLb = idx => {
+    lbIdx = idx;
+    updateLb();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeLb = () => {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  window.moveLb = delta => {
+    lbIdx = (lbIdx + delta + lbPhotos.length) % lbPhotos.length;
+    updateLb();
+  };
+
+  function updateLb(){
+    const p = lbPhotos[lbIdx];
+    document.getElementById('lbImg').src = p.image_url;
+    document.getElementById('lbCaption').textContent = p.caption || '';
+    document.getElementById('lbCounter').textContent = `${lbIdx + 1} / ${lbPhotos.length}`;
+  }
+
+  // 背景クリックで閉じる
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if(e.target === document.getElementById('lightbox')) closeLb();
+  });
+
+  // キーボード操作
+  document.addEventListener('keydown', e => {
+    if(!document.getElementById('lightbox').classList.contains('open')) return;
+    if(e.key === 'ArrowLeft')  moveLb(-1);
+    if(e.key === 'ArrowRight') moveLb(1);
+    if(e.key === 'Escape')     closeLb();
+  });
+
+  /* ─── 起動 ─── */
+  loadGallery();
+</script>
+</body>
+</html>

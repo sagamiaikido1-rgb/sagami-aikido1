@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>相模合気道連盟</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1a2744;
+      --navy-light: #243258;
+      --gold: #9a7b0a;
+      --gold-light: #c4960e;
+      --gold-pale: #fdf6e3;
+      --white: #ffffff;
+      --cream: #fafaf7;
+      --gray: #6b7280;
+      --light: #f2efe8;
+      --border: #e8e2d6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP', sans-serif; background: var(--white); color: var(--navy); line-height: 1.8; }
+
+    /* ── ヘッダー（白） ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    .logo { font-family: 'Noto Serif JP', serif; font-size: 19px; font-weight: 700; color: var(--navy); letter-spacing: 2px; text-decoration: none; }
+    .logo span { font-size: 10px; color: var(--gold-light); display: block; letter-spacing: 2px; font-weight: 400; margin-top: 1px; }
+    nav { display: flex; gap: 0; }
+    nav a { color: var(--gray); text-decoration: none; font-size: 13px; padding: 8px 11px; transition: all .2s; letter-spacing: 0.3px; position: relative; }
+    nav a::after { content:''; position:absolute; bottom:0; left:50%; right:50%; height:2px; background:var(--gold-light); transition: all .2s; }
+    nav a:hover::after, nav a.active::after { left:8px; right:8px; }
+    nav a:hover, nav a.active { color: var(--navy); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--navy); transition: .3s; }
+    .mobile-nav { display: none; background: var(--white); border-top: 1px solid var(--border); }
+    .mobile-nav a { display: block; padding: 14px 24px; color: var(--navy); text-decoration: none; font-size: 14px; border-bottom: 1px solid var(--border); }
+    .mobile-nav a:hover { background: var(--cream); color: var(--gold-light); }
+    .mobile-nav.open { display: block; }
+
+    /* ── ヒーロー（白基調） ── */
+    .hero {
+      background: linear-gradient(160deg, #f8f6f0 0%, var(--white) 60%, #f5f2ea 100%);
+      padding: 100px 24px 90px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::before {
+      content: '合';
+      position: absolute;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 420px;
+      color: rgba(26,39,68,0.04);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .hero-badge {
+      display: inline-block;
+      border: 1px solid var(--gold-light);
+      color: var(--gold);
+      font-size: 11px;
+      padding: 5px 18px;
+      letter-spacing: 2px;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(38px, 6vw, 66px);
+      font-weight: 700;
+      letter-spacing: 10px;
+      color: var(--navy);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .hero-sub {
+      font-size: 12px;
+      color: var(--gold-light);
+      letter-spacing: 5px;
+      margin-bottom: 36px;
+    }
+    .hero-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+      margin: 0 auto 32px;
+    }
+    .hero p {
+      max-width: 580px; margin: 0 auto 44px;
+      color: var(--gray); font-size: 15px; line-height: 2.1;
+    }
+    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--navy); color: var(--white);
+      padding: 14px 36px; font-size: 14px; font-weight: 700;
+      letter-spacing: 1px; border: none; cursor: pointer;
+      text-decoration: none; display: inline-block; transition: all .2s;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .btn-primary:hover { background: var(--navy-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,39,68,0.2); }
+    .btn-outline {
+      border: 2px solid var(--navy); color: var(--navy);
+      padding: 13px 36px; font-size: 14px; letter-spacing: 1px;
+      text-decoration: none; display: inline-block; transition: all .2s;
+    }
+    .btn-outline:hover { background: var(--navy); color: var(--white); }
+
+    /* ── セクション共通 ── */
+    section { padding: 88px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 11px; letter-spacing: 4px; color: var(--gold-light); text-align: center; margin-bottom: 10px; }
+    .section-title { font-family: 'Noto Serif JP', serif; font-size: clamp(22px,4vw,34px); text-align: center; color: var(--navy); margin-bottom: 14px; letter-spacing: 3px; }
+    .section-line { width: 40px; height: 2px; background: var(--gold-light); margin: 0 auto 52px; }
+
+    /* ── 特徴カード ── */
+    .features { background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 24px; }
+    .feature-card {
+      background: var(--white); padding: 40px 32px; text-align: center;
+      border: 1px solid var(--border);
+      transition: box-shadow .2s, transform .2s;
+    }
+    .feature-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-3px); }
+    .feature-icon { font-size: 44px; margin-bottom: 20px; }
+    .feature-card h3 { font-family: 'Noto Serif JP', serif; font-size: 18px; color: var(--navy); margin-bottom: 14px; letter-spacing: 1px; }
+    .feature-card p { font-size: 14px; color: var(--gray); line-height: 1.9; }
+
+    /* ── 道場紹介 ── */
+    .dojos { background: var(--white); }
+    .dojo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px; }
+    .dojo-card {
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--gold-light);
+      padding: 28px 24px;
+      transition: box-shadow .2s;
+    }
+    .dojo-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .dojo-name { font-family: 'Noto Serif JP', serif; font-size: 20px; color: var(--navy); margin-bottom: 4px; letter-spacing: 2px; }
+    .dojo-en { font-size: 10px; color: var(--gold-light); letter-spacing: 3px; margin-bottom: 18px; }
+    .dojo-info { font-size: 13px; color: var(--gray); line-height: 2.1; }
+
+    /* ── お知らせ ── */
+    .news-section { background: var(--cream); border-top: 1px solid var(--border); }
+    .news-list { max-width: 720px; margin: 0 auto; }
+    .news-item {
+      display: flex; gap: 16px; padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start; flex-wrap: wrap;
+    }
+    .news-date { font-size: 12px; color: var(--gold); white-space: nowrap; margin-top: 3px; min-width: 60px; }
+    .news-badge {
+      font-size: 10px; background: var(--navy); color: var(--white);
+      padding: 2px 10px; font-weight: 700; white-space: nowrap; margin-top: 2px;
+    }
+    .news-text { font-size: 14px; color: var(--navy); line-height: 1.8; flex: 1; min-width: 200px; }
+
+    /* ── Instagram ── */
+    .insta-section { background: var(--white); text-align: center; border-top: 1px solid var(--border); }
+    .insta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      color: white; padding: 16px 40px; font-size: 15px; font-weight: 700;
+      text-decoration: none; margin-top: 24px; transition: opacity .2s;
+      letter-spacing: 1px;
+    }
+    .insta-btn:hover { opacity: .88; }
+
+    /* ── フッター ── */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,0.55);
+      text-align: center; padding: 48px 20px;
+      font-size: 12px; line-height: 2.4;
+    }
+    .footer-logo { font-family: 'Noto Serif JP', serif; font-size: 18px; color: var(--white); letter-spacing: 3px; margin-bottom: 10px; }
+    footer a { color: rgba(255,255,255,0.7); text-decoration: none; transition: color .2s; }
+    footer a:hover { color: var(--white); }
+    .footer-divider { width: 40px; height: 1px; background: rgba(255,255,255,0.2); margin: 16px auto; }
+
+    /* ── レスポンシブ ── */
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding: 72px 20px 64px; }
+      .hero::before { font-size: 200px; }
+      section { padding: 64px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      相模合気道連盟
+      <span>SAGAMI AIKIDO FEDERATION</span>
+    </a>
+    <nav>
+      <a href="index.html" class="active">ホーム</a>
+      <a href="news.html">お知らせ</a>
+      <a href="instructors.html">指導者</a>
+      <a href="schedule.html">スケジュール</a>
+      <a href="contact.html">ご連絡先</a>
+      <a href="access.html">アクセス</a>
+      <a href="photos.html">写真</a>
+      <a href="links.html">リンク</a>
+    </nav>
+    <div class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">ホーム</a>
+    <a href="news.html">お知らせ</a>
+    <a href="instructors.html">指導者</a>
+    <a href="schedule.html">スケジュール</a>
+    <a href="contact.html">ご連絡先</a>
+    <a href="access.html">アクセス</a>
+    <a href="photos.html">写真</a>
+    <a href="links.html">リンク</a>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="hero-badge">公益財団法人合気会公認　／　神奈川県合気道連盟加盟</div>
+  <h1>相模合気道連盟</h1>
+  <div class="hero-sub">SAGAMI AIKIDO FEDERATION</div>
+  <div class="hero-divider"></div>
+  <p>神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市で活動する合気道道場です。<br>安野正敏八段 合気会本部道場師範を顧問とし、<br>合気道の普及発展に努めています。</p>
+  <div class="hero-btns">
+    <a href="schedule.html" class="btn-primary">稽古スケジュール</a>
+    <a href="contact.html" class="btn-outline">見学・入会のご相談</a>
+  </div>
+</section>
+
+<!-- 特徴 -->
+<section class="features">
+  <div class="section-inner">
+    <div class="section-label">ABOUT AIKIDO</div>
+    <h2 class="section-title">合気道について</h2>
+    <div class="section-line"></div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🥋</div>
+        <h3>年齢を問わない武道</h3>
+        <p>合気道は体力や年齢に関係なく始められる武道です。子どもから高齢者まで、どなたでも無理なく稽古できます。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <h3>和気藹々とした稽古</h3>
+        <p>楽しく和やかな雰囲気の中で、心身ともに充実した稽古を行っています。見学・体験は随時歓迎いたします。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏯</div>
+        <h3>4道場ネットワーク</h3>
+        <p>茅ヶ崎・平塚・寒川・藤沢の4道場でお互いに連携し交流しながら稽古しています。お近くの道場へどうぞ。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 道場案内 -->
+<section class="dojos">
+  <div class="section-inner">
+    <div class="section-label">OUR DOJOS</div>
+    <h2 class="section-title">道場案内</h2>
+    <div class="section-line"></div>
+    <div class="dojo-grid">
+      <div class="dojo-card">
+        <div class="dojo-name">茅ヶ崎道場</div>
+        <div class="dojo-en">CHIGASAKI DOJO</div>
+        <div class="dojo-info">🗓 日曜日　09:30〜11:30<br>🗓 水曜日　18:30〜20:30</div>
+      </div>
+      <div class="dojo-card">
+        <div class="dojo-name">平塚道場</div>
+        <div class="dojo-en">HIRATSUKA DOJO</div>
+        <div class="dojo-info">🗓 日曜日　15:30〜17:30</div>
+      </div>
+      <div class="dojo-card">
+        <div class="dojo-name">寒川道場</div>
+        <div class="dojo-en">SAMUKAWA DOJO</div>
+        <div class="dojo-info">🗓 土曜日　12:30〜14:30</div>
+      </div>
+      <div class="dojo-card">
+        <div class="dojo-name">藤沢道場</div>
+        <div class="dojo-en">FUJISAWA DOJO</div>
+        <div class="dojo-info">現在休止中</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- お知らせ -->
+<section class="news-section">
+  <div class="section-inner">
+    <div class="section-label">INFORMATION</div>
+    <h2 class="section-title">お知らせ</h2>
+    <div class="section-line"></div>
+    <div class="news-list">
+      <div class="news-item">
+        <span class="news-date">2026.04</span>
+        <span class="news-badge">新着</span>
+        <span class="news-text">公式Instagramアカウント（@sagami.aikido）を開設しました。稽古や行事の写真を発信しています。</span>
+      </div>
+      <div class="news-item">
+        <span class="news-date">2026.01</span>
+        <span class="news-badge">行事</span>
+        <span class="news-text">令和8年 鏡開き式・昇段審査会を執り行いました。</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Instagram -->
+<section class="insta-section">
+  <div class="section-inner">
+    <div class="section-label">SNS</div>
+    <h2 class="section-title">Instagram</h2>
+    <div class="section-line"></div>
+    <p style="color:var(--gray);font-size:14px">最新の活動写真はInstagramで公開しています。ぜひフォローしてください。</p>
+    <a href="https://www.instagram.com/sagami.aikido/" target="_blank" class="insta-btn">
+      📸 @sagami.aikido をフォローする
+    </a>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer>
+  <div class="footer-logo">相模合気道連盟</div>
+  <div>神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市</div>
+  <div>公益財団法人合気会公認　／　神奈川県合気道連盟加盟</div>
+  <div class="footer-divider"></div>
+  <div>
+    <a href="index.html">ホーム</a> &nbsp;／&nbsp;
+    <a href="schedule.html">スケジュール</a> &nbsp;／&nbsp;
+    <a href="contact.html">ご連絡先</a> &nbsp;／&nbsp;
+    <a href="https://www.instagram.com/sagami.aikido/" target="_blank">Instagram</a>
+  </div>
+  <div style="margin-top:16px">© 2026 相模合気道連盟</div>
+</footer>
+
+</body>
+</html>
