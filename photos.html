@@ -7,35 +7,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --navy:#1a2744;--gold:#9a7b0a;--gold-light:#c4960e;
+      --navy:#1a1a2e;--navy-light:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;
       --chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;
-      --white:#ffffff;--cream:#fafaf7;--surface:#f0ede6;--border:#e8e2d6;
-      --text:#1a2744;--text2:#6b7280;
+      --white:#ffffff;--cream:#faf8f5;--surface:#f0ebe3;--border:#ddd5c8;
+      --text:#2c2c2c;--text2:#666666;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);line-height:1.8;}
 
     /* ヘッダー */
-    header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+    header{background:rgba(26,26,46,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,.08);}
     .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
-    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:2px;text-decoration:none;}
+    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--white);letter-spacing:2px;text-decoration:none;}
     .logo span{font-size:10px;color:var(--gold-light);display:block;letter-spacing:2px;font-weight:400;}
     nav{display:flex;}
-    nav a{color:var(--text2);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;}
+    nav a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;border-radius:8px;}
     nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
     nav a:hover::after,nav a.active::after{left:8px;right:8px;}
-    nav a:hover,nav a.active{color:var(--navy);}
+    nav a:hover,nav a.active{color:var(--white);background:rgba(255,255,255,0.12);}
     .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
-    .hamburger span{display:block;width:24px;height:2px;background:var(--navy);}
-    .mobile-nav{display:none;background:var(--white);border-top:1px solid var(--border);}
-    .mobile-nav a{display:block;padding:14px 24px;color:var(--navy);text-decoration:none;font-size:14px;border-bottom:1px solid var(--border);}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--white);}
+    .mobile-nav{display:none;background:var(--navy);border-top:1px solid rgba(255,255,255,0.1);}
+    .mobile-nav a{display:block;padding:14px 24px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.08);}
     .mobile-nav.open{display:block;}
 
     /* ヒーロー */
-    .page-hero{background:linear-gradient(160deg,#f8f6f0 0%,var(--white) 100%);padding:64px 24px 48px;text-align:center;border-bottom:1px solid var(--border);}
-    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);margin-bottom:10px;}
-    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:var(--navy);}
-    .page-line{width:40px;height:2px;background:var(--gold-light);margin:14px auto 0;}
+    .page-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 60%,#1a3a5c 100%);padding:64px 24px 48px;text-align:center;border-bottom:none;}
+    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);text-transform:uppercase;margin-bottom:10px;}
+    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:#fff;}
+    .page-line{width:60px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--gold));margin:14px auto 0;}
 
     /* カテゴリフィルター */
     .filter-wrap{max-width:1100px;margin:32px auto 0;padding:0 24px;}
@@ -52,7 +52,7 @@
     .event-section-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:14px;border-bottom:2px solid var(--surface);margin-bottom:18px;}
     .event-title{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);font-weight:700;}
     .event-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--text2);align-items:center;}
-    .cat-badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;}
+    .cat-badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;}
     .cat-演武大会{background:#fee2e2;color:#991b1b;}
     .cat-昇段祝い{background:#fef3c7;color:#92400e;}
     .cat-懇親会{background:#dbeafe;color:#1e40af;}
@@ -63,27 +63,27 @@
 
     /* フォトグリッド */
     .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
-    .photo-item{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.08);transition:.25s ease;}
-    .photo-item:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.15);}
+    .photo-item{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.08);transition:box-shadow .3s ease,transform .3s ease;}
+    .photo-item:hover{transform:translateY(-4px);box-shadow:0 4px 16px rgba(0,0,0,.15);}
     .photo-item img{width:100%;height:100%;object-fit:cover;display:block;}
-    .photo-caption-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 100%);color:#fff;font-size:11px;padding:20px 8px 7px;opacity:0;transition:.2s;}
+    .photo-caption-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(26,26,46,.8) 0%,transparent 100%);color:#fff;font-size:11px;padding:20px 8px 7px;opacity:0;transition:.2s;}
     .photo-item:hover .photo-caption-overlay{opacity:1;}
     .no-photo{color:var(--text2);font-size:13px;padding:8px 0;}
 
     /* ライトボックス */
-    #lightbox{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.93);align-items:center;justify-content:center;}
+    #lightbox{display:none;position:fixed;inset:0;z-index:9000;background:rgba(26,26,46,.95);align-items:center;justify-content:center;}
     #lightbox.open{display:flex;}
-    #lbImg{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:6px;display:block;}
+    #lbImg{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;display:block;}
     #lbCaption{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.85);font-size:14px;text-align:center;max-width:80vw;white-space:pre-line;}
-    #lbCounter{position:absolute;top:18px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font-size:12px;}
+    #lbCounter{position:absolute;top:18px;left:50%;transform:translateX(-50%);color:var(--gold-light);font-size:12px;}
     #lbClose{position:absolute;top:16px;right:20px;color:#fff;font-size:28px;cursor:pointer;background:none;border:none;line-height:1;padding:4px 8px;}
-    #lbPrev,#lbNext{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.14);border:none;color:#fff;font-size:22px;cursor:pointer;padding:14px 18px;border-radius:6px;transition:.2s;}
+    #lbPrev,#lbNext{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.14);border:none;color:#fff;font-size:22px;cursor:pointer;padding:14px 18px;border-radius:8px;transition:.2s;}
     #lbPrev{left:12px;}#lbNext{right:12px;}
     #lbPrev:hover,#lbNext:hover{background:rgba(255,255,255,.28);}
 
     /* ローディング・空 */
     .gallery-loading,.gallery-empty{text-align:center;padding:80px 20px;color:var(--text2);}
-    .gallery-loading .spinner{display:inline-block;width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px;}
+    .gallery-loading .spinner{display:inline-block;width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px;}
     @keyframes spin{to{transform:rotate(360deg);}}
     .gallery-empty-icon{font-size:40px;margin-bottom:12px;}
 

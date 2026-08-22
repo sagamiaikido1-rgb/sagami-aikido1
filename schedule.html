@@ -5,28 +5,29 @@
   <title>スケジュール｜相模合気道連盟</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root{--navy:#1a2744;--gold:#9a7b0a;--gold-light:#c4960e;--white:#ffffff;--cream:#fafaf7;--gray:#6b7280;--light:#f2efe8;--border:#e8e2d6;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;}
-    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--white);color:var(--navy);line-height:1.8;}
-    header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+    :root{--navy:#1a1a2e;--navy-light:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;--white:#ffffff;--cream:#faf8f5;--gray:#666666;--light:#f0ebe3;--border:#ddd5c8;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;}
+    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:#2c2c2c;line-height:1.8;}
+    header{background:rgba(26,26,46,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
     .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
-    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:2px;text-decoration:none;}
+    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--white);letter-spacing:2px;text-decoration:none;}
     .logo span{font-size:10px;color:var(--gold-light);display:block;letter-spacing:2px;font-weight:400;}
-    nav{display:flex;}nav a{color:var(--gray);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;}
+    nav{display:flex;}nav a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;border-radius:8px;}
     nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
-    nav a:hover::after,nav a.active::after{left:8px;right:8px;}nav a:hover,nav a.active{color:var(--navy);}
+    nav a:hover::after,nav a.active::after{left:8px;right:8px;}nav a:hover,nav a.active{color:var(--white);background:rgba(255,255,255,0.12);}
     .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
-    .hamburger span{display:block;width:24px;height:2px;background:var(--navy);}
-    .mobile-nav{display:none;background:var(--white);border-top:1px solid var(--border);}
-    .mobile-nav a{display:block;padding:14px 24px;color:var(--navy);text-decoration:none;font-size:14px;border-bottom:1px solid var(--border);}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--white);}
+    .mobile-nav{display:none;background:var(--navy);border-top:1px solid rgba(255,255,255,0.1);}
+    .mobile-nav a{display:block;padding:14px 24px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.08);}
     .mobile-nav.open{display:block;}
-    .page-hero{background:linear-gradient(160deg,#f8f6f0 0%,var(--white) 100%);padding:64px 24px 48px;text-align:center;border-bottom:1px solid var(--border);}
-    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);margin-bottom:10px;}
-    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:var(--navy);}
-    .page-line{width:40px;height:2px;background:var(--gold-light);margin:14px auto 0;}
+    .page-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 60%,#1a3a5c 100%);padding:64px 24px 48px;text-align:center;border-bottom:none;}
+    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);text-transform:uppercase;margin-bottom:10px;}
+    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:#fff;}
+    .page-line{width:60px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--gold));margin:14px auto 0;}
     main{max-width:1000px;margin:0 auto;padding:64px 24px;}
-    .section-title{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid var(--light);}
+    .section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid var(--light);}
     .regular-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:56px;}
-    .regular-card{border-top:4px solid;padding:24px 20px;}
+    .regular-card{border-top:4px solid;border-radius:16px;padding:24px 20px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:box-shadow .3s ease,transform .3s ease;}
+    .regular-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-4px);}
     .regular-card.chigasaki{border-color:var(--chigasaki);background:#f0fdf7;}
     .regular-card.hiratsuka{border-color:var(--hiratsuka);background:#eff6ff;}
     .regular-card.samukawa{border-color:var(--samukawa);background:#fff7f3;}
@@ -41,25 +42,26 @@
     .cal-wrap{position:relative;}
     .cal-loading{text-align:center;padding:48px;color:var(--gray);}
     .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-    .cal-header h2{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);}
-    .cal-nav button{background:var(--white);border:1px solid var(--border);color:var(--navy);border-radius:4px;padding:6px 14px;cursor:pointer;font-size:15px;margin-left:4px;}
+    .cal-header h2{font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;color:var(--navy);}
+    .cal-nav button{background:var(--white);border:1px solid var(--border);color:var(--navy);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:15px;margin-left:4px;transition:all .2s;}
+    .cal-nav button:hover{border-color:var(--navy);background:var(--light);}
     .dojo-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-    .dojo-chip{border:2px solid transparent;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:.35;transition:opacity .2s;font-family:inherit;}
+    .dojo-chip{border:2px solid transparent;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:.35;transition:opacity .2s;font-family:inherit;}
     .dojo-chip.active{opacity:1;}
     .dojo-chip.all{background:#e0e4ec;color:#333;border-color:#ccc;}
     .dojo-chip.chigasaki{background:var(--chigasaki);color:#fff;}
     .dojo-chip.hiratsuka{background:var(--hiratsuka);color:#fff;}
     .dojo-chip.samukawa{background:var(--samukawa);color:#fff;}
     .dojo-chip.fujisawa{background:var(--fujisawa);color:#fff;}
-    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);}
     .cal-day-header{background:var(--light);text-align:center;padding:8px 4px;font-size:11px;color:var(--gray);font-weight:700;}
-    .cal-day-header:first-child{color:#e53e3e;}.cal-day-header:last-child{color:#3182ce;}
+    .cal-day-header:first-child{color:var(--accent);}.cal-day-header:last-child{color:#1565c0;}
     .cal-cell{background:var(--white);min-height:80px;padding:4px;}
-    .cal-cell.other-month{background:#fafaf7;}.cal-cell.other-month .cal-date{color:#ccc;}
-    .cal-cell.today{background:#f0f7f4;}
+    .cal-cell.other-month{background:var(--cream);}.cal-cell.other-month .cal-date{color:#ccc;}
+    .cal-cell.today{background:#fffbea;}
     .cal-date{font-size:12px;font-weight:700;color:var(--gray);text-align:right;margin-bottom:3px;}
-    .cal-cell.today .cal-date{background:var(--navy);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;}
-    .cal-event{border-radius:3px;padding:2px 5px;font-size:10px;margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600;}
+    .cal-cell.today .cal-date{background:var(--gold);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+    .cal-event{border-radius:8px;padding:2px 5px;font-size:10px;margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600;}
     .cal-event.chigasaki{background:#d4f0e5;color:#0d6e4e;}
     .cal-event.hiratsuka{background:#dbeafe;color:#1e40af;}
     .cal-event.samukawa{background:#fde8df;color:#9a3412;}
@@ -67,7 +69,7 @@
     .cal-event.special{background:#fef9c3;color:#713f12;}
 
     footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:48px 20px;font-size:12px;line-height:2.4;}
-    .footer-logo{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
+    .footer-logo{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
     footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
     .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
     @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}}

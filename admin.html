@@ -7,38 +7,38 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --navy:#1a2744;--navy2:#243258;--gold:#9a7b0a;--gold-light:#c4960e;
+      --navy:#1a1a2e;--navy2:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;
       --chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;
-      --white:#ffffff;--cream:#fafaf7;--surface2:#f0ede6;--border:#e8e2d6;
-      --text:#1a2744;--text2:#6b7280;
+      --white:#ffffff;--cream:#faf8f5;--surface2:#f0ebe3;--border:#ddd5c8;
+      --text:#2c2c2c;--text2:#666666;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 
     /* ログイン画面 */
     #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--navy);}
-    .login-box{background:var(--white);padding:48px 40px;width:360px;border-top:4px solid var(--gold-light);}
+    .login-box{background:var(--white);padding:48px 40px;width:360px;border-radius:16px;border-top:4px solid var(--gold);box-shadow:0 4px 16px rgba(0,0,0,0.12);}
     .login-box h1{font-family:'Noto Serif JP',serif;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:6px;}
     .login-box p{font-size:12px;color:var(--text2);margin-bottom:28px;}
     .login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
     .login-field label{font-size:12px;color:var(--text2);font-weight:700;}
-    .login-field input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:10px 12px;font-size:14px;font-family:inherit;}
-    .login-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:4px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;transition:background .2s;}
-    .login-btn:hover{background:var(--navy2);}
-    .login-error{font-size:13px;color:#e53e3e;margin-top:10px;text-align:center;display:none;}
+    .login-field input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;font-size:14px;font-family:inherit;}
+    .login-btn{width:100%;background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;transition:all .3s ease;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
+    .login-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
+    .login-error{font-size:13px;color:var(--accent);margin-top:10px;text-align:center;display:none;}
 
     /* メイン画面 */
     #mainScreen{display:none;}
-    header{background:var(--navy);border-bottom:2px solid var(--gold-light);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    header{background:rgba(26,26,46,0.97);backdrop-filter:blur(10px);border-bottom:none;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);}
     .header-left{display:flex;align-items:center;gap:16px;}
     .header-logo{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:var(--gold-light);letter-spacing:2px;text-decoration:none;}
     .header-logo span{font-size:11px;color:rgba(255,255,255,0.5);font-weight:400;margin-left:6px;}
     .back-link{font-size:12px;color:rgba(255,255,255,0.6);text-decoration:none;border:1px solid rgba(255,255,255,0.2);padding:4px 10px;border-radius:4px;transition:all .2s;}
-    .back-link:hover{color:var(--gold-light);border-color:var(--gold);}
+    .back-link:hover{color:var(--gold-light);border-color:var(--gold-light);}
     #logoutBtn{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;}
 
     nav{display:flex;gap:4px;padding:10px 16px;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto;}
-    nav button{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s;}
+    nav button{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .2s;}
     nav button.active,nav button:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
 
     main{padding:20px;max-width:960px;margin:0 auto;}
@@ -47,9 +47,9 @@
     /* カレンダー */
     .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
     .cal-header h2{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--navy);}
-    .cal-nav button{background:var(--white);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:6px 14px;cursor:pointer;font-size:15px;margin-left:4px;}
+    .cal-nav button{background:var(--white);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:15px;margin-left:4px;transition:all .2s;}
     .dojo-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
-    .dojo-chip{border:2px solid transparent;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:.35;transition:opacity .2s;font-family:inherit;}
+    .dojo-chip{border:2px solid transparent;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:.35;transition:opacity .2s;font-family:inherit;}
     .dojo-chip.active{opacity:1;}
     .dojo-chip.all{background:#e0e4ec;color:#333;border-color:#ccc;}
     .dojo-chip.chigasaki{background:var(--chigasaki);color:#fff;}
@@ -57,19 +57,19 @@
     .dojo-chip.samukawa{background:var(--samukawa);color:#fff;}
     .dojo-chip.fujisawa{background:var(--fujisawa);color:#fff;}
     .cal-wrap{position:relative;}
-    .loading-overlay{display:none;position:absolute;inset:0;background:rgba(255,255,255,.75);border-radius:8px;align-items:center;justify-content:center;z-index:10;}
+    .loading-overlay{display:none;position:absolute;inset:0;background:rgba(255,255,255,.8);border-radius:16px;align-items:center;justify-content:center;z-index:10;}
     .loading-overlay.show{display:flex;}
-    .spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;}
+    .spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
-    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);}
     .cal-day-header{background:var(--surface2);text-align:center;padding:8px 4px;font-size:11px;color:var(--text2);font-weight:700;}
-    .cal-day-header:first-child{color:#e53e3e;}.cal-day-header:last-child{color:#3182ce;}
+    .cal-day-header:first-child{color:var(--accent);}.cal-day-header:last-child{color:#1565c0;}
     .cal-cell{background:var(--white);min-height:76px;padding:4px;}
-    .cal-cell.other-month{background:#fafaf7;}.cal-cell.other-month .cal-date{color:#ccc;}
-    .cal-cell.today{background:#f0f7f4;}
+    .cal-cell.other-month{background:var(--cream);}.cal-cell.other-month .cal-date{color:#ccc;}
+    .cal-cell.today{background:#fffbea;}
     .cal-date{font-size:12px;font-weight:700;color:var(--text2);text-align:right;margin-bottom:3px;}
-    .cal-cell.today .cal-date{background:var(--navy);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;}
-    .cal-event{border-radius:3px;padding:2px 5px;font-size:10px;margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600;cursor:pointer;}
+    .cal-cell.today .cal-date{background:var(--gold);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+    .cal-event{border-radius:8px;padding:2px 5px;font-size:10px;margin-bottom:2px;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:600;cursor:pointer;}
     .cal-event.chigasaki{background:#d4f0e5;color:#0d6e4e;}
     .cal-event.hiratsuka{background:#dbeafe;color:#1e40af;}
     .cal-event.samukawa{background:#fde8df;color:#9a3412;}
@@ -77,7 +77,7 @@
     .cal-event.special{background:#fef9c3;color:#713f12;}
 
     /* セクションカード */
-    .section-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+    .section-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
     .section-card h3{font-size:11px;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:2px;font-weight:700;}
     .schedule-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
     .schedule-item:last-child{border-bottom:none;}
@@ -85,23 +85,23 @@
     .schedule-info .title{font-size:14px;font-weight:600;}
     .schedule-info .time{font-size:12px;color:var(--text2);margin-top:2px;}
     .month-select{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
-    .month-select input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:8px 12px;font-size:14px;font-family:inherit;}
-    .btn-primary{background:var(--navy);color:#fff;border:none;border-radius:4px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;transition:background .2s;}
-    .btn-primary:hover{background:var(--navy2);}
-    .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:11px 20px;font-size:14px;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;}
-    .btn-danger{background:transparent;color:#e53e3e;border:1px solid #e53e3e;border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;}
+    .month-select input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;transition:all .3s ease;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
+    .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:11px 20px;font-size:14px;cursor:pointer;width:100%;margin-top:8px;font-family:inherit;}
+    .btn-danger{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;}
     #previewList{display:none;margin-top:14px;}
     #previewList h4{font-size:13px;color:var(--text2);margin-bottom:8px;}
     .preview-item{font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text2);}
-    .event-list-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--white);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;}
+    .event-list-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;}
     .event-list-item input[type=checkbox]{width:16px;height:16px;}
     .event-list-info{flex:1;}
     .event-list-info .etitle{font-size:14px;font-weight:600;}
     .event-list-info .etime{font-size:12px;color:var(--text2);}
-    #deleteSelectedBtn{background:#e53e3e;color:#fff;border:none;border-radius:4px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
-    #selectAllBtn{background:var(--white);color:var(--text2);border:1px solid var(--border);border-radius:4px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
+    #deleteSelectedBtn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+    #selectAllBtn{background:var(--white);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
     .dojo-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-    .dojo-tab{border:2px solid transparent;border-radius:6px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;opacity:.45;font-family:inherit;color:#fff;transition:opacity .2s;}
+    .dojo-tab{border:2px solid transparent;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;opacity:.45;font-family:inherit;color:#fff;transition:opacity .2s;}
     .dojo-tab.active{opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.15);}
     .dojo-tab.chigasaki{background:var(--chigasaki);}
     .dojo-tab.hiratsuka{background:var(--hiratsuka);}
@@ -110,53 +110,53 @@
     .form-grid{display:grid;gap:12px;}
     .form-group{display:flex;flex-direction:column;gap:5px;}
     .form-group label{font-size:12px;color:var(--text2);font-weight:700;}
-    .form-group input,.form-group select,.form-group textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:10px 12px;font-size:14px;font-family:inherit;}
+    .form-group input,.form-group select,.form-group textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;font-size:14px;font-family:inherit;}
     .form-group textarea{resize:vertical;min-height:60px;}
-    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:999;transition:transform .3s ease;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:600;z-index:999;transition:transform .3s ease;box-shadow:0 4px 16px rgba(0,0,0,.2);}
     #toast.show{transform:translateX(-50%) translateY(0);}
     .login-notice{text-align:center;padding:40px 20px;color:var(--text2);}
     @media(max-width:768px){.login-box{width:90%;padding:32px 24px;}}
 
     /* 写真管理 */
-    .gallery-cat-badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;}
+    .gallery-cat-badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;}
     .cat-演武大会{background:#fee2e2;color:#991b1b;}
     .cat-昇段祝い{background:#fef3c7;color:#92400e;}
     .cat-懇親会{background:#dbeafe;color:#1e40af;}
     .cat-講習会{background:#ede9fe;color:#5b21b6;}
     .cat-合宿{background:#d1fae5;color:#065f46;}
     .cat-その他{background:#f1f5f9;color:#475569;}
-    .photo-upload-area{border:2px dashed var(--border);border-radius:8px;padding:32px 16px;text-align:center;cursor:pointer;color:var(--text2);font-size:13px;transition:.2s;}
-    .photo-upload-area:hover,.photo-upload-area.drag{background:var(--surface2);border-color:var(--gold-light);}
+    .photo-upload-area{border:2px dashed var(--border);border-radius:16px;padding:32px 16px;text-align:center;cursor:pointer;color:var(--text2);font-size:13px;transition:.2s;}
+    .photo-upload-area:hover,.photo-upload-area.drag{background:var(--surface2);border-color:var(--gold);}
     .photo-preview-grid,.event-photos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:14px;}
-    .photo-preview-item{position:relative;border-radius:6px;overflow:hidden;background:var(--surface2);aspect-ratio:1;}
+    .photo-preview-item{position:relative;border-radius:10px;overflow:hidden;background:var(--surface2);aspect-ratio:1;}
     .photo-preview-item img{width:100%;height:100%;object-fit:cover;display:block;}
     .photo-preview-item .rm-btn{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:13px;line-height:1;cursor:pointer;}
     .photo-preview-item .caption-inp{position:absolute;bottom:0;left:0;right:0;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:4px 6px;font-family:inherit;width:100%;}
-    .gallery-event-card{background:var(--white);border:1px solid var(--border);border-radius:6px;margin-bottom:10px;overflow:hidden;}
+    .gallery-event-card{background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
     .gallery-event-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
     .gallery-event-meta{font-size:12px;color:var(--text2);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;}
     .gallery-event-card .event-photos-grid{padding:12px 14px;}
 
     /* お問い合わせ管理 */
     .contact-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-    .contact-filter button{background:var(--white);border:1px solid var(--border);color:var(--text2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+    .contact-filter button{background:var(--white);border:1px solid var(--border);color:var(--text2);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
     .contact-filter button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
-    .contact-card{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:6px;margin-bottom:10px;padding:14px 16px;}
-    .contact-card.status-unread{border-left-color:#e53e3e;}
-    .contact-card.status-in_progress{border-left-color:#c4960e;}
+    .contact-card{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:12px;margin-bottom:10px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    .contact-card.status-unread{border-left-color:var(--accent);}
+    .contact-card.status-in_progress{border-left-color:var(--gold);}
     .contact-card.status-done{border-left-color:#38a169;}
     .contact-card.important{background:#fffdf5;}
     .contact-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
     .contact-name{font-size:14px;font-weight:700;color:var(--navy);}
     .contact-star{background:none;border:none;font-size:16px;cursor:pointer;padding:0 2px;line-height:1;}
     .contact-meta{font-size:11px;color:var(--text2);margin-top:3px;}
-    .contact-badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;margin-left:6px;}
+    .contact-badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;margin-left:6px;}
     .status-unread .contact-badge{background:#fee2e2;color:#991b1b;}
     .status-in_progress .contact-badge{background:#fef3c7;color:#92400e;}
     .status-done .contact-badge{background:#d1fae5;color:#065f46;}
-    .contact-message{font-size:13px;color:var(--text);margin-top:10px;line-height:1.7;white-space:pre-wrap;background:var(--surface2);border-radius:6px;padding:10px 12px;}
+    .contact-message{font-size:13px;color:var(--text);margin-top:10px;line-height:1.7;white-space:pre-wrap;background:var(--surface2);border-radius:10px;padding:10px 12px;}
     .contact-actions{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;}
-    .contact-actions select{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-size:12px;font-family:inherit;}
+    .contact-actions select{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;font-family:inherit;}
   </style>
 </head>
 <body>
@@ -325,7 +325,7 @@
     <div id="tab-photo" class="tab-content">
 
       <!-- GitHub PAT設定 -->
-      <div class="section-card" id="patCard" style="background:#f8f6f0;border:1px solid #e8e2d6;">
+      <div class="section-card" id="patCard" style="background:#faf8f5;border:1px solid #ddd5c8;">
         <h3 style="font-size:13px;margin-bottom:8px;">🔑 GitHub アクセストークン設定</h3>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <input type="password" id="githubPat" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
@@ -426,26 +426,26 @@
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
           <div style="background:#f0f7f4;border:2px solid #1D9E75;border-radius:6px;padding:12px 16px;">
             <div style="font-size:11px;color:#0d6e4e;font-weight:bold;margin-bottom:4px;">🌐 公式サイト（一般公開）</div>
-            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/</a>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/" target="_blank" style="color:#1a1a2e;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/</a>
           </div>
           <div style="background:#f0f7f4;border:2px solid #1D9E75;border-radius:6px;padding:12px 16px;">
             <div style="font-size:11px;color:#0d6e4e;font-weight:bold;margin-bottom:4px;">📅 スケジュールページ（一般公開）</div>
-            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/schedule.html" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/schedule.html</a>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/schedule.html" target="_blank" style="color:#1a1a2e;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/schedule.html</a>
           </div>
           <div style="background:#f0f7f4;border:2px solid #1D9E75;border-radius:6px;padding:12px 16px;">
             <div style="font-size:11px;color:#0d6e4e;font-weight:bold;margin-bottom:4px;">📢 お知らせページ（一般公開）</div>
-            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/news.html" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/news.html</a>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/news.html" target="_blank" style="color:#1a1a2e;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/news.html</a>
           </div>
-          <div style="background:#f0f0f8;border:2px solid #1a2744;border-radius:6px;padding:12px 16px;">
-            <div style="font-size:11px;color:#1a2744;font-weight:bold;margin-bottom:4px;">🔐 管理アプリ（このページ）</div>
-            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/admin.html" target="_blank" style="color:#1a2744;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/admin.html</a>
+          <div style="background:#f0f0f8;border:2px solid #1a1a2e;border-radius:6px;padding:12px 16px;">
+            <div style="font-size:11px;color:#1a1a2e;font-weight:bold;margin-bottom:4px;">🔐 管理アプリ（このページ）</div>
+            <a href="https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/admin.html" target="_blank" style="color:#1a1a2e;font-size:13px;word-break:break-all;">https://sagamiaikido1-rgb.github.io/sagami-aiki-renmei/admin.html</a>
           </div>
         </div>
       </div>
 
       <div class="section-card">
         <h3>📅 スケジュール一括登録（毎月末の作業）</h3>
-        <div style="background:#fffbeb;border-left:4px solid #c4960e;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;font-size:13px;">
+        <div style="background:#fffbeb;border-left:4px solid #d4a017;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;font-size:13px;">
           <b>定期稽古の時間</b><br>
           日曜：茅ヶ崎 9:30〜11:30 ／ 平塚 15:30〜16:30<br>
           水曜：茅ヶ崎 18:30〜20:30<br>
@@ -453,19 +453,19 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
             <div style="font-size:14px;">「🔄 月次生成」タブをクリック</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
             <div style="font-size:14px;">対象年月を確認（翌月になっているか確認）</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
             <div style="font-size:14px;">「📋 プレビュー」ボタンをクリックして内容を確認</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
             <div style="font-size:14px;">「💾 一括登録」ボタンをクリックして完了</div>
           </div>
         </div>
@@ -478,19 +478,19 @@
         <h3>➕ スケジュール個別追加（行事・特別稽古）</h3>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
             <div style="font-size:14px;">「➕ 個別追加」タブをクリック</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
             <div style="font-size:14px;">道場（茅ヶ崎・平塚・寒川・藤沢）を選択</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
             <div style="font-size:14px;">日付・種別・時間・メモを入力</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
             <div style="font-size:14px;">「＋ 追加する」ボタンをクリックして完了</div>
           </div>
         </div>
@@ -508,9 +508,9 @@
         <p style="font-size:14px;margin-bottom:12px;"><b>削除：</b>「📢 お知らせ」タブ下部の一覧 → 「削除」ボタンをクリック</p>
         <div style="font-size:13px;background:#f8f8f8;border-radius:6px;padding:10px 14px;">
           カテゴリの種類：
-          <span style="background:#1a2744;color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:bold;margin:0 4px;">新着</span>
-          <span style="background:#9a7b0a;color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:bold;margin:0 4px;">行事</span>
-          <span style="background:#e8e2d6;color:#1a2744;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:bold;margin:0 4px;">お知らせ</span>
+          <span style="background:#dbeafe;color:#1e40af;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:bold;margin:0 4px;">新着</span>
+          <span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:bold;margin:0 4px;">行事</span>
+          <span style="background:#f1f5f9;color:#475569;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:bold;margin:0 4px;">お知らせ</span>
         </div>
       </div>
 
@@ -521,23 +521,23 @@
         </p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
             <div style="font-size:14px;">「📩 お問い合わせ」タブをクリックすると、新着順に一覧が表示されます</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
             <div style="font-size:14px;">各お問い合わせの右上にある選択欄で「未対応／対応中／対応済み」を切り替えられます</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
             <div style="font-size:14px;">☆マークをクリックすると「重要」マークを付けられます（⭐に変化）</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a2744;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
             <div style="font-size:14px;">対応が完了し不要になったお問い合わせは「削除」ボタンで削除できます</div>
           </div>
         </div>
-        <div style="background:#fffbeb;border-left:4px solid #c4960e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;">
+        <div style="background:#fffbeb;border-left:4px solid #d4a017;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;">
           💡 上部の絞り込みボタン（すべて／未対応／対応中／対応済み／⭐重要のみ）で表示を絞り込めます。
         </div>
         <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:10px;font-size:13px;">
@@ -886,20 +886,20 @@
     if(!container) return;
     allNews.sort((a,b)=>b.date.localeCompare(a.date));
     if(!allNews.length){container.innerHTML='<div class="login-notice"><p>お知らせがありません</p></div>';return;}
-    const TAG_COLORS = {'新着':'background:#1a2744;color:#fff;','行事':'background:#9a7b0a;color:#fff;','お知らせ':'background:#e8e2d6;color:#1a2744;'};
+    const TAG_COLORS = {'新着':'background:#dbeafe;color:#1e40af;','行事':'background:#fef3c7;color:#92400e;','お知らせ':'background:#f1f5f9;color:#475569;'};
     container.innerHTML = allNews.map(n=>{
-      const tagStyle = TAG_COLORS[n.category]||'background:#e8e2d6;color:#1a2744;';
+      const tagStyle = TAG_COLORS[n.category]||'background:#f1f5f9;color:#475569;';
       const linkHtml = n.url
         ? `<a href="${escH(n.url)}" target="_blank" rel="noopener"
              style="display:inline-block;margin-top:6px;font-size:12px;color:var(--gold-light);
-                    text-decoration:none;border:1px solid var(--gold-light);padding:2px 10px;
-                    border-radius:3px;transition:.2s;"
+                    text-decoration:none;border:1px solid var(--gold-light);padding:2px 12px;
+                    border-radius:999px;transition:.2s;"
              onmouseover="this.style.background='var(--gold-light)';this.style.color='#fff'"
              onmouseout="this.style.background='';this.style.color='var(--gold-light)'">
              🔗 詳細を見る</a>` : '';
       return `<div class="event-list-item">
         <div class="event-list-info" style="flex:1">
-          <div class="etitle"><span style="font-size:12px;color:#9a7b0a;margin-right:8px">${n.date}</span><span style="padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;${tagStyle}">${n.category}</span></div>
+          <div class="etitle"><span style="font-size:12px;color:#b8860b;margin-right:8px">${n.date}</span><span style="padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;${tagStyle}">${n.category}</span></div>
           <div class="etime" style="margin-top:4px">${n.text}</div>
           ${linkHtml}
         </div>
