@@ -186,7 +186,11 @@
       border-radius: 999px;
       padding: 2px 10px; font-weight: 700; white-space: nowrap; margin-top: 2px;
     }
+    .news-badge.tag-new { background: #dbeafe; color: #1e40af; }
+    .news-badge.tag-event { background: #fef3c7; color: #92400e; }
+    .news-badge.tag-info { background: #f1f5f9; color: #475569; }
     .news-text { font-size: 14px; color: var(--navy); line-height: 1.8; flex: 1; min-width: 200px; }
+    .news-loading { text-align: center; padding: 24px; color: var(--gray); font-size: 14px; }
 
     /* ── フッター ── */
     footer {
@@ -298,7 +302,7 @@
       <div class="dojo-card">
         <div class="dojo-name">平塚道場</div>
         <div class="dojo-en">HIRATSUKA DOJO</div>
-        <div class="dojo-info">🗓 日曜日　15:30〜17:30</div>
+        <div class="dojo-info">🗓 日曜日　15:30〜16:30</div>
       </div>
       <div class="dojo-card">
         <div class="dojo-name">寒川道場</div>
@@ -320,17 +324,8 @@
     <div class="section-label">INFORMATION</div>
     <h2 class="section-title">お知らせ</h2>
     <div class="section-line"></div>
-    <div class="news-list">
-      <div class="news-item">
-        <span class="news-date">2026.04</span>
-        <span class="news-badge">新着</span>
-        <span class="news-text">公式Instagramアカウント（@sagami.aikido）を開設しました。稽古や行事の写真を発信しています。</span>
-      </div>
-      <div class="news-item">
-        <span class="news-date">2026.01</span>
-        <span class="news-badge">行事</span>
-        <span class="news-text">令和8年 鏡開き式・昇段審査会を執り行いました。</span>
-      </div>
+    <div class="news-list" id="newsList">
+      <div class="news-loading">読み込み中...</div>
     </div>
   </div>
 </section>
@@ -350,5 +345,58 @@
   <div style="margin-top:16px">© 2026 相模合気道連盟</div>
 </footer>
 
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, getDocs, orderBy, query, limit }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfhzD-KOcyAneUEHDeAYx1WB7Tcefc1So",
+    authDomain: "sagami-aikido-b5961.firebaseapp.com",
+    projectId: "sagami-aikido-b5961",
+    storageBucket: "sagami-aikido-b5961.firebasestorage.app",
+    messagingSenderId: "770248355445",
+    appId: "1:770248355445:web:3104563942dfed363d923c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const TAG_CLASS = {'新着':'tag-new','行事':'tag-event','お知らせ':'tag-info'};
+  const NEWS_LIMIT = 5;
+
+  async function loadHomeNews(){
+    const container = document.getElementById('newsList');
+    try{
+      const q = query(collection(db,'news'), orderBy('date','desc'), limit(NEWS_LIMIT));
+      const snap = await getDocs(q);
+      const items = snap.docs.map(d=>d.data());
+
+      if(!items.length){
+        container.innerHTML = '<div class="news-loading">お知らせはありません</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(n=>{
+        const tagClass = TAG_CLASS[n.category] || 'tag-info';
+        const linkHtml = n.url
+          ? `<a href="${n.url}" target="_blank" rel="noopener"
+               style="display:inline-block;margin-top:6px;font-size:12px;
+                      color:var(--gold-light);text-decoration:none;
+                      border:1px solid var(--gold-light);padding:2px 12px;border-radius:999px;">
+               🔗 詳細を見る</a>` : '';
+        return `<div class="news-item">
+          <span class="news-date">${n.date}</span>
+          <span class="news-badge ${tagClass}">${n.category}</span>
+          <span class="news-text">${n.text}${linkHtml ? '<br>'+linkHtml : ''}</span>
+        </div>`;
+      }).join('');
+    }catch(e){
+      container.innerHTML = '<div class="news-loading">読み込みに失敗しました</div>';
+    }
+  }
+
+  loadHomeNews();
+</script>
 </body>
 </html>
