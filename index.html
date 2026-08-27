@@ -190,6 +190,37 @@
     .schedule-mini-name { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
     .schedule-mini-time { font-size:11px; color:var(--gray); line-height:1.6; }
 
+    /* カレンダー（トップページ埋め込み用） */
+    .cal-wrap { max-width: 800px; margin: 0 auto; text-align: left; }
+    .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .cal-header h3 { font-family:'Noto Serif JP',serif; font-weight:700; font-size:18px; color:var(--navy); }
+    .cal-nav button { background:var(--white); border:1px solid var(--border); color:var(--navy); border-radius:8px; padding:6px 14px; cursor:pointer; font-size:15px; margin-left:4px; transition:all .2s; font-family:inherit; }
+    .cal-nav button:hover { border-color:var(--navy); background:var(--light); }
+    .dojo-filter { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+    .dojo-chip { border:2px solid transparent; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:700; cursor:pointer; opacity:.35; transition:opacity .2s; font-family:inherit; }
+    .dojo-chip.active { opacity:1; }
+    .dojo-chip.all { background:#e0e4ec; color:#333; border-color:#ccc; }
+    .dojo-chip.chigasaki { background:var(--chigasaki); color:#fff; }
+    .dojo-chip.hiratsuka { background:var(--hiratsuka); color:#fff; }
+    .dojo-chip.samukawa { background:var(--samukawa); color:#fff; }
+    .dojo-chip.fujisawa { background:var(--fujisawa); color:#fff; }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; background:var(--border); border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.08); margin-bottom: 28px; }
+    .cal-day-header { background:var(--light); text-align:center; padding:8px 4px; font-size:11px; color:var(--gray); font-weight:700; }
+    .cal-day-header:first-child { color:var(--accent); } .cal-day-header:last-child { color:#1565c0; }
+    .cal-cell { background:var(--white); min-height:70px; padding:4px; }
+    .cal-cell.other-month { background:var(--cream); } .cal-cell.other-month .cal-date { color:#ccc; }
+    .cal-cell.today { background:#fffbea; }
+    .cal-date { font-size:11px; font-weight:700; color:var(--gray); text-align:right; margin-bottom:3px; }
+    .cal-cell.today .cal-date { background:var(--gold); color:#fff; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; margin-left:auto; }
+    .cal-event { border-radius:8px; padding:2px 5px; font-size:9.5px; margin-bottom:2px; line-height:1.3; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-weight:600; }
+    .cal-event.chigasaki { background:#d4f0e5; color:#0d6e4e; }
+    .cal-event.hiratsuka { background:#dbeafe; color:#1e40af; }
+    .cal-event.samukawa { background:#fde8df; color:#9a3412; }
+    .cal-event.fujisawa { background:#ede9fe; color:#5b21b6; }
+    .cal-event.special { background:#fef9c3; color:#713f12; }
+    .cal-more-link { text-align:center; margin-top: 8px; }
+    @media (max-width:600px){ .cal-cell{min-height:56px;} .cal-event{font-size:8.5px;} }
+
     /* ── 道場紹介 ── */
     .dojos { background: var(--cream); }
     .dojo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 20px; }
@@ -408,9 +439,27 @@
     <div class="section-label">SCHEDULE</div>
     <h2 class="section-title">スケジュール</h2>
     <div class="section-line"></div>
-    <div class="schedule-box">
-      <p>各道場の月毎の稽古予定はカレンダー形式にてご確認いただけます。<br>道場ごとの絞り込みや、月の切り替えも可能です。曜日・時間の詳細は下記「道場案内」もご覧ください。</p>
-      <a href="schedule.html" class="btn-primary">カレンダーで詳しく見る</a>
+    <div class="cal-wrap">
+      <div class="cal-header">
+        <h3 id="calTitle">読み込み中...</h3>
+        <div class="cal-nav">
+          <button onclick="prevMonth()">◀</button>
+          <button onclick="nextMonth()">▶</button>
+        </div>
+      </div>
+      <div class="dojo-filter">
+        <button class="dojo-chip all active" onclick="filterDojo('all',this)">全て</button>
+        <button class="dojo-chip chigasaki active" onclick="filterDojo('茅ヶ崎',this)">茅ヶ崎</button>
+        <button class="dojo-chip hiratsuka active" onclick="filterDojo('平塚',this)">平塚</button>
+        <button class="dojo-chip samukawa active" onclick="filterDojo('寒川',this)">寒川</button>
+        <button class="dojo-chip fujisawa active" onclick="filterDojo('藤沢',this)">藤沢</button>
+      </div>
+      <div class="cal-grid" id="calGrid">
+        <div style="grid-column:span 7;text-align:center;padding:48px;color:var(--gray)">読み込み中...</div>
+      </div>
+      <div class="cal-more-link">
+        <a href="schedule.html" class="btn-outline" style="color:var(--navy);border-color:var(--border);">定期稽古スケジュールも見る</a>
+      </div>
     </div>
   </div>
 </section>
@@ -706,6 +755,69 @@
   }
 
   loadHomeNews();
+
+  // ── カレンダー（スケジュールセクション） ──
+  const DOJO_CLASS = {'茅ヶ崎':'chigasaki','平塚':'hiratsuka','寒川':'samukawa','藤沢':'fujisawa'};
+  let allEvents = [], activeFilter = 'all';
+  let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth();
+
+  async function loadEvents(){
+    try{
+      const q = query(collection(db,'events'), orderBy('date'));
+      const snap = await getDocs(q);
+      allEvents = snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderCalendar();
+    }catch(e){
+      const grid = document.getElementById('calGrid');
+      if(grid) grid.innerHTML = '<div style="grid-column:span 7;text-align:center;padding:48px;color:var(--gray)">読み込みに失敗しました</div>';
+    }
+  }
+
+  function renderCalendar(){
+    const grid = document.getElementById('calGrid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    ['日','月','火','水','木','金','土'].forEach(d=>{
+      const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);
+    });
+    const year=currentYear, month=currentMonth;
+    const first=new Date(year,month,1).getDay();
+    const last=new Date(year,month+1,0).getDate();
+    const today=new Date();
+    document.getElementById('calTitle').textContent=`${year}年${month+1}月`;
+    for(let i=0;i<first;i++){const c=makeCell(new Date(year,month,0).getDate()-first+1+i,year,month-1);c.classList.add('other-month');grid.appendChild(c);}
+    for(let d=1;d<=last;d++){
+      const c=makeCell(d,year,month);
+      if(d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear())c.classList.add('today');
+      grid.appendChild(c);
+    }
+    for(let i=1;i<=42-first-last;i++){const c=makeCell(i,year,month+1);c.classList.add('other-month');grid.appendChild(c);}
+  }
+
+  function makeCell(day,year,month){
+    const cell=document.createElement('div');cell.className='cal-cell';
+    const dd=document.createElement('div');dd.className='cal-date';dd.textContent=day;cell.appendChild(dd);
+    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    allEvents.filter(e=>e.date===ds).forEach(ev=>{
+      if(activeFilter!=='all'&&ev.dojo!==activeFilter)return;
+      const cls=DOJO_CLASS[ev.dojo]||'special';
+      const evDiv=document.createElement('div');evDiv.className=`cal-event ${cls}`;
+      const dispText=ev.dojo?`${ev.start} ${ev.title}`:(ev.memo||ev.title);
+      evDiv.textContent=dispText.substring(0,12);
+      cell.appendChild(evDiv);
+    });
+    return cell;
+  }
+
+  window.prevMonth=function(){currentMonth--;if(currentMonth<0){currentMonth=11;currentYear--;}renderCalendar();}
+  window.nextMonth=function(){currentMonth++;if(currentMonth>11){currentMonth=0;currentYear++;}renderCalendar();}
+  window.filterDojo=function(dojo,btn){
+    activeFilter=dojo;
+    document.querySelectorAll('.dojo-filter .dojo-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');renderCalendar();
+  };
+
+  loadEvents();
 </script>
 
 <script>
