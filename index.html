@@ -49,6 +49,8 @@
     nav a::after { content:''; position:absolute; bottom:0; left:50%; right:50%; height:2px; background:var(--gold-light); transition: all .2s; }
     nav a:hover::after, nav a.active::after { left:8px; right:8px; }
     nav a:hover, nav a.active { color: var(--white); background: rgba(255,255,255,0.12); }
+    nav a.disabled, .mobile-nav-bar a.disabled { color: rgba(255,255,255,0.32); cursor: default; pointer-events: none; }
+    nav a.disabled::after, .mobile-nav-bar a.disabled::after { display: none; }
 
     /* ── モバイル：ヘッダー直下にナビを常時展開表示 ── */
     .mobile-nav-bar {
@@ -202,8 +204,27 @@
     .dojo-info { font-size: 13px; color: var(--gray); line-height: 2.1; }
 
     /* ── 指導者 ── */
-    .instructors-sec { background: var(--white); border-top: 1px solid var(--border); }
-    .advisor-card { border:1px solid var(--border); border-left:4px solid var(--gold); border-radius:16px; padding:32px; margin-bottom:40px; background:var(--cream); box-shadow:0 2px 8px rgba(0,0,0,0.08); max-width:800px; margin-left:auto; margin-right:auto; }
+    /* ── 沿革 ── */
+    .history-sec { background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .history-intro { max-width: 720px; margin: 0 auto 48px; text-align: center; font-size: 14px; color: var(--gray); line-height: 2; }
+    .timeline { max-width: 760px; margin: 0 auto; position: relative; padding-left: 28px; }
+    .timeline::before { content:''; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:linear-gradient(180deg, var(--gold-light), var(--border)); }
+    .timeline-item { position: relative; padding-bottom: 40px; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot { position:absolute; left:-28px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--white); border:3px solid var(--gold); }
+    .timeline-year { font-family:'Noto Serif JP',serif; font-weight:700; font-size:18px; color:var(--gold); letter-spacing:1px; margin-bottom:6px; }
+    .timeline-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:20px 24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    .timeline-card h4 { font-family:'Noto Serif JP',serif; font-weight:700; font-size:16px; color:var(--navy); letter-spacing:1px; margin-bottom:8px; }
+    .timeline-card p { font-size:13.5px; color:var(--gray); line-height:1.9; }
+    .history-leaders { max-width:760px; margin:56px auto 0; }
+    .history-leaders h3 { font-family:'Noto Serif JP',serif; font-weight:700; font-size:18px; color:var(--navy); letter-spacing:2px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid var(--light); text-align:center; }
+    .leaders-table { width:100%; border-collapse:collapse; background:var(--white); border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid var(--border); }
+    .leaders-table th { background:var(--light); color:var(--navy); font-size:12px; padding:10px 16px; text-align:left; letter-spacing:1px; font-weight:700; }
+    .leaders-table td { padding:12px 16px; font-size:13.5px; border-bottom:1px solid var(--border); color:var(--navy); }
+    .leaders-table tr:last-child td { border-bottom:none; }
+    .history-note { max-width:760px; margin:32px auto 0; background:var(--light); border-left:3px solid var(--gold); border-radius:8px; padding:16px 22px; font-size:12.5px; color:var(--gray); line-height:1.9; }
+
+    .instructors-sec { background: var(--white); border-top: 1px solid var(--border); }    .advisor-card { border:1px solid var(--border); border-left:4px solid var(--gold); border-radius:16px; padding:32px; margin-bottom:40px; background:var(--cream); box-shadow:0 2px 8px rgba(0,0,0,0.08); max-width:800px; margin-left:auto; margin-right:auto; }
     .advisor-role { font-size:11px; letter-spacing:3px; color:var(--gold); margin-bottom:8px; }
     .advisor-name { font-family:'Noto Serif JP',serif; font-weight:700; font-size:24px; color:var(--navy); letter-spacing:3px; margin-bottom:4px; }
     .advisor-rank { font-size:14px; color:var(--gray); margin-bottom:8px; letter-spacing:1px; }
@@ -285,6 +306,9 @@
       .hero::before { font-size: 200px; }
       section { padding: 56px 20px; scroll-margin-top: 104px; }
       .instructor-grid { grid-template-columns: 1fr; }
+      .timeline { padding-left: 22px; }
+      .timeline-card { padding: 16px 18px; }
+      .leaders-table th, .leaders-table td { padding: 10px 10px; font-size: 12.5px; }
       #backToTop { right: 14px; bottom: 14px; width: 42px; height: 42px; font-size: 18px; }
     }
   </style>
@@ -303,6 +327,7 @@
       <a href="#news">お知らせ</a>
       <a href="#schedule">スケジュール</a>
       <a href="#dojos">道場紹介</a>
+      <a href="#" class="disabled" aria-disabled="true">沿革</a>
       <a href="#instructors">指導者</a>
       <a href="#access">アクセス</a>
       <a href="#contact">ご連絡先</a>
@@ -315,6 +340,7 @@
     <a href="#news">お知らせ</a>
     <a href="#schedule">スケジュール</a>
     <a href="#dojos">道場紹介</a>
+    <a href="#" class="disabled" aria-disabled="true">沿革</a>
     <a href="#instructors">指導者</a>
     <a href="#access">アクセス</a>
     <a href="#contact">ご連絡先</a>
@@ -383,29 +409,7 @@
     <h2 class="section-title">スケジュール</h2>
     <div class="section-line"></div>
     <div class="schedule-box">
-      <p>各道場の月毎の稽古予定はスケジュールページでカレンダー形式にてご確認いただけます。<br>道場ごとの絞り込みや、月の切り替えも可能です。</p>
-      <div class="schedule-mini-grid">
-        <div class="schedule-mini-card">
-          <div class="schedule-mini-dot" style="background:var(--chigasaki)"></div>
-          <div class="schedule-mini-name">茅ヶ崎</div>
-          <div class="schedule-mini-time">日 09:30〜<br>水 18:30〜</div>
-        </div>
-        <div class="schedule-mini-card">
-          <div class="schedule-mini-dot" style="background:var(--hiratsuka)"></div>
-          <div class="schedule-mini-name">平塚</div>
-          <div class="schedule-mini-time">日 15:30〜</div>
-        </div>
-        <div class="schedule-mini-card">
-          <div class="schedule-mini-dot" style="background:var(--samukawa)"></div>
-          <div class="schedule-mini-name">寒川</div>
-          <div class="schedule-mini-time">土 12:30〜</div>
-        </div>
-        <div class="schedule-mini-card">
-          <div class="schedule-mini-dot" style="background:var(--fujisawa)"></div>
-          <div class="schedule-mini-name">藤沢</div>
-          <div class="schedule-mini-time">現在休止中</div>
-        </div>
-      </div>
+      <p>各道場の月毎の稽古予定はカレンダー形式にてご確認いただけます。<br>道場ごとの絞り込みや、月の切り替えも可能です。曜日・時間の詳細は下記「道場案内」もご覧ください。</p>
       <a href="schedule.html" class="btn-primary">カレンダーで詳しく見る</a>
     </div>
   </div>
