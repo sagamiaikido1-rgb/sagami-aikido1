@@ -240,23 +240,33 @@
     /* ── 指導者 ── */
     /* ── 沿革 ── */
     .history-sec { background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .history-intro { max-width: 720px; margin: 0 auto 48px; text-align: center; font-size: 14px; color: var(--gray); line-height: 2; }
-    .timeline { max-width: 760px; margin: 0 auto; position: relative; padding-left: 28px; }
+    .history-intro { max-width: 660px; margin: 0 auto 44px; text-align: center; font-size: 14px; color: var(--gray); line-height: 2; }
+    .timeline { max-width: 760px; margin: 0 auto 56px; position: relative; padding-left: 28px; }
     .timeline::before { content:''; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:linear-gradient(180deg, var(--gold-light), var(--border)); }
-    .timeline-item { position: relative; padding-bottom: 40px; }
+    .timeline-item { position: relative; padding-bottom: 32px; }
     .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item.minor .timeline-dot { background:var(--border); border-color:var(--white); width:11px; height:11px; left:-25.5px; }
+    .timeline-item.minor .timeline-card { background:transparent; border:none; box-shadow:none; padding:0 0 0 2px; }
+    .timeline-item.now .timeline-dot { border-color:#1D9E75; }
     .timeline-dot { position:absolute; left:-28px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--white); border:3px solid var(--gold); }
-    .timeline-year { font-family:'Noto Serif JP',serif; font-weight:700; font-size:18px; color:var(--gold); letter-spacing:1px; margin-bottom:6px; }
-    .timeline-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:20px 24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
-    .timeline-card h4 { font-family:'Noto Serif JP',serif; font-weight:700; font-size:16px; color:var(--navy); letter-spacing:1px; margin-bottom:8px; }
-    .timeline-card p { font-size:13.5px; color:var(--gray); line-height:1.9; }
-    .history-leaders { max-width:760px; margin:56px auto 0; }
-    .history-leaders h3 { font-family:'Noto Serif JP',serif; font-weight:700; font-size:18px; color:var(--navy); letter-spacing:2px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid var(--light); text-align:center; }
-    .leaders-table { width:100%; border-collapse:collapse; background:var(--white); border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid var(--border); }
-    .leaders-table th { background:var(--light); color:var(--navy); font-size:12px; padding:10px 16px; text-align:left; letter-spacing:1px; font-weight:700; }
-    .leaders-table td { padding:12px 16px; font-size:13.5px; border-bottom:1px solid var(--border); color:var(--navy); }
-    .leaders-table tr:last-child td { border-bottom:none; }
-    .history-note { max-width:760px; margin:32px auto 0; background:var(--light); border-left:3px solid var(--gold); border-radius:8px; padding:16px 22px; font-size:12.5px; color:var(--gray); line-height:1.9; }
+    .timeline-year { font-family:'Noto Serif JP',serif; font-weight:700; font-size:16px; color:var(--gold); letter-spacing:1px; margin-bottom:6px; }
+    .timeline-item.minor .timeline-year { font-size:13px; color:var(--gray); font-family:'Noto Sans JP',sans-serif; font-weight:700; }
+    .timeline-card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:18px 22px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    .timeline-card h4 { font-family:'Noto Serif JP',serif; font-weight:700; font-size:15px; color:var(--navy); letter-spacing:1px; margin-bottom:8px; }
+    .timeline-item.minor .timeline-card h4 { font-family:'Noto Sans JP',sans-serif; font-size:14px; }
+    .timeline-card p { font-size:13px; color:var(--gray); line-height:1.9; }
+
+    .roster-wrap { max-width:760px; margin:0 auto; overflow-x:auto; }
+    .roster-table { width:100%; border-collapse:collapse; background:var(--white); border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid var(--border); font-size:12.5px; min-width:600px; }
+    .roster-table th { background:var(--navy); color:#fff; font-size:11.5px; padding:10px 12px; text-align:left; letter-spacing:.5px; font-weight:700; }
+    .roster-table td { padding:11px 12px; border-bottom:1px solid var(--border); color:var(--navy); vertical-align:top; }
+    .roster-table tr:last-child td { border-bottom:none; }
+    .roster-table tr:nth-child(even) td { background:var(--cream); }
+    .roster-dojo { font-weight:700; }
+    .status-badge { display:inline-block; font-size:10.5px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+    .status-active { background:#d4f0e5; color:#0d6e4e; }
+    .status-paused { background:#fdecd1; color:#b45309; }
+    .history-note { max-width:760px; margin:24px auto 0; background:var(--light); border-left:3px solid var(--gold); border-radius:8px; padding:16px 22px; font-size:12.5px; color:var(--gray); line-height:1.9; }
 
     .instructors-sec { background: var(--white); border-top: 1px solid var(--border); }    .advisor-card { border:1px solid var(--border); border-left:4px solid var(--gold); border-radius:16px; padding:32px; margin-bottom:40px; background:var(--cream); box-shadow:0 2px 8px rgba(0,0,0,0.08); max-width:800px; margin-left:auto; margin-right:auto; }
     .advisor-role { font-size:11px; letter-spacing:3px; color:var(--gold); margin-bottom:8px; }
@@ -362,9 +372,10 @@
       <a href="#schedule">スケジュール</a>
       <a href="#dojos">道場紹介</a>
       <a href="join.html">入会案内</a>
-      <a href="#" class="disabled" aria-disabled="true">沿革</a>
+      <a href="#history">沿革</a>
       <a href="#instructors">指導者</a>
       <a href="#access">アクセス</a>
+      <a href="photos.html">写真</a>
       <a href="#contact">ご連絡先</a>
       <a href="#links">リンク</a>
     </nav>
@@ -376,9 +387,10 @@
     <a href="#schedule">スケジュール</a>
     <a href="#dojos">道場紹介</a>
     <a href="join.html">入会案内</a>
-    <a href="#" class="disabled" aria-disabled="true">沿革</a>
+    <a href="#history">沿革</a>
     <a href="#instructors">指導者</a>
     <a href="#access">アクセス</a>
+    <a href="photos.html">写真</a>
     <a href="#contact">ご連絡先</a>
     <a href="#links">リンク</a>
   </div>
@@ -510,6 +522,123 @@
         <div class="dojo-catch">基本技を中心に初心者の方にも分かりやすく指導致します</div>
         <div class="dojo-info">現在休止中</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- 沿革 -->
+<section class="history-sec" id="history">
+  <div class="section-inner">
+    <div class="section-label">HISTORY</div>
+    <h2 class="section-title">沿革</h2>
+    <div class="section-line"></div>
+    <p class="history-intro">相模合気道連盟は、1989年の茅ヶ崎合気会創立と同時に発足しました。以来、地域の皆様に支えられながら、稽古の輪を広げてまいりました。ここでは、これまでの歩みをご紹介します。</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1989年（平成元年）</div>
+        <div class="timeline-card">
+          <h4>相模合気道連盟 創立／茅ヶ崎合気会（茅ヶ崎道場）創立</h4>
+          <p>茅ヶ崎合気会の創立と同時に、相模合気道連盟を立ち上げました。連盟の母体となる最初の道場として稽古を開始しました。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1992年（平成4年）</div>
+        <div class="timeline-card">
+          <h4>平塚合気会（平塚道場）創立</h4>
+          <p>平塚合気会として新たに道場を創立。茅ヶ崎に続く2つ目の拠点として稽古の場を広げました。</p>
+        </div>
+      </div>
+      <div class="timeline-item minor">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">1999年（平成11年）</div>
+        <div class="timeline-card">
+          <h4>茅ヶ崎合気会 創立10周年記念演武大会 開催</h4>
+          <p>創立10周年を記念して演武大会を開催しました。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2008年（平成20年）</div>
+        <div class="timeline-card">
+          <h4>相模合気会（寒川道場）創立</h4>
+          <p>相模合気会として寒川町に道場を創立。近隣地域からの参加も増え、連盟としての活動基盤がさらに広がりました。</p>
+        </div>
+      </div>
+      <div class="timeline-item minor">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2019年（令和元年）</div>
+        <div class="timeline-card">
+          <h4>茅ヶ崎合気会 創立30周年記念演武会 開催</h4>
+          <p>創立30周年を記念して演武会を開催しました。</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">2023年（令和5年）</div>
+        <div class="timeline-card">
+          <h4>湘南台合気会（藤沢道場）創立</h4>
+          <p>湘南台合気会として藤沢エリアに道場を創立。新たな拠点として活動を開始しましたが、現在は活動を休止しております。</p>
+        </div>
+      </div>
+      <div class="timeline-item now">
+        <div class="timeline-dot"></div>
+        <div class="timeline-year">現在</div>
+        <div class="timeline-card">
+          <h4>3道場体制で活動中</h4>
+          <p>茅ヶ崎・平塚・寒川の3道場が連携しながら、子どもから高齢者まで幅広い世代が稽古に励んでいます（藤沢道場は現在休止中）。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="roster-wrap">
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th>道場・会派名</th>
+            <th>通称／エリア</th>
+            <th>創立</th>
+            <th>歴代代表・現代表</th>
+            <th>状況</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="roster-dojo">茅ヶ崎合気会</td>
+            <td>茅ヶ崎道場</td>
+            <td>1989年</td>
+            <td>初代：菱田 司朗（1989〜2003）<br>二代：小島 和枝（2004〜2022）<br>三代：小島 三男（2023〜現在）</td>
+            <td><span class="status-badge status-active">稽古中</span></td>
+          </tr>
+          <tr>
+            <td class="roster-dojo">平塚合気会</td>
+            <td>平塚道場</td>
+            <td>1992年</td>
+            <td>小島 三男（1992〜現在）</td>
+            <td><span class="status-badge status-active">稽古中</span></td>
+          </tr>
+          <tr>
+            <td class="roster-dojo">相模合気会</td>
+            <td>寒川道場</td>
+            <td>2008年</td>
+            <td>小島 三男（2008〜現在）</td>
+            <td><span class="status-badge status-active">稽古中</span></td>
+          </tr>
+          <tr>
+            <td class="roster-dojo">湘南台合気会</td>
+            <td>藤沢道場</td>
+            <td>2023年</td>
+            <td>小島 三男（2023〜現在）</td>
+            <td><span class="status-badge status-paused">休止中</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="history-note">
+      ※ 藤沢道場（湘南台合気会）は現在活動を休止しております。再開時は改めてお知らせいたします。
     </div>
   </div>
 </section>
