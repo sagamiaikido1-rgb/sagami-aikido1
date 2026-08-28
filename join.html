@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>入会案内｜相模合気道連盟</title>
+  <meta name="description" content="相模合気道連盟（茅ヶ崎・平塚・寒川・藤沢道場）の入会案内。月謝・稽古日・見学の流れをご案内します。子供から大人まで、どなたでも稽古を始められます。">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#1a1a2e;--navy-light:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;--white:#ffffff;--cream:#faf8f5;--gray:#666666;--light:#f0ebe3;--border:#ddd5c8;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;}
+    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:#2c2c2c;line-height:1.8;}
+    header{background:rgba(26,26,46,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+    .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--white);letter-spacing:2px;text-decoration:none;}
+    .logo span{font-size:10px;color:var(--gold-light);display:block;letter-spacing:2px;font-weight:400;}
+    nav{display:flex;flex-wrap:wrap;justify-content:flex-end;}nav a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:12.5px;padding:8px 10px;transition:all .2s;position:relative;border-radius:8px;white-space:nowrap;}
+    nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
+    nav a:hover::after,nav a.active::after{left:8px;right:8px;}nav a:hover,nav a.active{color:var(--white);background:rgba(255,255,255,0.12);}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--white);}
+    .mobile-nav{display:none;background:var(--navy);border-top:1px solid rgba(255,255,255,0.1);}
+    .mobile-nav a{display:block;padding:14px 24px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .mobile-nav.open{display:block;}
+    .page-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 60%,#1a3a5c 100%);padding:64px 24px 48px;text-align:center;}
+    .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);text-transform:uppercase;margin-bottom:10px;}
+    .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:#fff;}
+    .page-line{width:60px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--gold));margin:14px auto 0;}
+    .page-sub{color:rgba(255,255,255,0.75);font-size:13px;margin-top:18px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.9;}
+    main{max-width:840px;margin:0 auto;padding:64px 24px;}
+    .section-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--light);margin-top:52px;}
+    .section-heading:first-of-type{margin-top:0;}
+    .lead-text{font-size:14px;color:var(--gray);line-height:2;margin-bottom:8px;}
+
+    /* 対象・特徴バッジ */
+    .audience-row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 8px;}
+    .audience-badge{background:var(--white);border:1px solid var(--border);border-radius:999px;padding:8px 18px;font-size:13px;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+
+    /* 入会ステップ（既存踏襲） */
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:8px;}
+    .step-card{border:1px solid var(--border);border-radius:16px;padding:24px 20px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:box-shadow .3s ease,transform .3s ease;}
+    .step-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-4px);}
+    .step-num{font-family:'Noto Serif JP',serif;font-size:28px;color:var(--gold);font-weight:700;margin-bottom:10px;line-height:1;}
+    .step-card h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+    .step-card p{font-size:13px;color:var(--gray);line-height:1.8;}
+
+    /* 道場ごとの基本料金カード */
+    .fee-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:20px;}
+    .fee-card{background:var(--white);border:1px solid var(--border);border-top:4px solid var(--gold-light);border-radius:14px;padding:22px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .fee-dojo{font-family:'Noto Serif JP',serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:2px;}
+    .fee-day{font-size:12px;color:var(--gray);margin-bottom:14px;}
+    .fee-price{font-family:'Noto Serif JP',serif;font-size:26px;color:var(--accent);font-weight:700;}
+    .fee-price span{font-size:12px;color:var(--gray);font-weight:400;margin-left:4px;}
+    .fee-note{font-size:11.5px;color:var(--gray);margin-top:8px;line-height:1.7;}
+    .fee-card.chigasaki{border-top-color:var(--chigasaki);}
+    .fee-card.hiratsuka{border-top-color:var(--hiratsuka);}
+    .fee-card.samukawa{border-top-color:var(--samukawa);}
+
+    /* 掛け持ち・スポット参加テーブル */
+    .combo-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid var(--border);margin-bottom:16px;}
+    .combo-table th{background:var(--light);color:var(--navy);font-size:12px;padding:12px 14px;text-align:left;letter-spacing:.5px;font-weight:700;}
+    .combo-table td{padding:13px 14px;font-size:13px;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+    .combo-table tr:last-child td{border-bottom:none;}
+    .combo-table .price-cell{font-weight:700;color:var(--accent);white-space:nowrap;}
+    @media(max-width:600px){.combo-table{font-size:12px;}.combo-table th,.combo-table td{padding:10px 8px;}}
+
+    .note-box{background:var(--light);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:18px 22px;font-size:12.5px;color:var(--gray);line-height:2;margin-bottom:20px;}
+    .note-box strong{color:var(--navy);}
+
+    /* FAQ（既存踏襲） */
+    .contact-card{border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:24px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
+    .faq-item:last-child{border-bottom:none;}
+    .faq-q{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;gap:10px;}
+    .faq-q::before{content:'Q';color:var(--accent);font-weight:700;flex-shrink:0;}
+    .faq-a{font-size:14px;color:var(--gray);line-height:1.9;display:flex;gap:10px;}
+    .faq-a::before{content:'A';color:var(--navy);font-weight:700;flex-shrink:0;}
+
+    .cta-box{text-align:center;margin-top:44px;padding:36px 24px;background:var(--white);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .cta-box p{font-size:13px;color:var(--gray);margin-bottom:18px;}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),#a93226);color:var(--white);padding:14px 36px;font-size:14px;font-weight:600;letter-spacing:1px;border:none;border-radius:8px;cursor:pointer;text-decoration:inline-block;display:inline-block;transition:all .3s ease;font-family:'Noto Sans JP',sans-serif;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
+
+    footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:48px 20px;font-size:12px;line-height:2.4;}
+    .footer-logo{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
+    footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
+    .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
+
+    @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}.contact-card{padding:22px;}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">相模合気道連盟<span>SAGAMI AIKIDO FEDERATION</span></a>
+    <nav>
+      <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html">指導者</a><a href="schedule.html">スケジュール</a><a href="join.html" class="active">入会案内</a><a href="contact.html">ご連絡先</a><a href="access.html">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+    </nav>
+    <div class="hamburger" onclick="document.getElementById('mn').classList.toggle('open')"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" id="mn">
+    <a href="index.html">ホーム</a><a href="news.html">お知らせ</a><a href="instructors.html">指導者</a><a href="schedule.html">スケジュール</a><a href="join.html">入会案内</a><a href="contact.html">ご連絡先</a><a href="access.html">アクセス</a><a href="photos.html">写真</a><a href="links.html">リンク</a>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-label">JOIN US</div>
+  <h1 class="page-title">入会案内</h1>
+  <div class="page-line"></div>
+  <p class="page-sub">見学・体験は無料です。子供から大人まで、どなたでも無理なく始められます。<br>まずはお気軽にお近くの道場へお越しください。</p>
+</div>
+
+<main>
+
+  <!-- 対象 -->
+  <div class="audience-row">
+    <div class="audience-badge">👦 子供クラスあり</div>
+    <div class="audience-badge">🧑‍🤝‍🧑 一般（社会人）</div>
+    <div class="audience-badge">👩 女性も安心して参加</div>
+    <div class="audience-badge">🧓 シニア歓迎</div>
+  </div>
+  <p class="lead-text">茅ヶ崎・平塚・寒川の各道場では、子供クラスをご用意しています。運動経験がない方、体力に自信のない方も、それぞれのペースで無理なく続けられます。</p>
+
+  <!-- 子供クラスの詳細 -->
+  <h2 class="section-heading">子供クラスについて</h2>
+  <p class="lead-text">道場によって、子供クラスの時間や進め方が異なります。</p>
+  <div class="fee-grid">
+    <div class="fee-card chigasaki">
+      <div class="fee-dojo">茅ヶ崎道場</div>
+      <div class="fee-day" style="margin-bottom:0;">日曜日　9:30〜10:30<br>水曜日　18:30〜19:30</div>
+      <div class="fee-note" style="margin-top:10px;">大人クラスの稽古時間の前半を、子供クラスとして行っています。</div>
+    </div>
+    <div class="fee-card hiratsuka">
+      <div class="fee-dojo">平塚道場</div>
+      <div class="fee-day" style="margin-bottom:0;">大人クラスと同じ時間帯</div>
+      <div class="fee-note" style="margin-top:10px;">同じ時間帯の中で、大人クラスとは別メニューで指導しています。</div>
+    </div>
+    <div class="fee-card samukawa">
+      <div class="fee-dojo">寒川道場</div>
+      <div class="fee-day" style="margin-bottom:0;">前半：子供クラス・初心者クラス<br>後半：大人クラス</div>
+      <div class="fee-note" style="margin-top:10px;">稽古時間の前半を子供・初心者クラス、後半を大人クラスとして行っています。</div>
+    </div>
+  </div>
+
+  <!-- 入会までの流れ -->
+  <h2 class="section-heading">入会までの流れ</h2>
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <h4>お問い合わせ</h4>
+      <p>お電話・メール・フォームから、見学したい道場と日程をご連絡ください。</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <h4>見学・体験稽古</h4>
+      <p>見学・体験は無料です。動きやすい服装でお越しください。道着がなくても体験できます。</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <h4>入会手続き</h4>
+      <p>入会申込書にご記入いただきます。月会費は道場・稽古回数により異なりますので、下記をご確認ください。</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <h4>稽古開始</h4>
+      <p>道着・帯は入会後にご準備ください。初心者の方には基本から丁寧に指導いたします。</p>
+    </div>
+  </div>
+
+  <!-- 基本の月謝 -->
+  <h2 class="section-heading">月謝のご案内（基本）</h2>
+  <p class="lead-text">月謝は道場ごとの稽古回数（週1回・月4回が基準）によって決まります。まずは、いずれか1つの道場に定期的に通う場合の基本料金です。</p>
+
+  <div class="fee-grid">
+    <div class="fee-card chigasaki">
+      <div class="fee-dojo">茅ヶ崎道場</div>
+      <div class="fee-day">日曜日のみ、または水曜日のみ（週1・月4回）</div>
+      <div class="fee-price">3,500<span>円／月</span></div>
+    </div>
+    <div class="fee-card chigasaki">
+      <div class="fee-dojo">茅ヶ崎道場</div>
+      <div class="fee-day">日曜日＋水曜日（週2・月8回）</div>
+      <div class="fee-price">5,500<span>円／月</span></div>
+    </div>
+    <div class="fee-card hiratsuka">
+      <div class="fee-dojo">平塚道場</div>
+      <div class="fee-day">日曜日（週1・月4回）</div>
+      <div class="fee-price">3,500<span>円／月</span></div>
+    </div>
+    <div class="fee-card samukawa">
+      <div class="fee-dojo">寒川道場</div>
+      <div class="fee-day">土曜日（週1・月4回）</div>
+      <div class="fee-price">3,500<span>円／月</span></div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    子供クラスの月謝、回数券制度の詳細については道場ごとにご案内しております。お問い合わせの際に、お子様のご年齢・ご希望の道場をお知らせください。
+  </div>
+
+  <!-- 掛け持ち・スポット参加 -->
+  <h2 class="section-heading">複数道場の稽古に参加する場合</h2>
+  <p class="lead-text">相模合気道連盟では、茅ヶ崎・平塚・寒川の道場を掛け持ちして稽古されている会員もいらっしゃいます。代表的な組み合わせの例は以下の通りです。</p>
+
+  <table class="combo-table">
+    <thead>
+      <tr><th>組み合わせ例</th><th>目安月謝</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>茅ヶ崎（週2・月8回）のみ</td>
+        <td class="price-cell">5,500円</td>
+        <td>1つの道場に定期的に通う、最も一般的なパターンの一つです</td>
+      </tr>
+      <tr>
+        <td>茅ヶ崎＋平塚</td>
+        <td class="price-cell">要お問い合わせ</td>
+        <td>所属道場の月謝に、もう一方の道場分が加算されます</td>
+      </tr>
+      <tr>
+        <td>茅ヶ崎＋寒川</td>
+        <td class="price-cell">要お問い合わせ</td>
+        <td>所属道場の月謝に、もう一方の道場分が加算されます</td>
+      </tr>
+      <tr>
+        <td>平塚＋寒川</td>
+        <td class="price-cell">要お問い合わせ</td>
+        <td>所属道場の月謝に、もう一方の道場分が加算されます</td>
+      </tr>
+      <tr>
+        <td>所属道場以外へ連盟員がスポット参加</td>
+        <td class="price-cell">道場ごとに加算</td>
+        <td>非連盟員の方の参加費より優遇されます</td>
+      </tr>
+      <tr>
+        <td>連盟未加入の方が単発で参加</td>
+        <td class="price-cell">1回3,500円 目安</td>
+        <td>体験・単発参加の場合の目安です</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note-box">
+    <strong>複数道場の掛け持ちや回数券制度など、組み合わせによって月謝は細かく異なります。</strong>正確な金額は所属予定の道場代表または連盟事務局までお問い合わせください。ご事情に応じて丁寧にご案内いたします。
+  </div>
+
+  <!-- FAQ -->
+  <h2 class="section-heading">よくあるご質問</h2>
+  <div class="contact-card">
+    <div class="faq-item">
+      <div class="faq-q">運動経験がなくても大丈夫ですか？</div>
+      <div class="faq-a">はい、全く問題ありません。合気道は年齢・体力に関わらず始められる武道です。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">子供も参加できますか？</div>
+      <div class="faq-a">はい。茅ヶ崎・平塚・寒川道場に子供クラスがございます。道場ごとに時間・進め方が異なりますので、詳しくは上記「子供クラスについて」をご覧ください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">女性でも参加できますか？</div>
+      <div class="faq-a">もちろんです。女性の方も安心して稽古できる環境です。お気軽にご参加ください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">複数の道場を掛け持ちできますか？</div>
+      <div class="faq-a">はい、可能です。茅ヶ崎・平塚・寒川を掛け持ちされている会員も多くいらっしゃいます。組み合わせにより月謝が異なりますので、お問い合わせの際にご希望の道場をお伝えください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">道着は入会時に必要ですか？</div>
+      <div class="faq-a">見学・体験の際は普段の動きやすい服装で構いません。道着は入会後にご準備いただければ大丈夫です。</div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <p>見学・体験のお申し込み、月謝や掛け持ちについてのご相談は、お気軽にご連絡ください。</p>
+    <a href="contact.html" class="btn-primary">お問い合わせはこちら</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">相模合気道連盟</div>
+  <div>神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市</div>
+  <div>公益財団法人合気会公認　／　神奈川県合気道連盟加盟</div>
+  <div class="footer-divider"></div>
+  <div>
+    <a href="index.html">ホーム</a> ／
+    <a href="schedule.html">スケジュール</a> ／
+    <a href="contact.html">ご連絡先</a> ／
+    <a href="photos.html">写真</a>
+  </div>
+  <div style="margin-top:16px">© 2026 相模合気道連盟</div>
+</footer>
+
+</body>
+</html>
