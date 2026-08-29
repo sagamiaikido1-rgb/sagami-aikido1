@@ -5,9 +5,10 @@
   <title>入会案内｜相模合気道連盟</title>
   <meta name="description" content="相模合気道連盟（茅ヶ崎・平塚・寒川・藤沢道場）の入会案内。月謝・稽古日・見学の流れをご案内します。子供から大人まで、どなたでも稽古を始められます。">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root{--navy:#1a1a2e;--navy-light:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;--white:#ffffff;--cream:#faf8f5;--gray:#666666;--light:#f0ebe3;--border:#ddd5c8;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;}
-    *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:#2c2c2c;line-height:1.8;}
+    *{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:#2c2c2c;line-height:1.8;}
     header{background:rgba(26,26,46,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
     .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
     .logo{font-family:'Noto Serif JP',serif;font-size:19px;font-weight:700;color:var(--white);letter-spacing:2px;text-decoration:none;}
@@ -25,6 +26,8 @@
     .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:#fff;}
     .page-line{width:60px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--gold));margin:14px auto 0;}
     .page-sub{color:rgba(255,255,255,0.75);font-size:13px;margin-top:18px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.9;}
+    .page-hero-btn{display:inline-block;margin-top:26px;background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;padding:13px 34px;font-size:14px;font-weight:700;letter-spacing:1px;border-radius:8px;text-decoration:none;box-shadow:0 4px 15px rgba(192,57,43,0.35);transition:all .3s ease;}
+    .page-hero-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.45);}
     main{max-width:840px;margin:0 auto;padding:64px 24px;}
     .section-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--light);margin-top:52px;}
     .section-heading:first-of-type{margin-top:0;}
@@ -58,6 +61,50 @@
     .combo-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid var(--border);margin-bottom:16px;}
     .combo-table th{background:var(--light);color:var(--navy);font-size:12px;padding:12px 14px;text-align:left;letter-spacing:.5px;font-weight:700;}
     .combo-table td{padding:13px 14px;font-size:13px;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
+
+    /* 稽古時間表 */
+    .timetable-block{margin-bottom:24px;}
+    .timetable-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .timetable-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .timetable-dot.chigasaki{background:var(--chigasaki);}
+    .timetable-dot.hiratsuka{background:var(--hiratsuka);}
+    .timetable-dot.samukawa{background:var(--samukawa);}
+    .timetable-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:15px;color:var(--navy);}
+    .timetable-badge{font-size:10.5px;background:var(--light);color:var(--gray);padding:2px 10px;border-radius:999px;font-weight:600;}
+    .timetable{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid var(--border);font-size:12.5px;}
+    .timetable td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+    .timetable tr:last-child td{border-bottom:none;}
+    .timetable .tt-part{font-weight:700;color:var(--navy);white-space:nowrap;width:64px;background:var(--cream);}
+    .timetable .tt-class{color:var(--navy);}
+    .timetable .tt-time{white-space:nowrap;text-align:right;color:var(--gray);font-weight:600;}
+    .timetable-note{font-size:11.5px;color:var(--gray);margin-top:6px;line-height:1.7;}
+    @media(max-width:600px){.timetable{font-size:11.5px;}.timetable td{padding:8px 8px;}.timetable .tt-part{width:48px;}}
+
+    /* 見学・体験フォーム */
+    .vf-card{border:1px solid var(--border);border-radius:16px;padding:28px 32px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .vf-group{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;}
+    .vf-group label{font-size:13px;font-weight:700;color:var(--navy);}
+    .vf-group label .vf-req{color:var(--accent);font-size:11px;margin-left:4px;font-weight:700;}
+    .vf-group label .vf-opt{color:var(--gray);font-size:11px;margin-left:4px;font-weight:400;}
+    .vf-group input,.vf-group select,.vf-group textarea{background:var(--white);border:1px solid var(--border);color:var(--navy);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;width:100%;}
+    .vf-group input:focus,.vf-group select:focus,.vf-group textarea:focus{outline:none;border-color:var(--gold);}
+    .vf-group textarea{resize:vertical;min-height:100px;}
+    .vf-error{font-size:12px;color:var(--accent);display:none;}
+    .vf-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;overflow:hidden;}
+    .vf-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    @media(max-width:560px){.vf-row2{grid-template-columns:1fr;}}
+    .vf-check-grid{display:flex;flex-wrap:wrap;gap:10px;}
+    .vf-check-item{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:13px;color:var(--navy);cursor:pointer;transition:all .2s;background:var(--cream);}
+    .vf-check-item input{width:auto;accent-color:var(--gold);}
+    .vf-check-item:has(input:checked){border-color:var(--gold);background:#fdf6e8;font-weight:700;}
+    .vf-submit{width:100%;background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;border:none;border-radius:8px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s ease;letter-spacing:1px;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
+    .vf-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
+    .vf-submit:disabled{background:#a8adba;box-shadow:none;transform:none;cursor:not-allowed;}
+    .vf-form-error{background:#fdf2f2;border-left:4px solid var(--accent);color:#9b2c2c;padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;margin-bottom:20px;display:none;}
+    #vfSuccessBox{display:none;text-align:center;padding:48px 24px;}
+    #vfSuccessBox .vf-icon{font-size:44px;margin-bottom:14px;}
+    #vfSuccessBox h4{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:10px;letter-spacing:1px;}
+    #vfSuccessBox p{font-size:13px;color:var(--gray);}
     .combo-table tr:last-child td{border-bottom:none;}
     .combo-table .price-cell{font-weight:700;color:var(--accent);white-space:nowrap;}
     @media(max-width:600px){.combo-table{font-size:12px;}.combo-table th,.combo-table td{padding:10px 8px;}}
@@ -127,6 +174,7 @@
   <h1 class="page-title">入会案内</h1>
   <div class="page-line"></div>
   <p class="page-sub">見学・体験は無料です。子供から大人まで、どなたでも無理なく始められます。<br>まずはお気軽にお近くの道場へお越しください。</p>
+  <a href="#vfFormWrap" class="page-hero-btn">今すぐ見学・体験を申し込む ↓</a>
 </div>
 
 <main>
@@ -138,27 +186,82 @@
     <div class="audience-badge">👩 女性も安心して参加</div>
     <div class="audience-badge">🧓 シニア歓迎</div>
   </div>
-  <p class="lead-text">茅ヶ崎・平塚・寒川の各道場では、子供クラスをご用意しています。運動経験がない方、体力に自信のない方も、それぞれのペースで無理なく続けられます。</p>
+  <p class="lead-text">茅ヶ崎・平塚・寒川の各道場では、子供クラス（子供・親子・初級）と一般クラス（中級・高校生以上）をご用意しています。運動経験がない方、体力に自信のない方も、それぞれのペースで無理なく続けられます。</p>
 
-  <!-- 子供クラスの詳細 -->
-  <h2 class="section-heading">子供クラスについて</h2>
-  <p class="lead-text">道場によって、子供クラスの時間や進め方が異なります。</p>
-  <div class="fee-grid">
-    <div class="fee-card chigasaki">
-      <div class="fee-dojo">茅ヶ崎道場</div>
-      <div class="fee-day" style="margin-bottom:0;">日曜日　9:30〜10:30<br>水曜日　18:30〜19:30</div>
-      <div class="fee-note" style="margin-top:10px;">大人クラスの稽古時間の前半を、子供クラスとして行っています。</div>
+  <!-- 稽古時間の詳細 -->
+  <h2 class="section-heading">稽古時間</h2>
+  <p class="lead-text">道場ごとに稽古時間・クラス編成が異なります。平塚・寒川は「昼」の時間帯が標準の稽古で、「夕」「夜」は個別に開催される特別稽古の枠です。</p>
+
+  <div class="timetable-block">
+    <div class="timetable-head">
+      <div class="timetable-dot chigasaki"></div>
+      <div class="timetable-title">茅ヶ崎合気会（茅ヶ崎道場）</div>
     </div>
-    <div class="fee-card hiratsuka">
-      <div class="fee-dojo">平塚道場</div>
-      <div class="fee-day" style="margin-bottom:0;">大人クラスと同じ時間帯</div>
-      <div class="fee-note" style="margin-top:10px;">同じ時間帯の中で、大人クラスとは別メニューで指導しています。</div>
+    <table class="timetable">
+      <tr>
+        <td class="tt-part">朝稽古</td>
+        <td class="tt-class">子供、親子、初級クラス</td>
+        <td class="tt-time">9:30 〜 10:30</td>
+      </tr>
+      <tr>
+        <td class="tt-part"></td>
+        <td class="tt-class">一般（中級、高校生以上）クラス</td>
+        <td class="tt-time">10:30 〜 11:30</td>
+      </tr>
+      <tr>
+        <td class="tt-part">夜稽古</td>
+        <td class="tt-class">子供、親子、初級クラス</td>
+        <td class="tt-time">18:30 〜 19:30</td>
+      </tr>
+      <tr>
+        <td class="tt-part"></td>
+        <td class="tt-class">一般（中級、高校生以上、LU）クラス</td>
+        <td class="tt-time">19:30 〜 20:30</td>
+      </tr>
+    </table>
+    <p class="timetable-note">※ ご都合により、日曜日の夜に稽古を設けることもあります。詳しくはお問い合わせください。</p>
+  </div>
+
+  <div class="timetable-block">
+    <div class="timetable-head">
+      <div class="timetable-dot hiratsuka"></div>
+      <div class="timetable-title">平塚合気会（平塚道場）</div>
+      <span class="timetable-badge">標準は昼</span>
     </div>
-    <div class="fee-card samukawa">
-      <div class="fee-dojo">寒川道場</div>
-      <div class="fee-day" style="margin-bottom:0;">前半：子供クラス・初心者クラス<br>後半：大人クラス</div>
-      <div class="fee-note" style="margin-top:10px;">稽古時間の前半を子供・初心者クラス、後半を大人クラスとして行っています。</div>
+    <table class="timetable">
+      <tr>
+        <td class="tt-part">昼稽古</td>
+        <td class="tt-class">子供、親子、初級クラス</td>
+        <td class="tt-time">15:30 〜 16:30</td>
+      </tr>
+      <tr>
+        <td class="tt-part"></td>
+        <td class="tt-class">一般（中級、高校生以上）クラス</td>
+        <td class="tt-time">15:30 〜 16:30</td>
+      </tr>
+    </table>
+    <p class="timetable-note">※ 昼稽古が基本の稽古時間です。ご都合により、夕方・夜の時間帯で個別に稽古を設けることもあります。詳しくはお問い合わせください。</p>
+  </div>
+
+  <div class="timetable-block">
+    <div class="timetable-head">
+      <div class="timetable-dot samukawa"></div>
+      <div class="timetable-title">相模合気会（寒川道場）</div>
+      <span class="timetable-badge">標準は昼</span>
     </div>
+    <table class="timetable">
+      <tr>
+        <td class="tt-part">昼稽古</td>
+        <td class="tt-class">子供、親子、初級クラス</td>
+        <td class="tt-time">12:30 〜 13:30</td>
+      </tr>
+      <tr>
+        <td class="tt-part"></td>
+        <td class="tt-class">一般（中級、高校生以上）クラス</td>
+        <td class="tt-time">13:30 〜 14:30</td>
+      </tr>
+    </table>
+    <p class="timetable-note">※ 昼稽古が基本の稽古時間です。ご都合により、夕方・夜の時間帯で個別に稽古を設けることもあります。詳しくはお問い合わせください。</p>
   </div>
 
   <!-- 入会までの流れ -->
@@ -188,7 +291,7 @@
 
   <!-- 基本の月謝 -->
   <h2 class="section-heading">月謝のご案内（基本）</h2>
-  <p class="lead-text">月謝は道場ごとの稽古回数（週1回・月4回が基準）によって決まります。まずは、いずれか1つの道場に定期的に通う場合の基本料金です。</p>
+  <p class="lead-text">月謝は道場ごとの標準の稽古回数（週1回・月4回が基準）によって決まります。まずは、いずれか1つの道場に定期的に通う場合の基本料金です。</p>
 
   <div class="fee-grid">
     <div class="fee-card chigasaki">
@@ -203,18 +306,18 @@
     </div>
     <div class="fee-card hiratsuka">
       <div class="fee-dojo">平塚道場</div>
-      <div class="fee-day">日曜日（週1・月4回）</div>
+      <div class="fee-day">昼稽古（標準・週1・月4回）</div>
       <div class="fee-price">3,500<span>円／月</span></div>
     </div>
     <div class="fee-card samukawa">
       <div class="fee-dojo">寒川道場</div>
-      <div class="fee-day">土曜日（週1・月4回）</div>
+      <div class="fee-day">昼稽古（標準・週1・月4回）</div>
       <div class="fee-price">3,500<span>円／月</span></div>
     </div>
   </div>
 
   <div class="note-box">
-    子供クラスの月謝、回数券制度の詳細については道場ごとにご案内しております。お問い合わせの際に、お子様のご年齢・ご希望の道場をお知らせください。
+    平塚・寒川の夕稽古・夜稽古は個別開催のため、参加を希望される場合は月謝や参加方法について別途ご相談ください。子供クラスの月謝、回数券制度の詳細についても道場ごとにご案内しております。お問い合わせの際に、お子様のご年齢・ご希望の道場をお知らせください。
   </div>
 
   <!-- 掛け持ち・スポット参加 -->
@@ -232,27 +335,17 @@
         <td>1つの道場に定期的に通う、最も一般的なパターンの一つです</td>
       </tr>
       <tr>
-        <td>茅ヶ崎＋平塚</td>
+        <td>2道場以上を掛け持ち<br>（茅ヶ崎＋平塚／茅ヶ崎＋寒川／平塚＋寒川　等）</td>
         <td class="price-cell">要お問い合わせ</td>
-        <td>所属道場の月謝に、もう一方の道場分が加算されます</td>
+        <td>所属道場の月謝に、もう一方の道場分が加算されます。組み合わせによって金額が異なります</td>
       </tr>
       <tr>
-        <td>茅ヶ崎＋寒川</td>
-        <td class="price-cell">要お問い合わせ</td>
-        <td>所属道場の月謝に、もう一方の道場分が加算されます</td>
-      </tr>
-      <tr>
-        <td>平塚＋寒川</td>
-        <td class="price-cell">要お問い合わせ</td>
-        <td>所属道場の月謝に、もう一方の道場分が加算されます</td>
-      </tr>
-      <tr>
-        <td>所属道場以外へ連盟員がスポット参加</td>
+        <td>連盟員が所属道場以外に単発参加</td>
         <td class="price-cell">道場ごとに加算</td>
         <td>非連盟員の方の参加費より優遇されます</td>
       </tr>
       <tr>
-        <td>連盟未加入の方が単発で参加</td>
+        <td>連盟未加入の方が単発参加</td>
         <td class="price-cell">1回3,500円 目安</td>
         <td>体験・単発参加の場合の目安です</td>
       </tr>
@@ -272,7 +365,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">子供も参加できますか？</div>
-      <div class="faq-a">はい。茅ヶ崎・平塚・寒川道場に子供クラスがございます。道場ごとに時間・進め方が異なりますので、詳しくは上記「子供クラスについて」をご覧ください。</div>
+      <div class="faq-a">はい。茅ヶ崎・平塚・寒川道場に子供クラスがございます。道場ごとに時間が異なりますので、詳しくは上記「稽古時間」をご覧ください。</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">女性でも参加できますか？</div>
@@ -288,9 +381,96 @@
     </div>
   </div>
 
-  <div class="cta-box">
+  <div class="cta-box" style="display:none;">
     <p>見学・体験のお申し込み、月謝や掛け持ちについてのご相談は、お気軽にご連絡ください。</p>
     <a href="contact.html" class="btn-primary">お問い合わせはこちら</a>
+  </div>
+
+  <!-- 見学・体験申込フォーム -->
+  <h2 class="section-heading">見学・体験のお申し込み</h2>
+  <p class="lead-text">見学・体験は無料です。以下のフォームからお気軽にお申し込みください。折り返しご連絡いたします。</p>
+
+  <div id="vfFormWrap" style="scroll-margin-top:88px;">
+    <div class="vf-card">
+      <div class="vf-form-error" id="vfFormError"></div>
+
+      <form id="visitForm" novalidate>
+        <div class="vf-row2">
+          <div class="vf-group">
+            <label for="vfName">お名前<span class="vf-req">必須</span></label>
+            <input type="text" id="vfName" maxlength="60" autocomplete="name">
+            <div class="vf-error" id="vfErrName">お名前を入力してください</div>
+          </div>
+          <div class="vf-group">
+            <label for="vfPhone">電話番号<span class="vf-req">必須</span></label>
+            <input type="tel" id="vfPhone" maxlength="20" autocomplete="tel" placeholder="090-1234-5678">
+            <div class="vf-error" id="vfErrPhone">正しい電話番号を入力してください</div>
+          </div>
+        </div>
+
+        <div class="vf-group">
+          <label for="vfEmail">メールアドレス<span class="vf-req">必須</span></label>
+          <input type="email" id="vfEmail" maxlength="120" autocomplete="email">
+          <div class="vf-error" id="vfErrEmail">正しいメールアドレスを入力してください</div>
+        </div>
+
+        <div class="vf-group">
+          <label for="vfDojo">見学・体験を希望する道場<span class="vf-req">必須</span></label>
+          <select id="vfDojo">
+            <option value="">選択してください</option>
+            <option value="茅ヶ崎道場">茅ヶ崎道場（茅ヶ崎合気会）</option>
+            <option value="平塚道場">平塚道場（平塚合気会）</option>
+            <option value="寒川道場">寒川道場（相模合気会）</option>
+            <option value="未定・相談したい">未定・相談したい</option>
+          </select>
+          <div class="vf-error" id="vfErrDojo">道場を選択してください</div>
+        </div>
+
+        <div class="vf-group">
+          <label>希望する稽古時間帯<span class="vf-opt">任意・複数選択可</span></label>
+          <div class="vf-check-grid">
+            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="朝">朝稽古</label>
+            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="昼">昼稽古</label>
+            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="夕">夕稽古</label>
+            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="夜">夜稽古</label>
+            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="相談したい">相談したい</label>
+          </div>
+        </div>
+
+        <div class="vf-row2">
+          <div class="vf-group">
+            <label for="vfHasChild">お子様の参加</label>
+            <select id="vfHasChild">
+              <option value="なし">大人のみ</option>
+              <option value="あり">お子様も一緒に参加希望</option>
+            </select>
+          </div>
+          <div class="vf-group">
+            <label for="vfChildAge">お子様のご年齢<span class="vf-opt">任意</span></label>
+            <input type="text" id="vfChildAge" maxlength="60" placeholder="例：8歳、小学3年生">
+          </div>
+        </div>
+
+        <div class="vf-group">
+          <label for="vfDate">希望日・その他ご要望<span class="vf-opt">任意</span></label>
+          <textarea id="vfDate" maxlength="500" placeholder="例：来月の日曜日に見学希望です。運動経験はありません。"></textarea>
+        </div>
+
+        <!-- ハニーポット：人間には見えない。ここに入力があれば送信ボットとみなす -->
+        <div class="vf-hp" aria-hidden="true">
+          <label for="vfWebsite">ウェブサイト（この項目は入力しないでください）</label>
+          <input type="text" id="vfWebsite" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button type="submit" class="vf-submit" id="vfSubmitBtn">見学・体験を申し込む</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="vfSuccessBox">
+    <div class="vf-icon">✅</div>
+    <h4>お申し込みを受け付けました</h4>
+    <p>内容を確認の上、担当者よりご連絡いたします。<br>今しばらくお待ちください。</p>
   </div>
 
 </main>
@@ -309,5 +489,107 @@
   <div style="margin-top:16px">© 2026 相模合気道連盟</div>
 </footer>
 
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, addDoc, serverTimestamp }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfhzD-KOcyAneUEHDeAYx1WB7Tcefc1So",
+    authDomain: "sagami-aikido-b5961.firebaseapp.com",
+    projectId: "sagami-aikido-b5961",
+    storageBucket: "sagami-aikido-b5961.firebasestorage.app",
+    messagingSenderId: "770248355445",
+    appId: "1:770248355445:web:3104563942dfed363d923c"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  function showVfError(id, show){
+    document.getElementById(id).style.display = show ? 'block' : 'none';
+  }
+
+  document.getElementById('visitForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const name     = document.getElementById('vfName').value.trim();
+    const phone    = document.getElementById('vfPhone').value.trim();
+    const email    = document.getElementById('vfEmail').value.trim();
+    const dojo     = document.getElementById('vfDojo').value;
+    const times    = Array.from(document.querySelectorAll('input[name="vfTime"]:checked')).map(el => el.value);
+    const hasChild = document.getElementById('vfHasChild').value;
+    const childAge = document.getElementById('vfChildAge').value.trim();
+    const dateNote = document.getElementById('vfDate').value.trim();
+    const honeypot = document.getElementById('vfWebsite').value.trim();
+    const formError = document.getElementById('vfFormError');
+    formError.style.display = 'none';
+
+    // バリデーション
+    let valid = true;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^[0-9\-+()\s]*$/;
+
+    showVfError('vfErrName', false);
+    showVfError('vfErrPhone', false);
+    showVfError('vfErrEmail', false);
+    showVfError('vfErrDojo', false);
+
+    if(!name || name.length > 60){ showVfError('vfErrName', true); valid = false; }
+    if(!phone || phone.length > 20 || !phonePattern.test(phone)){ showVfError('vfErrPhone', true); valid = false; }
+    if(!email || email.length > 120 || !emailPattern.test(email)){ showVfError('vfErrEmail', true); valid = false; }
+    if(!dojo){ showVfError('vfErrDojo', true); valid = false; }
+
+    if(!valid){
+      formError.textContent = '入力内容をご確認ください。';
+      formError.style.display = 'block';
+      return;
+    }
+
+    // ハニーポットに入力があればスパムとみなし、見た目上は成功したように見せて実際には送信しない
+    if(honeypot){
+      showVfSuccess();
+      return;
+    }
+
+    const btn = document.getElementById('vfSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = '送信中...';
+
+    try{
+      const data = {
+        name, phone, email, dojo,
+        times, hasChild,
+        createdAt: serverTimestamp(), status: 'unread', isImportant: false
+      };
+      if(childAge) data.childAge = childAge;
+      if(dateNote) data.dateNote = dateNote;
+
+      await addDoc(collection(db, 'visitRequests'), data);
+
+      // 管理者へメール通知（EmailJS）。失敗してもFirestore保存は成功しているので、
+      // 通知エラーはユーザーに見せず、通常どおり成功表示にする
+      try{
+        await emailjs.send('service_6z0olk2', 'template_0uzk82d', {
+          name, email, phone,
+          message: `【見学・体験お申し込み】\n希望道場：${dojo}\n希望時間帯：${times.join('、') || '未選択'}\nお子様の参加：${hasChild}${childAge ? '（'+childAge+'）' : ''}\n希望日・ご要望：${dateNote || 'なし'}`
+        }, '84sAZfRjazDCwh_mP');
+      }catch(mailErr){
+        console.error('通知メール送信に失敗:', mailErr);
+      }
+
+      showVfSuccess();
+    }catch(err){
+      formError.textContent = '送信に失敗しました。しばらくしてから再度お試しください。';
+      formError.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '見学・体験を申し込む';
+    }
+  });
+
+  function showVfSuccess(){
+    document.getElementById('vfFormWrap').style.display = 'none';
+    document.getElementById('vfSuccessBox').style.display = 'block';
+  }
+</script>
 </body>
 </html>
