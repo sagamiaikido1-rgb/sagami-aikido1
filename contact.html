@@ -4,7 +4,6 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ご連絡先｜相模合気道連盟</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root{--navy:#1a1a2e;--navy-light:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;--white:#ffffff;--cream:#faf8f5;--gray:#666666;--light:#f0ebe3;--border:#ddd5c8;}
     *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:#2c2c2c;line-height:1.8;}
@@ -32,47 +31,15 @@
     .contact-label{font-size:12px;color:var(--gold);font-weight:700;min-width:90px;margin-top:2px;letter-spacing:1px;}
     .contact-val{font-size:14px;color:var(--navy);line-height:1.9;}
     .contact-val a{color:var(--navy);}
-    /* 入会ステップ */
-    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
-    .step-card{border:1px solid var(--border);border-radius:16px;padding:24px 20px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:box-shadow .3s ease,transform .3s ease;}
-    .step-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-4px);}
-    .step-num{font-family:'Noto Serif JP',serif;font-size:28px;color:var(--gold);font-weight:700;margin-bottom:10px;line-height:1;}
-    .step-card h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;}
-    .step-card p{font-size:13px;color:var(--gray);line-height:1.8;}
-    /* FAQ */
-    .faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
-    .faq-item:last-child{border-bottom:none;}
-    .faq-q{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;gap:10px;}
-    .faq-q::before{content:'Q';color:var(--accent);font-weight:700;flex-shrink:0;}
-    .faq-a{font-size:14px;color:var(--gray);line-height:1.9;display:flex;gap:10px;padding-left:0;}
-    .faq-a::before{content:'A';color:var(--navy);font-weight:700;flex-shrink:0;}
-    .section-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--light);margin-top:40px;}
+    .cta-box{text-align:center;margin-top:32px;padding:36px 24px;background:var(--white);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .cta-box p{font-size:14px;color:var(--gray);margin-bottom:18px;line-height:1.9;}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;padding:14px 36px;font-size:14px;font-weight:600;letter-spacing:1px;border:none;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .3s ease;font-family:'Noto Sans JP',sans-serif;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
     footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:48px 20px;font-size:12px;line-height:2.4;}
     .footer-logo{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
     footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
     .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
     @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}.contact-card{padding:24px;}}
-
-    /* オンラインお問い合わせフォーム */
-    .cf-intro{font-size:14px;color:var(--gray);margin-bottom:24px;}
-    .cf-group{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;}
-    .cf-group label{font-size:13px;font-weight:700;color:var(--navy);}
-    .cf-group label .cf-req{color:var(--accent);font-size:11px;margin-left:4px;font-weight:700;}
-    .cf-group label .cf-opt{color:var(--gray);font-size:11px;margin-left:4px;font-weight:400;}
-    .cf-group input,.cf-group textarea{background:var(--white);border:1px solid var(--border);color:var(--navy);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;width:100%;}
-    .cf-group input:focus,.cf-group textarea:focus{outline:none;border-color:var(--gold);}
-    .cf-group textarea{resize:vertical;min-height:140px;}
-    .cf-error{font-size:12px;color:var(--accent);display:none;}
-    .cf-char-count{font-size:11px;color:var(--gray);text-align:right;}
-    .cf-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;overflow:hidden;}
-    .cf-submit{width:100%;background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;border:none;border-radius:8px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s ease;letter-spacing:1px;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
-    .cf-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
-    .cf-submit:disabled{background:#a8adba;box-shadow:none;transform:none;cursor:not-allowed;}
-    .cf-form-error{background:#fdf2f2;border-left:4px solid var(--accent);color:#9b2c2c;padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;margin-bottom:20px;display:none;}
-    #cfSuccessBox{display:none;text-align:center;padding:48px 24px;}
-    #cfSuccessBox .cf-icon{font-size:44px;margin-bottom:14px;}
-    #cfSuccessBox h4{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:10px;letter-spacing:1px;}
-    #cfSuccessBox p{font-size:13px;color:var(--gray);}
   </style>
 </head>
 <body>
@@ -137,100 +104,10 @@
     <div class="contact-row"><span class="contact-label">湘南台合気会<br><span style="font-weight:400;font-size:11px">（藤沢・休止中）</span></span><span class="contact-val">金曜日 19:30〜（現在休止中）</span></div>
   </div>
 
-  <!-- 見学・入会案内 -->
-  <h2 class="section-heading">見学・入会案内</h2>
-  <div class="steps">
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <h4>まずはご連絡を</h4>
-      <p>お電話またはメールにて、見学希望の道場と日程をご連絡ください。事前連絡でスムーズにご案内できます。</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <h4>見学・体験稽古</h4>
-      <p>稽古の見学・体験は無料です。動きやすい服装でお越しください。道着をお持ちでない方も体験できます。</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <h4>入会手続き</h4>
-      <p>入会をご希望の方は入会申込書にご記入いただきます。月会費等の詳細は各道場にてご確認ください。</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">04</div>
-      <h4>稽古開始</h4>
-      <p>道着・帯は入会後にご準備ください。初心者の方には基本から丁寧に指導いたします。</p>
-    </div>
-  </div>
-
-  <!-- FAQ -->
-  <h2 class="section-heading">よくあるご質問</h2>
-  <div class="contact-card" style="padding:28px 36px;">
-    <div class="faq-item">
-      <div class="faq-q">運動経験がなくても大丈夫ですか？</div>
-      <div class="faq-a">はい、全く問題ありません。合気道は年齢・体力に関わらず始められる武道です。</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">子供も参加できますか？</div>
-      <div class="faq-a">茅ヶ崎・平塚・寒川道場では子供クラスがあります。お気軽にご相談ください。</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">女性でも参加できますか？</div>
-      <div class="faq-a">もちろんです。女性の方も安心して稽古できる環境です。お気軽にご参加ください。</div>
-    </div>
-  </div>
-
-  <!-- オンラインお問い合わせフォーム -->
-  <h2 class="section-heading">オンラインでお問い合わせ</h2>
-  <div class="contact-card" style="padding:28px 36px;">
-    <div id="cfFormWrap">
-      <p class="cf-intro">
-        お電話・メールのほか、以下のフォームからもお問い合わせいただけます。<br>
-        内容を確認の上、担当者よりご連絡いたします。
-      </p>
-
-      <div class="cf-form-error" id="cfFormError"></div>
-
-      <form id="contactForm" novalidate>
-        <div class="cf-group">
-          <label for="cfName">お名前<span class="cf-req">必須</span></label>
-          <input type="text" id="cfName" maxlength="60" autocomplete="name">
-          <div class="cf-error" id="errName">お名前を入力してください</div>
-        </div>
-
-        <div class="cf-group">
-          <label for="cfEmail">メールアドレス<span class="cf-req">必須</span></label>
-          <input type="email" id="cfEmail" maxlength="120" autocomplete="email">
-          <div class="cf-error" id="errEmail">正しいメールアドレスを入力してください</div>
-        </div>
-
-        <div class="cf-group">
-          <label for="cfPhone">電話番号<span class="cf-opt">任意</span></label>
-          <input type="tel" id="cfPhone" maxlength="20" autocomplete="tel" placeholder="090-1234-5678">
-          <div class="cf-error" id="errPhone">正しい電話番号を入力してください</div>
-        </div>
-
-        <div class="cf-group">
-          <label for="cfMessage">お問い合わせ内容<span class="cf-req">必須</span></label>
-          <textarea id="cfMessage" maxlength="1000" oninput="updateCharCount()"></textarea>
-          <div class="cf-char-count"><span id="charCount">0</span> / 1000文字</div>
-          <div class="cf-error" id="errMessage">お問い合わせ内容を入力してください</div>
-        </div>
-
-        <!-- ハニーポット：人間には見えない。ここに入力があれば送信ボットとみなす -->
-        <div class="cf-hp" aria-hidden="true">
-          <label for="cfWebsite">ウェブサイト（この項目は入力しないでください）</label>
-          <input type="text" id="cfWebsite" tabindex="-1" autocomplete="off">
-        </div>
-
-        <button type="submit" class="cf-submit" id="submitBtn">送信する</button>
-      </form>
-    </div>
-
-    <div id="cfSuccessBox">
-      <div class="cf-icon">✅</div>
-      <h4>お問い合わせを受け付けました</h4>
-      <p>内容を確認の上、担当者よりご連絡いたします。<br>今しばらくお待ちください。</p>
-    </div>
+  <!-- 入会案内への誘導 -->
+  <div class="cta-box">
+    <p>見学・体験のお申し込みや、入会・月謝に関するご質問は、<br>入会案内ページのフォームから承っております。</p>
+    <a href="join.html#formSection" class="btn-primary">入会案内・お問い合わせフォームへ</a>
   </div>
 </main>
 
@@ -238,104 +115,7 @@
   <div class="footer-logo">相模合気道連盟</div>
   <div>神奈川県茅ヶ崎市・平塚市・寒川町・藤沢市</div>
   <div class="footer-divider"></div>
-  <div><a href="index.html">ホーム</a> ／ <a href="schedule.html">スケジュール</a> ／ <a href="contact.html">ご連絡先</a></div>
+  <div><a href="index.html">ホーム</a> ／ <a href="join.html">入会案内</a> ／ <a href="schedule.html">スケジュール</a></div>
   <div style="margin-top:12px">© 2026 相模合気道連盟</div>
 </footer>
-
-<script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getFirestore, collection, addDoc, serverTimestamp }
-    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBfhzD-KOcyAneUEHDeAYx1WB7Tcefc1So",
-    authDomain: "sagami-aikido-b5961.firebaseapp.com",
-    projectId: "sagami-aikido-b5961",
-    storageBucket: "sagami-aikido-b5961.firebasestorage.app",
-    messagingSenderId: "770248355445",
-    appId: "1:770248355445:web:3104563942dfed363d923c"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  window.updateCharCount = function(){
-    document.getElementById('charCount').textContent = document.getElementById('cfMessage').value.length;
-  };
-
-  function showFieldError(id, show){
-    document.getElementById(id).style.display = show ? 'block' : 'none';
-  }
-
-  document.getElementById('contactForm').addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    const name    = document.getElementById('cfName').value.trim();
-    const email   = document.getElementById('cfEmail').value.trim();
-    const phone   = document.getElementById('cfPhone').value.trim();
-    const message = document.getElementById('cfMessage').value.trim();
-    const honeypot = document.getElementById('cfWebsite').value.trim();
-    const formError = document.getElementById('cfFormError');
-    formError.style.display = 'none';
-
-    // バリデーション
-    let valid = true;
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phonePattern = /^[0-9\-+()\s]*$/;
-
-    showFieldError('errName', false);
-    showFieldError('errEmail', false);
-    showFieldError('errPhone', false);
-    showFieldError('errMessage', false);
-
-    if(!name || name.length > 60){ showFieldError('errName', true); valid = false; }
-    if(!email || email.length > 120 || !emailPattern.test(email)){ showFieldError('errEmail', true); valid = false; }
-    if(phone && (phone.length > 20 || !phonePattern.test(phone))){ showFieldError('errPhone', true); valid = false; }
-    if(!message || message.length > 1000){ showFieldError('errMessage', true); valid = false; }
-
-    if(!valid){
-      formError.textContent = '入力内容をご確認ください。';
-      formError.style.display = 'block';
-      return;
-    }
-
-    // ハニーポットに入力があればスパムとみなし、
-    // 見た目上は成功したように見せて実際には送信しない
-    if(honeypot){
-      showCfSuccess();
-      return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = '送信中...';
-
-    try{
-      const data = { name, email, message, createdAt: serverTimestamp(), status: 'unread', isImportant: false };
-      if(phone) data.phone = phone;
-      await addDoc(collection(db, 'contacts'), data);
-
-      // 管理者へメール通知（EmailJS）。失敗してもFirestore保存は成功しているので、
-      // 通知エラーはユーザーに見せず、通常どおり成功表示にする
-      try{
-        await emailjs.send('service_6z0olk2', 'template_0uzk82d', {
-          name, email, phone: phone || '(未入力)', message
-        }, '84sAZfRjazDCwh_mP');
-      }catch(mailErr){
-        console.error('通知メール送信に失敗:', mailErr);
-      }
-
-      showCfSuccess();
-    }catch(err){
-      formError.textContent = '送信に失敗しました。しばらくしてから再度お試しください。';
-      formError.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = '送信する';
-    }
-  });
-
-  function showCfSuccess(){
-    document.getElementById('cfFormWrap').style.display = 'none';
-    document.getElementById('cfSuccessBox').style.display = 'block';
-  }
-</script>
 </body></html>

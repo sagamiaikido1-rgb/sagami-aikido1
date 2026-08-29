@@ -80,31 +80,6 @@
     .timetable-note{font-size:11.5px;color:var(--gray);margin-top:6px;line-height:1.7;}
     @media(max-width:600px){.timetable{font-size:11.5px;}.timetable td{padding:8px 8px;}.timetable .tt-part{width:48px;}}
 
-    /* 見学・体験フォーム */
-    .vf-card{border:1px solid var(--border);border-radius:16px;padding:28px 32px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-    .vf-group{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;}
-    .vf-group label{font-size:13px;font-weight:700;color:var(--navy);}
-    .vf-group label .vf-req{color:var(--accent);font-size:11px;margin-left:4px;font-weight:700;}
-    .vf-group label .vf-opt{color:var(--gray);font-size:11px;margin-left:4px;font-weight:400;}
-    .vf-group input,.vf-group select,.vf-group textarea{background:var(--white);border:1px solid var(--border);color:var(--navy);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;width:100%;}
-    .vf-group input:focus,.vf-group select:focus,.vf-group textarea:focus{outline:none;border-color:var(--gold);}
-    .vf-group textarea{resize:vertical;min-height:100px;}
-    .vf-error{font-size:12px;color:var(--accent);display:none;}
-    .vf-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;overflow:hidden;}
-    .vf-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-    @media(max-width:560px){.vf-row2{grid-template-columns:1fr;}}
-    .vf-check-grid{display:flex;flex-wrap:wrap;gap:10px;}
-    .vf-check-item{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:13px;color:var(--navy);cursor:pointer;transition:all .2s;background:var(--cream);}
-    .vf-check-item input{width:auto;accent-color:var(--gold);}
-    .vf-check-item:has(input:checked){border-color:var(--gold);background:#fdf6e8;font-weight:700;}
-    .vf-submit{width:100%;background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;border:none;border-radius:8px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s ease;letter-spacing:1px;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
-    .vf-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
-    .vf-submit:disabled{background:#a8adba;box-shadow:none;transform:none;cursor:not-allowed;}
-    .vf-form-error{background:#fdf2f2;border-left:4px solid var(--accent);color:#9b2c2c;padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;margin-bottom:20px;display:none;}
-    #vfSuccessBox{display:none;text-align:center;padding:48px 24px;}
-    #vfSuccessBox .vf-icon{font-size:44px;margin-bottom:14px;}
-    #vfSuccessBox h4{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:10px;letter-spacing:1px;}
-    #vfSuccessBox p{font-size:13px;color:var(--gray);}
     .combo-table tr:last-child td{border-bottom:none;}
     .combo-table .price-cell{font-weight:700;color:var(--accent);white-space:nowrap;}
     @media(max-width:600px){.combo-table{font-size:12px;}.combo-table th,.combo-table td{padding:10px 8px;}}
@@ -132,6 +107,42 @@
     .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
 
     @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}.contact-card{padding:22px;}}
+
+    /* オンラインお問い合わせフォーム */
+    .cf-intro{font-size:14px;color:var(--gray);margin-bottom:24px;}
+    .cf-group{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;}
+    .cf-group label{font-size:13px;font-weight:700;color:var(--navy);}
+    .cf-group label .cf-req{color:var(--accent);font-size:11px;margin-left:4px;font-weight:700;}
+    .cf-group label .cf-opt{color:var(--gray);font-size:11px;margin-left:4px;font-weight:400;}
+    .cf-group input,.cf-group select,.cf-group textarea{background:var(--white);border:1px solid var(--border);color:var(--navy);border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;width:100%;}
+    .cf-group input:focus,.cf-group select:focus,.cf-group textarea:focus{outline:none;border-color:var(--gold);}
+    .cf-group textarea{resize:vertical;min-height:140px;}
+    .cf-error{font-size:12px;color:var(--accent);display:none;}
+    .cf-char-count{font-size:11px;color:var(--gray);text-align:right;}
+    .cf-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;overflow:hidden;}
+    .cf-submit{width:100%;background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;border:none;border-radius:8px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s ease;letter-spacing:1px;box-shadow:0 4px 15px rgba(192,57,43,0.3);}
+    .cf-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.4);}
+    .cf-submit:disabled{background:#a8adba;box-shadow:none;transform:none;cursor:not-allowed;}
+    .cf-form-error{background:#fdf2f2;border-left:4px solid var(--accent);color:#9b2c2c;padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;margin-bottom:20px;display:none;}
+    #cfSuccessBox{display:none;text-align:center;padding:48px 24px;}
+    #cfSuccessBox .cf-icon{font-size:44px;margin-bottom:14px;}
+    #cfSuccessBox h4{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--navy);margin-bottom:10px;letter-spacing:1px;}
+    #cfSuccessBox p{font-size:13px;color:var(--gray);}
+    .cf-type-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+    .cf-type-tab{flex:1;min-width:180px;border:2px solid var(--border);border-radius:12px;padding:16px 14px;text-align:center;cursor:pointer;background:var(--cream);transition:all .2s;}
+    .cf-type-tab .cf-type-icon{font-size:22px;margin-bottom:6px;}
+    .cf-type-tab .cf-type-label{font-size:13px;font-weight:700;color:var(--navy);}
+    .cf-type-tab .cf-type-sub{font-size:11px;color:var(--gray);margin-top:2px;}
+    .cf-type-tab.selected{border-color:var(--gold);background:#fdf6e8;}
+    .cf-type-tab input{display:none;}
+    .cf-conditional{display:none;}
+    .cf-conditional.show{display:block;}
+    .cf-check-grid{display:flex;flex-wrap:wrap;gap:10px;}
+    .cf-check-item{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:13px;color:var(--navy);cursor:pointer;transition:all .2s;background:var(--cream);}
+    .cf-check-item input{width:auto;accent-color:var(--gold);}
+    .cf-check-item:has(input:checked){border-color:var(--gold);background:#fdf6e8;font-weight:700;}
+    .cf-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    @media(max-width:560px){.cf-row2{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -174,7 +185,7 @@
   <h1 class="page-title">入会案内</h1>
   <div class="page-line"></div>
   <p class="page-sub">見学・体験は無料です。子供から大人まで、どなたでも無理なく始められます。<br>まずはお気軽にお近くの道場へお越しください。</p>
-  <a href="#vfFormWrap" class="page-hero-btn">今すぐ見学・体験を申し込む ↓</a>
+  <a href="#formSection" class="page-hero-btn">今すぐ見学・体験を申し込む ↓</a>
 </div>
 
 <main>
@@ -381,96 +392,126 @@
     </div>
   </div>
 
-  <div class="cta-box" style="display:none;">
-    <p>見学・体験のお申し込み、月謝や掛け持ちについてのご相談は、お気軽にご連絡ください。</p>
-    <a href="contact.html" class="btn-primary">お問い合わせはこちら</a>
-  </div>
+  <!-- お問い合わせ・お申し込みフォーム -->
+  <h2 class="section-heading" id="formSection" style="scroll-margin-top:88px;">お問い合わせ・お申し込み</h2>
+  <div class="contact-card" style="padding:28px 36px;">
+    <div id="cfFormWrap">
+      <p class="cf-intro">
+        見学・体験のお申し込みも、その他のご質問も、こちらのフォームから承っております。<br>
+        内容を確認の上、担当者よりご連絡いたします。
+      </p>
 
-  <!-- 見学・体験申込フォーム -->
-  <h2 class="section-heading">見学・体験のお申し込み</h2>
-  <p class="lead-text">見学・体験は無料です。以下のフォームからお気軽にお申し込みください。折り返しご連絡いたします。</p>
+      <div class="cf-form-error" id="cfFormError"></div>
 
-  <div id="vfFormWrap" style="scroll-margin-top:88px;">
-    <div class="vf-card">
-      <div class="vf-form-error" id="vfFormError"></div>
+      <form id="contactForm" novalidate>
 
-      <form id="visitForm" novalidate>
-        <div class="vf-row2">
-          <div class="vf-group">
-            <label for="vfName">お名前<span class="vf-req">必須</span></label>
-            <input type="text" id="vfName" maxlength="60" autocomplete="name">
-            <div class="vf-error" id="vfErrName">お名前を入力してください</div>
-          </div>
-          <div class="vf-group">
-            <label for="vfPhone">電話番号<span class="vf-req">必須</span></label>
-            <input type="tel" id="vfPhone" maxlength="20" autocomplete="tel" placeholder="090-1234-5678">
-            <div class="vf-error" id="vfErrPhone">正しい電話番号を入力してください</div>
-          </div>
-        </div>
-
-        <div class="vf-group">
-          <label for="vfEmail">メールアドレス<span class="vf-req">必須</span></label>
-          <input type="email" id="vfEmail" maxlength="120" autocomplete="email">
-          <div class="vf-error" id="vfErrEmail">正しいメールアドレスを入力してください</div>
-        </div>
-
-        <div class="vf-group">
-          <label for="vfDojo">見学・体験を希望する道場<span class="vf-req">必須</span></label>
-          <select id="vfDojo">
-            <option value="">選択してください</option>
-            <option value="茅ヶ崎道場">茅ヶ崎道場（茅ヶ崎合気会）</option>
-            <option value="平塚道場">平塚道場（平塚合気会）</option>
-            <option value="寒川道場">寒川道場（相模合気会）</option>
-            <option value="未定・相談したい">未定・相談したい</option>
-          </select>
-          <div class="vf-error" id="vfErrDojo">道場を選択してください</div>
-        </div>
-
-        <div class="vf-group">
-          <label>希望する稽古時間帯<span class="vf-opt">任意・複数選択可</span></label>
-          <div class="vf-check-grid">
-            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="朝">朝稽古</label>
-            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="昼">昼稽古</label>
-            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="夕">夕稽古</label>
-            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="夜">夜稽古</label>
-            <label class="vf-check-item"><input type="checkbox" name="vfTime" value="相談したい">相談したい</label>
+        <div class="cf-group">
+          <label>お問い合わせの種類<span class="cf-req">必須</span></label>
+          <div class="cf-type-tabs">
+            <label class="cf-type-tab" id="tabVisit">
+              <input type="radio" name="cfType" value="visit" checked>
+              <div class="cf-type-icon">🥋</div>
+              <div class="cf-type-label">見学・体験の申し込み</div>
+              <div class="cf-type-sub">道場を見学・体験したい方</div>
+            </label>
+            <label class="cf-type-tab" id="tabGeneral">
+              <input type="radio" name="cfType" value="general">
+              <div class="cf-type-icon">✉️</div>
+              <div class="cf-type-label">一般のお問い合わせ</div>
+              <div class="cf-type-sub">その他のご質問・ご相談</div>
+            </label>
           </div>
         </div>
 
-        <div class="vf-row2">
-          <div class="vf-group">
-            <label for="vfHasChild">お子様の参加</label>
-            <select id="vfHasChild">
-              <option value="なし">大人のみ</option>
-              <option value="あり">お子様も一緒に参加希望</option>
+        <div class="cf-row2">
+          <div class="cf-group">
+            <label for="cfName">お名前<span class="cf-req">必須</span></label>
+            <input type="text" id="cfName" maxlength="60" autocomplete="name">
+            <div class="cf-error" id="errName">お名前を入力してください</div>
+          </div>
+          <div class="cf-group">
+            <label for="cfPhone" id="cfPhoneLabel">電話番号<span class="cf-req">必須</span></label>
+            <input type="tel" id="cfPhone" maxlength="20" autocomplete="tel" placeholder="090-1234-5678">
+            <div class="cf-error" id="errPhone">正しい電話番号を入力してください</div>
+          </div>
+        </div>
+
+        <div class="cf-group">
+          <label for="cfEmail">メールアドレス<span class="cf-req">必須</span></label>
+          <input type="email" id="cfEmail" maxlength="120" autocomplete="email">
+          <div class="cf-error" id="errEmail">正しいメールアドレスを入力してください</div>
+        </div>
+
+        <!-- 見学・体験の場合のみ表示 -->
+        <div class="cf-conditional show" id="visitFields">
+          <div class="cf-group">
+            <label for="cfDojo">見学・体験を希望する道場<span class="cf-req">必須</span></label>
+            <select id="cfDojo">
+              <option value="">選択してください</option>
+              <option value="茅ヶ崎道場">茅ヶ崎道場（茅ヶ崎合気会）</option>
+              <option value="平塚道場">平塚道場（平塚合気会）</option>
+              <option value="寒川道場">寒川道場（相模合気会）</option>
+              <option value="未定・相談したい">未定・相談したい</option>
             </select>
+            <div class="cf-error" id="errDojo">道場を選択してください</div>
           </div>
-          <div class="vf-group">
-            <label for="vfChildAge">お子様のご年齢<span class="vf-opt">任意</span></label>
-            <input type="text" id="vfChildAge" maxlength="60" placeholder="例：8歳、小学3年生">
+
+          <div class="cf-group">
+            <label>希望する稽古時間帯<span class="cf-opt">任意・複数選択可</span></label>
+            <div class="cf-check-grid">
+              <label class="cf-check-item"><input type="checkbox" name="cfTime" value="朝">朝稽古</label>
+              <label class="cf-check-item"><input type="checkbox" name="cfTime" value="昼">昼稽古</label>
+              <label class="cf-check-item"><input type="checkbox" name="cfTime" value="夕">夕稽古</label>
+              <label class="cf-check-item"><input type="checkbox" name="cfTime" value="夜">夜稽古</label>
+              <label class="cf-check-item"><input type="checkbox" name="cfTime" value="相談したい">相談したい</label>
+            </div>
+          </div>
+
+          <div class="cf-row2">
+            <div class="cf-group">
+              <label for="cfHasChild">お子様の参加</label>
+              <select id="cfHasChild">
+                <option value="なし">大人のみ</option>
+                <option value="あり">お子様も一緒に参加希望</option>
+              </select>
+            </div>
+            <div class="cf-group">
+              <label for="cfChildAge">お子様のご年齢<span class="cf-opt">任意</span></label>
+              <input type="text" id="cfChildAge" maxlength="60" placeholder="例：8歳、小学3年生">
+            </div>
+          </div>
+
+          <div class="cf-group">
+            <label for="cfDate">希望日・その他ご要望<span class="cf-opt">任意</span></label>
+            <textarea id="cfDate" maxlength="500" placeholder="例：来月の日曜日に見学希望です。運動経験はありません。" style="min-height:100px;"></textarea>
           </div>
         </div>
 
-        <div class="vf-group">
-          <label for="vfDate">希望日・その他ご要望<span class="vf-opt">任意</span></label>
-          <textarea id="vfDate" maxlength="500" placeholder="例：来月の日曜日に見学希望です。運動経験はありません。"></textarea>
+        <!-- 一般のお問い合わせの場合のみ表示 -->
+        <div class="cf-conditional" id="generalFields">
+          <div class="cf-group">
+            <label for="cfMessage">お問い合わせ内容<span class="cf-req">必須</span></label>
+            <textarea id="cfMessage" maxlength="1000" oninput="updateCharCount()"></textarea>
+            <div class="cf-char-count"><span id="charCount">0</span> / 1000文字</div>
+            <div class="cf-error" id="errMessage">お問い合わせ内容を入力してください</div>
+          </div>
         </div>
 
         <!-- ハニーポット：人間には見えない。ここに入力があれば送信ボットとみなす -->
-        <div class="vf-hp" aria-hidden="true">
-          <label for="vfWebsite">ウェブサイト（この項目は入力しないでください）</label>
-          <input type="text" id="vfWebsite" tabindex="-1" autocomplete="off">
+        <div class="cf-hp" aria-hidden="true">
+          <label for="cfWebsite">ウェブサイト（この項目は入力しないでください）</label>
+          <input type="text" id="cfWebsite" tabindex="-1" autocomplete="off">
         </div>
 
-        <button type="submit" class="vf-submit" id="vfSubmitBtn">見学・体験を申し込む</button>
+        <button type="submit" class="cf-submit" id="submitBtn">送信する</button>
       </form>
     </div>
-  </div>
 
-  <div id="vfSuccessBox">
-    <div class="vf-icon">✅</div>
-    <h4>お申し込みを受け付けました</h4>
-    <p>内容を確認の上、担当者よりご連絡いたします。<br>今しばらくお待ちください。</p>
+    <div id="cfSuccessBox">
+      <div class="cf-icon">✅</div>
+      <h4 id="cfSuccessTitle">お申し込みを受け付けました</h4>
+      <p>内容を確認の上、担当者よりご連絡いたします。<br>今しばらくお待ちください。</p>
+    </div>
   </div>
 
 </main>
@@ -505,39 +546,66 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  function showVfError(id, show){
+  window.updateCharCount = function(){
+    document.getElementById('charCount').textContent = document.getElementById('cfMessage').value.length;
+  };
+
+  function showFieldError(id, show){
     document.getElementById(id).style.display = show ? 'block' : 'none';
   }
 
-  document.getElementById('visitForm').addEventListener('submit', async function(e){
+  const tabVisit = document.getElementById('tabVisit');
+  const tabGeneral = document.getElementById('tabGeneral');
+  const visitFields = document.getElementById('visitFields');
+  const generalFields = document.getElementById('generalFields');
+  const cfPhoneLabel = document.getElementById('cfPhoneLabel');
+
+  function updateCfType(){
+    const type = document.querySelector('input[name="cfType"]:checked').value;
+    tabVisit.classList.toggle('selected', type === 'visit');
+    tabGeneral.classList.toggle('selected', type === 'general');
+    visitFields.classList.toggle('show', type === 'visit');
+    generalFields.classList.toggle('show', type === 'general');
+    cfPhoneLabel.innerHTML = type === 'visit'
+      ? '電話番号<span class="cf-req">必須</span>'
+      : '電話番号<span class="cf-opt">任意</span>';
+  }
+  document.querySelectorAll('input[name="cfType"]').forEach(el => el.addEventListener('change', updateCfType));
+  updateCfType();
+
+  document.getElementById('contactForm').addEventListener('submit', async function(e){
     e.preventDefault();
 
-    const name     = document.getElementById('vfName').value.trim();
-    const phone    = document.getElementById('vfPhone').value.trim();
-    const email    = document.getElementById('vfEmail').value.trim();
-    const dojo     = document.getElementById('vfDojo').value;
-    const times    = Array.from(document.querySelectorAll('input[name="vfTime"]:checked')).map(el => el.value);
-    const hasChild = document.getElementById('vfHasChild').value;
-    const childAge = document.getElementById('vfChildAge').value.trim();
-    const dateNote = document.getElementById('vfDate').value.trim();
-    const honeypot = document.getElementById('vfWebsite').value.trim();
-    const formError = document.getElementById('vfFormError');
+    const type    = document.querySelector('input[name="cfType"]:checked').value;
+    const name    = document.getElementById('cfName').value.trim();
+    const email   = document.getElementById('cfEmail').value.trim();
+    const phone   = document.getElementById('cfPhone').value.trim();
+    const honeypot = document.getElementById('cfWebsite').value.trim();
+    const formError = document.getElementById('cfFormError');
     formError.style.display = 'none';
 
-    // バリデーション
     let valid = true;
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phonePattern = /^[0-9\-+()\s]*$/;
 
-    showVfError('vfErrName', false);
-    showVfError('vfErrPhone', false);
-    showVfError('vfErrEmail', false);
-    showVfError('vfErrDojo', false);
+    showFieldError('errName', false);
+    showFieldError('errEmail', false);
+    showFieldError('errPhone', false);
+    showFieldError('errMessage', false);
+    if(document.getElementById('errDojo')) showFieldError('errDojo', false);
 
-    if(!name || name.length > 60){ showVfError('vfErrName', true); valid = false; }
-    if(!phone || phone.length > 20 || !phonePattern.test(phone)){ showVfError('vfErrPhone', true); valid = false; }
-    if(!email || email.length > 120 || !emailPattern.test(email)){ showVfError('vfErrEmail', true); valid = false; }
-    if(!dojo){ showVfError('vfErrDojo', true); valid = false; }
+    if(!name || name.length > 60){ showFieldError('errName', true); valid = false; }
+    if(!email || email.length > 120 || !emailPattern.test(email)){ showFieldError('errEmail', true); valid = false; }
+
+    if(type === 'visit'){
+      if(!phone || phone.length > 20 || !phonePattern.test(phone)){ showFieldError('errPhone', true); valid = false; }
+      const dojo = document.getElementById('cfDojo').value;
+      if(!dojo){ showFieldError('errDojo', true); valid = false; }
+    }else{
+      if(phone && (phone.length > 20 || !phonePattern.test(phone))){ showFieldError('errPhone', true); valid = false; }
+      const message = document.getElementById('cfMessage').value.trim();
+      if(!message || message.length > 1000){ showFieldError('errMessage', true); valid = false; }
+    }
 
     if(!valid){
       formError.textContent = '入力内容をご確認ください。';
@@ -545,50 +613,70 @@
       return;
     }
 
-    // ハニーポットに入力があればスパムとみなし、見た目上は成功したように見せて実際には送信しない
     if(honeypot){
-      showVfSuccess();
+      showCfSuccess(type);
       return;
     }
 
-    const btn = document.getElementById('vfSubmitBtn');
+    const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = '送信中...';
 
     try{
-      const data = {
-        name, phone, email, dojo,
-        times, hasChild,
-        createdAt: serverTimestamp(), status: 'unread', isImportant: false
-      };
-      if(childAge) data.childAge = childAge;
-      if(dateNote) data.dateNote = dateNote;
+      if(type === 'visit'){
+        const dojo = document.getElementById('cfDojo').value;
+        const times = Array.from(document.querySelectorAll('input[name="cfTime"]:checked')).map(el => el.value);
+        const hasChild = document.getElementById('cfHasChild').value;
+        const childAge = document.getElementById('cfChildAge').value.trim();
+        const dateNote = document.getElementById('cfDate').value.trim();
 
-      await addDoc(collection(db, 'visitRequests'), data);
+        const data = {
+          name, phone, email, dojo, times, hasChild,
+          createdAt: serverTimestamp(), status: 'unread', isImportant: false
+        };
+        if(childAge) data.childAge = childAge;
+        if(dateNote) data.dateNote = dateNote;
 
-      // 管理者へメール通知（EmailJS）。失敗してもFirestore保存は成功しているので、
-      // 通知エラーはユーザーに見せず、通常どおり成功表示にする
-      try{
-        await emailjs.send('service_6z0olk2', 'template_0uzk82d', {
-          name, email, phone,
-          message: `【見学・体験お申し込み】\n希望道場：${dojo}\n希望時間帯：${times.join('、') || '未選択'}\nお子様の参加：${hasChild}${childAge ? '（'+childAge+'）' : ''}\n希望日・ご要望：${dateNote || 'なし'}`
-        }, '84sAZfRjazDCwh_mP');
-      }catch(mailErr){
-        console.error('通知メール送信に失敗:', mailErr);
+        await addDoc(collection(db, 'visitRequests'), data);
+
+        try{
+          await emailjs.send('service_6z0olk2', 'template_0uzk82d', {
+            name, email, phone,
+            message: `【見学・体験お申し込み】\n希望道場：${dojo}\n希望時間帯：${times.join('、') || '未選択'}\nお子様の参加：${hasChild}${childAge ? '（'+childAge+'）' : ''}\n希望日・ご要望：${dateNote || 'なし'}`
+          }, '84sAZfRjazDCwh_mP');
+        }catch(mailErr){
+          console.error('通知メール送信に失敗:', mailErr);
+        }
+      }else{
+        const message = document.getElementById('cfMessage').value.trim();
+        const data = { name, email, message, createdAt: serverTimestamp(), status: 'unread', isImportant: false };
+        if(phone) data.phone = phone;
+
+        await addDoc(collection(db, 'contacts'), data);
+
+        try{
+          await emailjs.send('service_6z0olk2', 'template_0uzk82d', {
+            name, email, phone: phone || '(未入力)', message
+          }, '84sAZfRjazDCwh_mP');
+        }catch(mailErr){
+          console.error('通知メール送信に失敗:', mailErr);
+        }
       }
 
-      showVfSuccess();
+      showCfSuccess(type);
     }catch(err){
       formError.textContent = '送信に失敗しました。しばらくしてから再度お試しください。';
       formError.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = '見学・体験を申し込む';
+      btn.textContent = '送信する';
     }
   });
 
-  function showVfSuccess(){
-    document.getElementById('vfFormWrap').style.display = 'none';
-    document.getElementById('vfSuccessBox').style.display = 'block';
+  function showCfSuccess(type){
+    document.getElementById('cfFormWrap').style.display = 'none';
+    document.getElementById('cfSuccessTitle').textContent =
+      type === 'visit' ? 'お申し込みを受け付けました' : 'お問い合わせを受け付けました';
+    document.getElementById('cfSuccessBox').style.display = 'block';
   }
 </script>
 </body>
