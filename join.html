@@ -622,6 +622,9 @@
     btn.disabled = true;
     btn.textContent = '送信中...';
 
+    let savedOk = false;
+    let emailParams = null;
+
     try{
       if(type === 'visit'){
         const dojo = document.getElementById('cfDojo').value;
@@ -630,45 +633,44 @@
         const childAge = document.getElementById('cfChildAge').value.trim();
         const dateNote = document.getElementById('cfDate').value.trim();
 
+        const visitMessage = `【見学・体験のお申し込み】\n希望道場：${dojo}\n希望時間帯：${times.join('、') || '未選択'}\nお子様の参加：${hasChild}${childAge ? '（'+childAge+'）' : ''}\n希望日・ご要望：${dateNote || 'なし'}`;
+
         const data = {
-          name, phone, email, dojo, times, hasChild,
+          name, phone, email, message: visitMessage,
           createdAt: serverTimestamp(), status: 'unread', isImportant: false
         };
-        if(childAge) data.childAge = childAge;
-        if(dateNote) data.dateNote = dateNote;
 
-        await addDoc(collection(db, 'visitRequests'), data);
-
-        try{
-          await emailjs.send('service_6z0olk2', 'template_0uzk82d', {
-            name, email, phone,
-            message: `【見学・体験お申し込み】\n希望道場：${dojo}\n希望時間帯：${times.join('、') || '未選択'}\nお子様の参加：${hasChild}${childAge ? '（'+childAge+'）' : ''}\n希望日・ご要望：${dateNote || 'なし'}`
-          }, '84sAZfRjazDCwh_mP');
-        }catch(mailErr){
-          console.error('通知メール送信に失敗:', mailErr);
-        }
+        await addDoc(collection(db, 'contacts'), data);
+        savedOk = true;
+        emailParams = { name, email, phone, message: visitMessage };
       }else{
         const message = document.getElementById('cfMessage').value.trim();
         const data = { name, email, message, createdAt: serverTimestamp(), status: 'unread', isImportant: false };
         if(phone) data.phone = phone;
 
         await addDoc(collection(db, 'contacts'), data);
-
-        try{
-          await emailjs.send('service_6z0olk2', 'template_0uzk82d', {
-            name, email, phone: phone || '(未入力)', message
-          }, '84sAZfRjazDCwh_mP');
-        }catch(mailErr){
-          console.error('通知メール送信に失敗:', mailErr);
-        }
+        savedOk = true;
+        emailParams = { name, email, phone: phone || '(未入力)', message };
       }
-
-      showCfSuccess(type);
     }catch(err){
+      // 管理画面への保存自体が失敗した場合のみ、ここに到達する
+      console.error('保存に失敗:', err);
       formError.textContent = '送信に失敗しました。しばらくしてから再度お試しください。';
       formError.style.display = 'block';
       btn.disabled = false;
       btn.textContent = '送信する';
+      return;
+    }
+
+    // 保存が成功していれば、必ず成功表示にする。
+    // メール通知は付加的な処理であり、失敗しても申し込み自体は完了しているため、
+    // 画面上のエラーには一切反映しない。
+    if(savedOk){
+      showCfSuccess(type);
+      if(emailParams){
+        emailjs.send('service_6z0olk2', 'template_0uzk82d', emailParams, '84sAZfRjazDCwh_mP')
+          .catch(mailErr => console.error('通知メール送信に失敗:', mailErr));
+      }
     }
   });
 
