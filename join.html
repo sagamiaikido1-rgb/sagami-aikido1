@@ -143,6 +143,23 @@
     .cf-check-item:has(input:checked){border-color:var(--gold);background:#fdf6e8;font-weight:700;}
     .cf-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
     @media(max-width:560px){.cf-row2{grid-template-columns:1fr;}}
+
+    #backToTop {
+      position: fixed; right: 20px; bottom: 20px; width: 46px; height: 46px;
+      border-radius: 50%; background: var(--navy); color: var(--gold-light);
+      border: 1px solid rgba(255,255,255,0.15); font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      opacity: 0; visibility: hidden; transform: translateY(10px);
+      transition: opacity .3s ease, transform .3s ease, visibility .3s;
+      z-index: 999;
+      text-decoration: none;
+    }
+    #backToTop.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    #backToTop:hover { background: var(--navy-light); }
+    @media (max-width: 768px) {
+      #backToTop { right: 14px; bottom: 14px; width: 42px; height: 42px; font-size: 18px; }
+    }
   </style>
 </head>
 <body>
@@ -530,6 +547,8 @@
   <div style="margin-top:16px">© 2026 相模合気道連盟</div>
 </footer>
 
+<a href="#" id="backToTop" aria-label="トップに戻る" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑</a>
+
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getFirestore, collection, addDoc, serverTimestamp }
@@ -680,6 +699,17 @@
       type === 'visit' ? 'お申し込みを受け付けました' : 'お問い合わせを受け付けました';
     document.getElementById('cfSuccessBox').style.display = 'block';
   }
+</script>
+
+<script>
+  const backToTopBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTopBtn.classList.add('show');
+    } else {
+      backToTopBtn.classList.remove('show');
+    }
+  });
 </script>
 </body>
 </html>
