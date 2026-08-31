@@ -278,6 +278,8 @@
     .instructor-card h4 { font-family:'Noto Serif JP',serif; font-weight:700; font-size:16px; color:var(--navy); letter-spacing:1px; margin-bottom:12px; padding-bottom:10px; border-bottom:2px solid var(--light); }
     .instructor-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; font-size:16px; border-bottom:1px solid var(--border); }
     .instructor-row:last-child { border-bottom:none; }
+    .ins-name { flex-shrink:0; }
+    .ins-rank { color:var(--gray); margin-left:8px; margin-right:auto; }
     .role-badge { display:inline-block; font-size:13px; padding:4px 14px; font-weight:700; border-radius:999px; }
     .role-instructor { background:#dbeafe; color:#1e40af; }
     .role-sub { background:#f1f5f9; color:#475569; }
@@ -351,7 +353,10 @@
       .hero::before { font-size: 200px; }
       section { padding: 56px 20px; scroll-margin-top: 104px; }
       .instructor-grid { grid-template-columns: 1fr; }
-      .instructor-row { justify-content: flex-start; gap: 10px; flex-wrap: wrap; }
+      .instructor-row { display: grid; grid-template-columns: 1fr 1fr 1fr; justify-content: initial; }
+      .ins-name { flex: initial; margin-right: 0; text-align: left; }
+      .ins-rank { flex: initial; margin-left: 0; margin-right: 0; text-align: center; }
+      .instructor-row .role-badge { flex: initial; text-align: center; justify-self: center; }
       .timeline { padding-left: 22px; }
       .timeline-card { padding: 16px 18px; }
       .leaders-table th, .leaders-table td { padding: 10px 10px; font-size: 12.5px; }
@@ -662,29 +667,29 @@
     <div class="instructor-grid">
       <div class="instructor-card">
         <h4>茅ヶ崎道場　<span style="font-size:11px;color:var(--gold-light);">茅ヶ崎合気会</span></h4>
-        <div class="instructor-row"><span>菱田 司朗　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>小島 和枝　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>小島 三男　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>小林 千里　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>山岸 吉文　六段師範</span><span class="role-badge role-sub">副指導者</span></div>
-        <div class="instructor-row"><span>大谷 暢　六段師範</span><span class="role-badge role-sub">副指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">菱田 司朗</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小島 和枝</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小島 三男</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小林 千里</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">山岸 吉文</span><span class="ins-rank">六段師範</span><span class="role-badge role-sub">副指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">大谷 暢</span><span class="ins-rank">六段師範</span><span class="role-badge role-sub">副指導者</span></div>
       </div>
       <div class="instructor-card">
         <h4>平塚道場　<span style="font-size:11px;color:var(--gold-light);">平塚合気会</span></h4>
-        <div class="instructor-row"><span>小島 三男　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>小島 和枝　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>小林 千里　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>大谷 暢　六段師範</span><span class="role-badge role-sub">副指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小島 三男</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小島 和枝</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小林 千里</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">大谷 暢</span><span class="ins-rank">六段師範</span><span class="role-badge role-sub">副指導者</span></div>
       </div>
       <div class="instructor-card">
         <h4>寒川道場　<span style="font-size:11px;color:var(--gold-light);">相模合気会</span></h4>
-        <div class="instructor-row"><span>小島 三男　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
-        <div class="instructor-row"><span>村田 義則　六段師範</span><span class="role-badge role-sub">副指導者</span></div>
-        <div class="instructor-row"><span>大谷 暢　六段師範</span><span class="role-badge role-sub">副指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小島 三男</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">村田 義則</span><span class="ins-rank">六段師範</span><span class="role-badge role-sub">副指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">大谷 暢</span><span class="ins-rank">六段師範</span><span class="role-badge role-sub">副指導者</span></div>
       </div>
       <div class="instructor-card">
         <h4>藤沢道場　<span style="font-size:11px;color:var(--gold-light);">湘南台合気会</span></h4>
-        <div class="instructor-row"><span>小島 三男　七段師範</span><span class="role-badge role-instructor">指導者</span></div>
+        <div class="instructor-row"><span class="ins-name">小島 三男</span><span class="ins-rank">七段師範</span><span class="role-badge role-instructor">指導者</span></div>
         <p style="font-size:12px;color:var(--gray);margin-top:8px;">※ 現在休止中</p>
       </div>
     </div>
