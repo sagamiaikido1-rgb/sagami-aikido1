@@ -49,8 +49,8 @@
     nav a::after { content:''; position:absolute; bottom:0; left:50%; right:50%; height:2px; background:var(--gold-light); transition: all .2s; }
     nav a:hover::after, nav a.active::after { left:8px; right:8px; }
     nav a:hover, nav a.active { color: var(--white); background: rgba(255,255,255,0.12); }
-    nav a.disabled, .mobile-nav-bar a.disabled { color: rgba(255,255,255,0.32); cursor: default; pointer-events: none; }
-    nav a.disabled::after, .mobile-nav-bar a.disabled::after { display: none; }
+    nav a.disabled, .mobile-nav a.disabled { color: rgba(255,255,255,0.32); cursor: default; pointer-events: none; }
+    nav a.disabled::after, .mobile-nav a.disabled::after { display: none; }
 
     /* ── PC：ドロップダウン（親メニュー） ── */
     .nav-group { position: relative; }
@@ -72,24 +72,14 @@
     .nav-dropdown a:hover { background: rgba(255,255,255,0.1); }
 
     /* ── モバイル：ヘッダー直下にナビを常時展開表示 ── */
-    .mobile-nav-bar {
-      display: none;
-      background: var(--navy-light);
-      border-top: 1px solid rgba(255,255,255,0.1);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      white-space: nowrap;
-      padding: 0 8px;
-      position: relative;
-      mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
-    }
-    .mobile-nav-bar::-webkit-scrollbar { height: 3px; }
-    .mobile-nav-bar a {
-      display: inline-block; color: rgba(255,255,255,0.85); text-decoration: none;
-      font-size: 12.5px; padding: 12px 12px; letter-spacing: .5px;
-    }
-    .mobile-nav-bar a.active { color: var(--gold-light); font-weight: 700; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); }
+    .mobile-nav { display: none; background: var(--navy); border-top: 1px solid rgba(255,255,255,0.1); }
+    .mobile-nav a { display: block; padding: 14px 24px; color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .mobile-nav a.active { color: var(--gold-light); font-weight: 700; }
+    .mobile-nav.open { display: block; }
+    .mobile-nav-heading { padding: 12px 24px 6px; color: rgba(255,255,255,0.4); font-size: 11px; letter-spacing: 1px; border-bottom: none; }
+    .mobile-nav a.sub-link { padding-left: 38px; font-size: 13px; color: rgba(255,255,255,0.7); }
 
     /* ── ヒーロー（濃紺・多層グラデーション） ── */
     .hero {
@@ -371,7 +361,7 @@
     /* ── レスポンシブ ── */
     @media (max-width: 900px) {
       nav { display: none; }
-      .mobile-nav-bar { display: block; }
+      .hamburger { display: flex; }
       .hero { padding: 72px 20px 64px; }
       .hero::before { font-size: 200px; }
       section { padding: 56px 20px; scroll-margin-top: 104px; }
@@ -419,17 +409,20 @@
       <a href="#contact">ご連絡先</a>
       <a href="#links">リンク</a>
     </nav>
+    <div class="hamburger" onclick="document.getElementById('mn').classList.toggle('open')"><span></span><span></span><span></span></div>
   </div>
-  <!-- モバイル用：常時展開ナビ（横スクロール） -->
-  <div class="mobile-nav-bar">
+  <!-- モバイル用：階層化メニュー（ハンバーガー開閉） -->
+  <div class="mobile-nav" id="mn">
     <a href="#hero" class="active">TOP</a>
     <a href="#news">お知らせ</a>
-    <a href="#dojos">道場紹介</a>
-    <a href="#history">沿革</a>
-    <a href="#instructors">指導者</a>
+    <div class="mobile-nav-heading">連盟について</div>
+    <a href="#dojos" class="sub-link">道場紹介</a>
+    <a href="#history" class="sub-link">沿革</a>
+    <a href="#instructors" class="sub-link">指導者</a>
     <a href="join.html">入会案内</a>
-    <a href="#schedule">スケジュール</a>
-    <a href="#access">アクセス</a>
+    <div class="mobile-nav-heading">稽古・アクセス</div>
+    <a href="#schedule" class="sub-link">スケジュール</a>
+    <a href="#access" class="sub-link">アクセス</a>
     <a href="photos.html">写真</a>
     <a href="#contact">ご連絡先</a>
     <a href="#links">リンク</a>
@@ -1009,7 +1002,7 @@
 
   // ナビの現在地ハイライト（スクロール連動）
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('nav a, .mobile-nav-bar a');
+  const navLinks = document.querySelectorAll('nav a, .mobile-nav a');
   window.addEventListener('scroll', () => {
     let current = 'hero';
     sections.forEach(sec => {
