@@ -38,6 +38,20 @@
     .audience-row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 8px;}
     .audience-badge{background:var(--white);border:1px solid var(--border);border-radius:999px;padding:8px 18px;font-size:13px;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}
 
+    /* クラス紹介：対比カード */
+    .class-intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0 24px;}
+    .class-intro-card{border-radius:14px;padding:20px 22px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+    .class-intro-card.beginner{background:#fdf6e8;border:1px solid var(--gold-light);}
+    .class-intro-card.general{background:var(--white);border:1px solid var(--border);}
+    .class-intro-badge{display:inline-block;font-size:10.5px;font-weight:700;padding:3px 12px;border-radius:999px;margin-bottom:10px;letter-spacing:.5px;}
+    .class-intro-card.beginner .class-intro-badge{background:var(--gold-light);color:var(--navy);}
+    .class-intro-card.general .class-intro-badge{background:var(--light);color:var(--gray);}
+    .class-intro-name{font-family:'Noto Serif JP',serif;font-weight:700;font-size:17px;color:var(--navy);margin-bottom:4px;}
+    .class-intro-age{font-size:11.5px;color:var(--gray);margin-bottom:12px;}
+    .class-intro-desc{font-size:12.5px;color:var(--navy);line-height:1.9;}
+    .class-intro-desc strong{color:var(--accent);}
+    @media(max-width:640px){.class-intro-grid{grid-template-columns:1fr;}}
+
     /* 入会ステップ（既存踏襲） */
     .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:8px;}
     .step-card{border:1px solid var(--border);border-radius:16px;padding:24px 20px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:box-shadow .3s ease,transform .3s ease;}
@@ -98,9 +112,11 @@
     .day-block-classes{flex:1;}
     .day-class-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-size:12.5px;border-bottom:1px solid var(--border);}
     .day-class-row:last-child{border-bottom:none;}
+    .day-class-main{display:flex;flex-direction:column;gap:2px;}
+    .day-class-desc{font-size:10.5px;color:var(--gray);font-weight:400;}
     .day-class-name{color:var(--navy);}
     .day-class-time{color:var(--gray);font-weight:600;white-space:nowrap;margin-left:10px;}
-    @media(max-width:600px){.day-block-label{width:60px;font-size:12.5px;}.day-class-row{padding:9px 10px;font-size:11.5px;flex-wrap:wrap;}.day-class-time{margin-left:auto;}}
+    @media(max-width:600px){.day-block-label{width:60px;font-size:12.5px;}.day-class-row{padding:9px 10px;font-size:11.5px;flex-wrap:wrap;}.day-class-time{margin-left:auto;}.day-class-desc{font-size:10px;}}
 
 
     .note-box{background:var(--light);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:18px 22px;font-size:12.5px;color:var(--gray);line-height:2;margin-bottom:20px;}
@@ -232,12 +248,27 @@
 
   <!-- 対象 -->
   <div class="audience-row">
-    <div class="audience-badge">👦 子供クラス</div>
+    <div class="audience-badge">👦 子供・入門クラス</div>
     <div class="audience-badge">🧑‍🤝‍🧑 一般クラス</div>
     <div class="audience-badge">👩 女性も安心して参加</div>
     <div class="audience-badge">🧓 シニア歓迎</div>
   </div>
-  <p class="lead-text">茅ヶ崎・平塚・寒川の各道場では、子供クラス（15歳未満）と一般クラス（15歳以上）をご用意しています。運動経験や体力に関わらず、それぞれのペースで無理なく続けられます。ご不安な点はお気軽にご相談ください。</p>
+  <p class="lead-text">茅ヶ崎・平塚・寒川の各道場では、2つのクラスをご用意しています。運動経験や体力に関わらず、それぞれのペースで無理なく続けられます。ご不安な点はお気軽にご相談ください。</p>
+
+  <div class="class-intro-grid">
+    <div class="class-intro-card beginner">
+      <div class="class-intro-badge">大人の初心者も歓迎</div>
+      <div class="class-intro-name">子供・入門クラス</div>
+      <div class="class-intro-age">15歳未満</div>
+      <div class="class-intro-desc">お子様はもちろん、<strong>初めて合気道に触れる大人の方</strong>（高齢者・女性・親子での参加など）も対象です。指導員が丁寧にお教えします。</div>
+    </div>
+    <div class="class-intro-card general">
+      <div class="class-intro-badge">経験を積みたい方に</div>
+      <div class="class-intro-name">一般クラス</div>
+      <div class="class-intro-age">15歳以上</div>
+      <div class="class-intro-desc">基礎を身につけた方から経験者まで、より深く技を磨いていくクラスです。</div>
+    </div>
+  </div>
 
   <!-- 稽古時間の詳細 -->
   <h2 class="section-heading">稽古時間</h2>
@@ -252,14 +283,14 @@
     <div class="day-block">
       <div class="day-block-label">日曜日</div>
       <div class="day-block-classes">
-        <div class="day-class-row"><span class="day-class-name">子供クラス（15歳未満）</span><span class="day-class-time">09:30 〜 10:30</span></div>
+        <div class="day-class-row"><span class="day-class-main"><span class="day-class-name">子供・入門クラス</span><span class="day-class-desc">大人の初心者も歓迎</span></span><span class="day-class-time">09:30 〜 10:30</span></div>
         <div class="day-class-row"><span class="day-class-name">一般クラス（15歳以上）</span><span class="day-class-time">10:30 〜 11:30</span></div>
       </div>
     </div>
     <div class="day-block">
       <div class="day-block-label">水曜日</div>
       <div class="day-block-classes">
-        <div class="day-class-row"><span class="day-class-name">子供クラス（15歳未満）</span><span class="day-class-time">18:30 〜 19:30</span></div>
+        <div class="day-class-row"><span class="day-class-main"><span class="day-class-name">子供・入門クラス</span><span class="day-class-desc">大人の初心者も歓迎</span></span><span class="day-class-time">18:30 〜 19:30</span></div>
         <div class="day-class-row"><span class="day-class-name">一般クラス（15歳以上）</span><span class="day-class-time">19:30 〜 20:30</span></div>
       </div>
     </div>
@@ -275,7 +306,7 @@
     <div class="day-block">
       <div class="day-block-label">日曜日</div>
       <div class="day-block-classes">
-        <div class="day-class-row"><span class="day-class-name">子供クラス（15歳未満）</span><span class="day-class-time">15:30 〜 16:30</span></div>
+        <div class="day-class-row"><span class="day-class-main"><span class="day-class-name">子供・入門クラス</span><span class="day-class-desc">大人の初心者も歓迎</span></span><span class="day-class-time">15:30 〜 16:30</span></div>
         <div class="day-class-row"><span class="day-class-name">一般クラス（15歳以上）</span><span class="day-class-time">15:30 〜 16:30</span></div>
       </div>
     </div>
@@ -291,7 +322,7 @@
     <div class="day-block">
       <div class="day-block-label">土曜日</div>
       <div class="day-block-classes">
-        <div class="day-class-row"><span class="day-class-name">子供クラス（15歳未満）</span><span class="day-class-time">12:30 〜 13:30</span></div>
+        <div class="day-class-row"><span class="day-class-main"><span class="day-class-name">子供・入門クラス</span><span class="day-class-desc">大人の初心者も歓迎</span></span><span class="day-class-time">12:30 〜 13:30</span></div>
         <div class="day-class-row"><span class="day-class-name">一般クラス（15歳以上）</span><span class="day-class-time">13:30 〜 14:30</span></div>
       </div>
     </div>
@@ -374,7 +405,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">子供も参加できますか？</div>
-      <div class="faq-a">はい、茅ヶ崎・平塚・寒川道場に子供クラスがございます。道場ごとに時間が異なりますので、詳しくは上記「稽古時間」をご覧ください。</div>
+      <div class="faq-a">はい、茅ヶ崎・平塚・寒川道場に子供・入門クラスがございます。お子様はもちろん、大人の初心者の方もご参加いただけます。道場ごとに時間が異なりますので、詳しくは上記「稽古時間」をご覧ください。</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">女性でも参加できますか？</div>
