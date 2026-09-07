@@ -31,8 +31,7 @@
     .hamburger span{display:block;width:24px;height:2px;background:var(--white);}
     .mobile-nav{display:none;background:var(--navy);border-top:1px solid rgba(255,255,255,0.1);}
     .mobile-nav a{display:block;padding:14px 24px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.08);}
-    .mobile-nav-heading{padding:12px 24px 6px;color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:1px;border-bottom:none;}
-    .mobile-nav a.sub-link{padding-left:38px;font-size:13px;color:rgba(255,255,255,0.7);}
+    .mobile-nav-acc{border-bottom:1px solid rgba(255,255,255,0.08);}.mobile-nav-acc-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;color:rgba(255,255,255,0.85);font-size:14px;background:none;border:none;text-align:left;cursor:pointer;font-family:inherit;}.mobile-nav-acc-btn::after{content:'▾';font-size:11px;color:rgba(255,255,255,0.45);transition:transform .2s;}.mobile-nav-acc.open .mobile-nav-acc-btn::after{transform:rotate(180deg);}.mobile-nav-acc-panel{max-height:0;overflow:hidden;transition:max-height .25s ease;background:rgba(0,0,0,0.18);}.mobile-nav-acc.open .mobile-nav-acc-panel{max-height:220px;}.mobile-nav-acc-panel a{padding:12px 24px 12px 40px;font-size:13px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.06);}.mobile-nav-acc-panel a:last-child{border-bottom:none;}
     .mobile-nav.open{display:block;}
     .page-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 60%,#1a3a5c 100%);padding:64px 24px 48px;text-align:center;}
     .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);text-transform:uppercase;margin-bottom:10px;}
@@ -247,14 +246,22 @@
   <div class="mobile-nav" id="mn">
     <a href="index.html">ホーム</a>
     <a href="news.html">お知らせ</a>
-    <div class="mobile-nav-heading">連盟について</div>
-    <a href="index.html#dojos" class="sub-link">道場紹介</a>
-    <a href="index.html#history" class="sub-link">沿革</a>
-    <a href="instructors.html" class="sub-link">指導者</a>
+    <div class="mobile-nav-acc">
+      <button type="button" class="mobile-nav-acc-btn" onclick="this.parentElement.classList.toggle('open')">連盟について</button>
+      <div class="mobile-nav-acc-panel">
+        <a href="index.html#dojos">道場紹介</a>
+        <a href="index.html#history">沿革</a>
+        <a href="instructors.html">指導者</a>
+      </div>
+    </div>
     <a href="join.html" class="active">入会案内</a>
-    <div class="mobile-nav-heading">稽古・アクセス</div>
-    <a href="schedule.html" class="sub-link">スケジュール</a>
-    <a href="access.html" class="sub-link">アクセス</a>
+    <div class="mobile-nav-acc">
+      <button type="button" class="mobile-nav-acc-btn" onclick="this.parentElement.classList.toggle('open')">稽古・アクセス</button>
+      <div class="mobile-nav-acc-panel">
+        <a href="schedule.html">スケジュール</a>
+        <a href="access.html">アクセス</a>
+      </div>
+    </div>
     <a href="photos.html">写真</a>
     <a href="contact.html">ご連絡先</a>
     <a href="links.html">リンク</a>
