@@ -14,10 +14,23 @@
     nav{display:flex;}nav a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:13px;padding:8px 11px;transition:all .2s;position:relative;border-radius:8px;}
     nav a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-light);transition:all .2s;}
     nav a:hover::after,nav a.active::after{left:8px;right:8px;}nav a:hover,nav a.active{color:var(--white);background:rgba(255,255,255,0.12);}
+
+    /* ── PC：ドロップダウン（親メニュー） ── */
+    .nav-group{position:relative;}
+    .nav-group>.nav-parent{cursor:pointer;display:inline-flex;align-items:center;gap:3px;color:rgba(255,255,255,0.8);text-decoration:none;font-size:12.5px;padding:8px 10px;transition:all .2s;position:relative;border-radius:8px;white-space:nowrap;}
+    .nav-group:hover>.nav-parent,.nav-group:focus-within>.nav-parent{color:var(--white);background:rgba(255,255,255,0.12);}
+    .nav-group>.nav-parent::before{content:'▾';font-size:9px;margin-left:2px;opacity:0.7;}
+    .nav-dropdown{position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--navy);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:6px;min-width:140px;box-shadow:0 8px 24px rgba(0,0,0,0.35);opacity:0;visibility:hidden;transform:translateX(-50%) translateY(4px);transition:all .18s ease;z-index:1100;}
+    .nav-group:hover .nav-dropdown,.nav-group:focus-within .nav-dropdown{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+    .nav-dropdown a{display:block;padding:8px 12px;border-radius:6px;font-size:12px;white-space:nowrap;}
+    .nav-dropdown a::after{display:none;}
+    .nav-dropdown a:hover{background:rgba(255,255,255,0.1);}
     .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
     .hamburger span{display:block;width:24px;height:2px;background:var(--white);}
     .mobile-nav{display:none;background:var(--navy);border-top:1px solid rgba(255,255,255,0.1);}
     .mobile-nav a{display:block;padding:14px 24px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .mobile-nav-heading{padding:12px 24px 6px;color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:1px;border-bottom:none;}
+    .mobile-nav a.sub-link{padding-left:38px;font-size:13px;color:rgba(255,255,255,0.7);}
     .mobile-nav.open{display:block;}
     .page-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 60%,#1a3a5c 100%);padding:64px 24px 48px;text-align:center;border-bottom:none;}
     .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);text-transform:uppercase;margin-bottom:10px;}
@@ -39,7 +52,7 @@
     .footer-logo{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
     footer a{color:rgba(255,255,255,0.7);text-decoration:none;}
     .footer-divider{width:40px;height:1px;background:rgba(255,255,255,0.2);margin:16px auto;}
-    @media(max-width:768px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}.contact-card{padding:24px;}}
+    @media(max-width:900px){nav{display:none;}.hamburger{display:flex;}main{padding:48px 20px;}.contact-card{padding:24px;}}
   </style>
 </head>
 <body>
@@ -49,12 +62,22 @@
     <nav>
       <a href="index.html">ホーム</a>
       <a href="news.html">お知らせ</a>
-      <a href="schedule.html">スケジュール</a>
-      <a href="index.html#dojos">道場紹介</a>
+      <div class="nav-group">
+        <span class="nav-parent">連盟について</span>
+        <div class="nav-dropdown">
+          <a href="index.html#dojos">道場紹介</a>
+          <a href="index.html#history">沿革</a>
+          <a href="instructors.html">指導者</a>
+        </div>
+      </div>
       <a href="join.html">入会案内</a>
-      <a href="index.html#history">沿革</a>
-      <a href="instructors.html">指導者</a>
-      <a href="access.html">アクセス</a>
+      <div class="nav-group">
+        <span class="nav-parent">稽古・アクセス</span>
+        <div class="nav-dropdown">
+          <a href="schedule.html">スケジュール</a>
+          <a href="access.html">アクセス</a>
+        </div>
+      </div>
       <a href="photos.html">写真</a>
       <a href="contact.html" class="active">ご連絡先</a>
       <a href="links.html">リンク</a>
@@ -64,12 +87,14 @@
   <div class="mobile-nav" id="mn">
     <a href="index.html">ホーム</a>
     <a href="news.html">お知らせ</a>
-    <a href="schedule.html">スケジュール</a>
-    <a href="index.html#dojos">道場紹介</a>
+    <div class="mobile-nav-heading">連盟について</div>
+    <a href="index.html#dojos" class="sub-link">道場紹介</a>
+    <a href="index.html#history" class="sub-link">沿革</a>
+    <a href="instructors.html" class="sub-link">指導者</a>
     <a href="join.html">入会案内</a>
-    <a href="index.html#history">沿革</a>
-    <a href="instructors.html">指導者</a>
-    <a href="access.html">アクセス</a>
+    <div class="mobile-nav-heading">稽古・アクセス</div>
+    <a href="schedule.html" class="sub-link">スケジュール</a>
+    <a href="access.html" class="sub-link">アクセス</a>
     <a href="photos.html">写真</a>
     <a href="contact.html" class="active">ご連絡先</a>
     <a href="links.html">リンク</a>

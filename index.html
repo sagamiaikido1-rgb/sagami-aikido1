@@ -52,6 +52,25 @@
     nav a.disabled, .mobile-nav-bar a.disabled { color: rgba(255,255,255,0.32); cursor: default; pointer-events: none; }
     nav a.disabled::after, .mobile-nav-bar a.disabled::after { display: none; }
 
+    /* ── PC：ドロップダウン（親メニュー） ── */
+    .nav-group { position: relative; }
+    .nav-group > .nav-parent { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 12px; padding: 7px 9px; transition: all .2s; letter-spacing: 0.3px; position: relative; border-radius: 8px; white-space: nowrap; }
+    .nav-group:hover > .nav-parent, .nav-group:focus-within > .nav-parent { color: var(--white); background: rgba(255,255,255,0.12); }
+    .nav-group > .nav-parent::before { content: '▾'; font-size: 9px; margin-left: 2px; opacity: 0.7; }
+    .nav-dropdown {
+      position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      background: var(--navy); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+      padding: 6px; min-width: 140px; box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(4px);
+      transition: all .18s ease; z-index: 1100;
+    }
+    .nav-group:hover .nav-dropdown, .nav-group:focus-within .nav-dropdown {
+      opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+    }
+    .nav-dropdown a { display: block; padding: 8px 12px; border-radius: 6px; font-size: 12px; white-space: nowrap; }
+    .nav-dropdown a::after { display: none; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.1); }
+
     /* ── モバイル：ヘッダー直下にナビを常時展開表示 ── */
     .mobile-nav-bar {
       display: none;
@@ -61,6 +80,9 @@
       -webkit-overflow-scrolling: touch;
       white-space: nowrap;
       padding: 0 8px;
+      position: relative;
+      mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
     }
     .mobile-nav-bar::-webkit-scrollbar { height: 3px; }
     .mobile-nav-bar a {
@@ -347,7 +369,7 @@
     #backToTop:hover { background: var(--navy-light); }
 
     /* ── レスポンシブ ── */
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       nav { display: none; }
       .mobile-nav-bar { display: block; }
       .hero { padding: 72px 20px 64px; }
@@ -377,12 +399,22 @@
     <nav>
       <a href="#hero" class="active">TOP</a>
       <a href="#news">お知らせ</a>
-      <a href="#schedule">スケジュール</a>
-      <a href="#dojos">道場紹介</a>
+      <div class="nav-group">
+        <span class="nav-parent">連盟について</span>
+        <div class="nav-dropdown">
+          <a href="#dojos">道場紹介</a>
+          <a href="#history">沿革</a>
+          <a href="#instructors">指導者</a>
+        </div>
+      </div>
       <a href="join.html">入会案内</a>
-      <a href="#history">沿革</a>
-      <a href="#instructors">指導者</a>
-      <a href="#access">アクセス</a>
+      <div class="nav-group">
+        <span class="nav-parent">稽古・アクセス</span>
+        <div class="nav-dropdown">
+          <a href="#schedule">スケジュール</a>
+          <a href="#access">アクセス</a>
+        </div>
+      </div>
       <a href="photos.html">写真</a>
       <a href="#contact">ご連絡先</a>
       <a href="#links">リンク</a>
@@ -392,11 +424,11 @@
   <div class="mobile-nav-bar">
     <a href="#hero" class="active">TOP</a>
     <a href="#news">お知らせ</a>
-    <a href="#schedule">スケジュール</a>
     <a href="#dojos">道場紹介</a>
-    <a href="join.html">入会案内</a>
     <a href="#history">沿革</a>
     <a href="#instructors">指導者</a>
+    <a href="join.html">入会案内</a>
+    <a href="#schedule">スケジュール</a>
     <a href="#access">アクセス</a>
     <a href="photos.html">写真</a>
     <a href="#contact">ご連絡先</a>
