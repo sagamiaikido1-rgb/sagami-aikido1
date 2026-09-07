@@ -25,7 +25,8 @@
     .page-label{font-size:11px;letter-spacing:4px;color:var(--gold-light);text-transform:uppercase;margin-bottom:10px;}
     .page-title{font-family:'Noto Serif JP',serif;font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:6px;color:#fff;}
     .page-line{width:60px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--gold));margin:14px auto 0;}
-    .page-sub{color:rgba(255,255,255,0.75);font-size:13px;margin-top:18px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.9;}
+    .page-sub{color:rgba(255,255,255,0.75);font-size:13px;margin-top:18px;max-width:620px;margin-left:auto;margin-right:auto;line-height:1.9;}
+    @media(max-width:600px){.page-sub{max-width:520px;}}
     .page-hero-btn{display:inline-block;margin-top:26px;background:linear-gradient(135deg,var(--accent),#a93226);color:#fff;padding:13px 34px;font-size:14px;font-weight:700;letter-spacing:1px;border-radius:8px;text-decoration:none;box-shadow:0 4px 15px rgba(192,57,43,0.35);transition:all .3s ease;}
     .page-hero-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,0.45);}
     main{max-width:840px;margin:0 auto;padding:64px 24px;}
@@ -56,11 +57,11 @@
     .fee-card.chigasaki{border-top-color:var(--chigasaki);}
     .fee-card.hiratsuka{border-top-color:var(--hiratsuka);}
     .fee-card.samukawa{border-top-color:var(--samukawa);}
+    .fee-card.entry{border-top-color:var(--navy);background:var(--cream);}
+    .fee-card.entry .fee-dojo{color:var(--navy);}
+    .fee-card.entry .fee-price{color:var(--navy);}
 
     /* 掛け持ち・スポット参加テーブル */
-    .combo-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid var(--border);margin-bottom:16px;}
-    .combo-table th{background:var(--light);color:var(--navy);font-size:12px;padding:12px 14px;text-align:left;letter-spacing:.5px;font-weight:700;}
-    .combo-table td{padding:13px 14px;font-size:13px;border-bottom:1px solid var(--border);color:var(--navy);vertical-align:top;}
 
     /* 稽古時間表 */
     .timetable-block{margin-bottom:24px;}
@@ -90,9 +91,6 @@
     .day-class-time{color:var(--gray);font-weight:600;white-space:nowrap;margin-left:10px;}
     @media(max-width:600px){.day-block-label{width:60px;font-size:12.5px;}.day-class-row{padding:9px 10px;font-size:11.5px;flex-wrap:wrap;}.day-class-time{margin-left:auto;}}
 
-    .combo-table tr:last-child td{border-bottom:none;}
-    .combo-table .price-cell{font-weight:700;color:var(--accent);white-space:nowrap;}
-    @media(max-width:600px){.combo-table{font-size:12px;}.combo-table th,.combo-table td{padding:10px 8px;}}
 
     .note-box{background:var(--light);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:18px 22px;font-size:12.5px;color:var(--gray);line-height:2;margin-bottom:20px;}
     .note-box strong{color:var(--navy);}
@@ -316,69 +314,36 @@
 
   <!-- 原則の月会費 -->
   <h2 class="section-heading">月会費のご案内（原則）</h2>
-  <p class="lead-text">月会費は道場ごとの原則の稽古回数（週1回・月4回が原則）によって決まります。まずは、いずれか1つの道場に定期的に通う場合の原則の料金です。</p>
+  <p class="lead-text">入会金・月会費は道場ごとに以下の通りです。</p>
 
   <div class="fee-grid">
-    <div class="fee-card chigasaki">
-      <div class="fee-dojo">茅ヶ崎道場</div>
-      <div class="fee-day">日曜日のみ、または水曜日のみ（週1・月4回）</div>
-      <div class="fee-price">3,500<span>円／月</span></div>
+    <div class="fee-card entry">
+      <div class="fee-dojo">入会金</div>
+      <div class="fee-day">各道場共通（幼稚園児は要相談）</div>
+      <div class="fee-price">8,800<span>円</span></div>
     </div>
     <div class="fee-card chigasaki">
-      <div class="fee-dojo">茅ヶ崎道場</div>
-      <div class="fee-day">日曜日＋水曜日（週2・月8回）</div>
-      <div class="fee-price">5,500<span>円／月</span></div>
+      <div class="fee-dojo">茅ヶ崎合気会</div>
+      <div class="fee-day">月会費（空調料500円を含む）</div>
+      <div class="fee-price">3,500<span>円／月</span></div>
     </div>
     <div class="fee-card hiratsuka">
-      <div class="fee-dojo">平塚道場</div>
-      <div class="fee-day">昼稽古（標準・週1・月4回）</div>
-      <div class="fee-price">3,500<span>円／月</span></div>
+      <div class="fee-dojo">平塚合気会</div>
+      <div class="fee-day">月会費</div>
+      <div class="fee-price">3,000<span>円／月</span></div>
     </div>
     <div class="fee-card samukawa">
-      <div class="fee-dojo">寒川道場</div>
-      <div class="fee-day">昼稽古（標準・週1・月4回）</div>
-      <div class="fee-price">3,500<span>円／月</span></div>
+      <div class="fee-dojo">相模合気会</div>
+      <div class="fee-day">月会費</div>
+      <div class="fee-price">3,000<span>円／月</span></div>
     </div>
   </div>
 
   <div class="note-box">
-    平塚・寒川の夕稽古・夜稽古は個別開催のため、参加を希望される場合は月会費や参加方法について別途ご相談ください。子供クラスの月会費、回数券制度の詳細についても道場ごとにご案内しております。お問い合わせの際に、お子様のご年齢・ご希望の道場をお知らせください。
-  </div>
-
-  <!-- 掛け持ち・スポット参加 -->
-  <h2 class="section-heading">複数道場の稽古に参加する場合</h2>
-  <p class="lead-text">相模合気道連盟では、茅ヶ崎・平塚・寒川の道場を掛け持ちして稽古されている会員もいらっしゃいます。代表的な組み合わせの例は以下の通りです。</p>
-
-  <table class="combo-table">
-    <thead>
-      <tr><th>組み合わせ例</th><th>目安月会費</th><th>備考</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>茅ヶ崎（週2・月8回）のみ</td>
-        <td class="price-cell">5,500円</td>
-        <td>1つの道場に定期的に通う、最も一般的なパターンの一つです</td>
-      </tr>
-      <tr>
-        <td>2道場以上を掛け持ち<br>（茅ヶ崎＋平塚／茅ヶ崎＋寒川／平塚＋寒川　等）</td>
-        <td class="price-cell">要お問い合わせ</td>
-        <td>所属道場の月会費に、もう一方の道場分が加算されます。組み合わせによって金額が異なります</td>
-      </tr>
-      <tr>
-        <td>連盟員が所属道場以外に単発参加</td>
-        <td class="price-cell">道場ごとに加算</td>
-        <td>非連盟員の方の参加費より優遇されます</td>
-      </tr>
-      <tr>
-        <td>連盟未加入の方が単発参加</td>
-        <td class="price-cell">1回3,500円 目安</td>
-        <td>体験・単発参加の場合の目安です</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="note-box">
-    <strong>複数道場の掛け持ちや回数券制度など、組み合わせによって月会費は細かく異なります。</strong>正確な金額は所属予定の道場代表または連盟事務局までお問い合わせください。ご事情に応じて丁寧にご案内いたします。
+    ※スポーツ安全保険にご加入いただきます。<br>
+    ※稽古道衣は当会でご購入いただけます。<br>
+    ※湘南台合気会（藤沢道場）の月会費については、お問い合わせください。<br><br>
+    複数道場を掛け持ちされる場合の月会費は組み合わせにより異なりますので、入会後に個別にご案内いたします。
   </div>
 
   <!-- FAQ -->
@@ -390,7 +355,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">子供も参加できますか？</div>
-      <div class="faq-a">はい。茅ヶ崎・平塚・寒川道場に子供クラスがございます。道場ごとに時間が異なりますので、詳しくは上記「稽古時間」をご覧ください。</div>
+      <div class="faq-a">はい、茅ヶ崎・平塚・寒川道場に子供クラスがございます。道場ごとに時間が異なりますので、詳しくは上記「稽古時間」をご覧ください。</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">女性でも参加できますか？</div>
@@ -398,7 +363,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">複数の道場を掛け持ちできますか？</div>
-      <div class="faq-a">はい、可能です。茅ヶ崎・平塚・寒川を掛け持ちされている会員も多くいらっしゃいます。組み合わせにより月会費が異なりますので、お問い合わせの際にご希望の道場をお伝えください。</div>
+      <div class="faq-a">はい、可能です。茅ヶ崎・平塚・寒川を掛け持ちされている会員も多くいらっしゃいます。組み合わせにより月会費が異なりますので、入会後に個別にご案内いたします。</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">道衣は入会時に必要ですか？</div>
