@@ -57,9 +57,20 @@
     .fee-card.chigasaki{border-top-color:var(--chigasaki);}
     .fee-card.hiratsuka{border-top-color:var(--hiratsuka);}
     .fee-card.samukawa{border-top-color:var(--samukawa);}
-    .fee-card.entry{border-top-color:var(--navy);background:var(--cream);}
-    .fee-card.entry .fee-dojo{color:var(--navy);}
-    .fee-card.entry .fee-price{color:var(--navy);}
+
+    /* 入会金：月会費カードとは別カテゴリと分かる横長バナー */
+    /* 入会金：月会費カードとは別カテゴリと分かる横長バナー（控えめな色調） */
+    .entry-fee-banner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:18px 24px;margin-bottom:24px;}
+    .entry-fee-label{display:flex;align-items:center;gap:12px;}
+    .entry-fee-name{color:var(--navy);font-family:'Noto Serif JP',serif;font-weight:700;font-size:15px;letter-spacing:1px;}
+    .entry-fee-note{color:var(--gray);font-size:11.5px;margin-top:2px;}
+    .entry-fee-amount{color:var(--navy);font-family:'Noto Serif JP',serif;font-size:24px;font-weight:700;white-space:nowrap;}
+    .entry-fee-amount span{font-size:12px;color:var(--gray);font-weight:400;margin-left:4px;}
+    @media(max-width:560px){.entry-fee-banner{flex-direction:column;align-items:flex-start;}.entry-fee-amount{align-self:flex-end;}}
+
+    /* 複数道場をまたぐ場合の会費コメント：強調ボックス */
+    .multi-dojo-note{background:#fdf6e8;border:1px solid var(--gold-light);border-radius:12px;padding:16px 20px;font-size:12.5px;color:var(--navy);line-height:1.9;margin-bottom:16px;}
+    .multi-dojo-note strong{color:var(--gold);}
 
     /* 掛け持ち・スポット参加テーブル */
 
@@ -316,12 +327,17 @@
   <h2 class="section-heading">月会費のご案内（原則）</h2>
   <p class="lead-text">入会金・月会費は道場ごとに以下の通りです。</p>
 
-  <div class="fee-grid">
-    <div class="fee-card entry">
-      <div class="fee-dojo">入会金</div>
-      <div class="fee-day">各道場共通（幼稚園児は要相談）</div>
-      <div class="fee-price">8,800<span>円</span></div>
+  <div class="entry-fee-banner">
+    <div class="entry-fee-label">
+      <div>
+        <div class="entry-fee-name">入会金</div>
+        <div class="entry-fee-note">各道場共通（幼稚園児は要相談）</div>
+      </div>
     </div>
+    <div class="entry-fee-amount">8,800<span>円</span></div>
+  </div>
+
+  <div class="fee-grid">
     <div class="fee-card chigasaki">
       <div class="fee-dojo">茅ヶ崎合気会</div>
       <div class="fee-day">月会費（空調料500円を含む）</div>
@@ -339,11 +355,14 @@
     </div>
   </div>
 
+  <div class="multi-dojo-note">
+    <strong>複数道場を掛け持ちされる場合の月会費</strong>は組み合わせにより異なりますので、入会後に個別にご案内いたします。
+  </div>
+
   <div class="note-box">
     ※スポーツ安全保険にご加入いただきます。<br>
     ※稽古道衣は当会でご購入いただけます。<br>
-    ※湘南台合気会（藤沢道場）の月会費については、お問い合わせください。<br><br>
-    複数道場を掛け持ちされる場合の月会費は組み合わせにより異なりますので、入会後に個別にご案内いたします。
+    ※湘南台合気会（藤沢道場）の月会費については、お問い合わせください。
   </div>
 
   <!-- FAQ -->
