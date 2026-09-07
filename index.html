@@ -1029,6 +1029,13 @@
       a.classList.toggle('active', a.getAttribute('href') === '#' + current);
     });
   });
+
+  // モバイルメニュー：リンクをタップしたら自動で閉じる
+  document.querySelectorAll('.mobile-nav a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('mn').classList.remove('open');
+    });
+  });
 </script>
 </body>
 </html>

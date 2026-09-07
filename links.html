@@ -132,4 +132,14 @@
   <div><a href="index.html">ホーム</a> ／ <a href="schedule.html">スケジュール</a> ／ <a href="join.html">入会案内</a><a href="contact.html">ご連絡先</a> ／ <a href="privacy.html">プライバシーポリシー</a></div>
   <div style="margin-top:12px">© 2026 相模合気道連盟</div>
 </footer>
+
+<script>
+  // モバイルメニュー：リンクをタップしたら自動で閉じる
+  document.querySelectorAll('.mobile-nav a').forEach(function(a){
+    a.addEventListener('click', function(){
+      var menu = document.querySelector('.mobile-nav');
+      if(menu) menu.classList.remove('open');
+    });
+  });
+</script>
 </body></html>

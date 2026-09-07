@@ -768,5 +768,15 @@
     }
   });
 </script>
+
+<script>
+  // モバイルメニュー：リンクをタップしたら自動で閉じる
+  document.querySelectorAll('.mobile-nav a').forEach(function(a){
+    a.addEventListener('click', function(){
+      var menu = document.querySelector('.mobile-nav');
+      if(menu) menu.classList.remove('open');
+    });
+  });
+</script>
 </body>
 </html>
