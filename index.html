@@ -43,6 +43,8 @@
       height: 64px;
     }
     .logo { font-family: 'Noto Serif JP', serif; font-size: 18px; font-weight: 700; color: var(--white); letter-spacing: 2px; text-decoration: none; flex-shrink: 0; }
+    .since-badge { font-size: 10px; color: var(--gold-light); letter-spacing: 1.5px; font-weight: 600; margin-left: 10px; white-space: nowrap; opacity: 0.85; }
+    @media(max-width:640px){ .since-badge { display:none; } }
     .logo span { font-size: 9px; color: var(--gold-light); display: block; letter-spacing: 2px; font-weight: 400; margin-top: 1px; }
     nav { display: flex; gap: 0; flex-wrap: wrap; justify-content: flex-end; }
     nav a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 12px; padding: 7px 9px; transition: all .2s; letter-spacing: 0.3px; position: relative; border-radius: 8px; white-space: nowrap; }
@@ -164,6 +166,14 @@
     /* ── 特徴カード ── */
     .features { background: var(--light); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 24px; }
+
+    /* 合気道の理念 */
+    .philosophy-sec { background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .philosophy-list { max-width: 760px; margin: 0 auto; counter-reset: philosophy; }
+    .philosophy-item { position: relative; padding: 20px 0 20px 52px; border-bottom: 1px solid var(--border); }
+    .philosophy-item:last-child { border-bottom: none; }
+    .philosophy-item::before { counter-increment: philosophy; content: counter(philosophy, cjk-ideographic) "、"; position: absolute; left: 0; top: 20px; font-family: 'Noto Serif JP', serif; font-weight: 700; font-size: 16px; color: var(--gold); }
+    .philosophy-item p { font-size: 14px; color: var(--navy); line-height: 1.9; }
     .feature-card {
       background: var(--white); padding: 40px 32px; text-align: center;
       border: 1px solid var(--border); border-radius: 16px;
@@ -388,10 +398,13 @@
 <!-- ヘッダー -->
 <header>
   <div class="header-inner">
-    <a class="logo" href="#hero">
-      相模合気道連盟
-      <span>SAGAMI AIKIDO FEDERATION</span>
-    </a>
+    <div style="display:flex;align-items:center;flex-shrink:0;">
+      <a class="logo" href="#hero">
+        相模合気道連盟
+        <span>SAGAMI AIKIDO FEDERATION</span>
+      </a>
+      <span class="since-badge">SINCE 1989</span>
+    </div>
     <nav>
       <a href="#hero" class="active">TOP</a>
       <a href="#news">お知らせ</a>
@@ -453,6 +466,29 @@
   <div class="hero-btns">
     <a href="#schedule" class="btn-primary">稽古スケジュール</a>
     <a href="join.html#formSection" class="btn-outline">見学・入会のご相談</a>
+  </div>
+</section>
+
+<!-- 合気道の理念 -->
+<section class="philosophy-sec">
+  <div class="section-inner">
+    <div class="section-label">PHILOSOPHY</div>
+    <h2 class="section-title">合気道の理念</h2>
+    <div class="section-line"></div>
+    <div class="philosophy-list">
+      <div class="philosophy-item">
+        <p>植芝盛平翁が幾多の武術の奥義を極め、精神的な修行の結果に創始された武道です。</p>
+      </div>
+      <div class="philosophy-item">
+        <p>自然の理法に適い、気力・気迫に満ちた無理のない動作を自然に出来るように技の反復稽古をします。</p>
+      </div>
+      <div class="philosophy-item">
+        <p>一般のスポーツと異なり、試合の勝敗という相対的なものを求めるのではなく、同志と切磋琢磨し絶対的・超越的な強さを求めて稽古を行う事が大切です。</p>
+      </div>
+      <div class="philosophy-item">
+        <p>壮年の方は勿論、婦人・お年寄り・子供達でも出来る護身術であり、健康法・美容法でもあります。</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -628,7 +664,7 @@
       <h3>代表連絡先　／　合気道小島道場</h3>
       <div class="contact-row"><span class="contact-label">住　所</span><span class="contact-val">〒253-0083 神奈川県茅ヶ崎市西久保915-2</span></div>
       <div class="contact-row"><span class="contact-label">TEL・FAX</span><span class="contact-val"><a href="tel:0467580037">0467-58-0037</a></span></div>
-      <div class="contact-row"><span class="contact-label">携帯TEL</span><span class="contact-val"><a href="tel:08010379869">080-1037-9869</a></span></div>
+      <div class="contact-row"><span class="contact-label">携帯TEL</span><span class="contact-val"><a href="tel:08010379769">080-1037-9769</a></span></div>
       <div class="contact-row"><span class="contact-label">E-Mail</span><span class="contact-val"><a href="mailto:aikido@jcom.home.ne.jp">aikido@jcom.home.ne.jp</a></span></div>
       <div class="contact-row"><span class="contact-label">携帯Mail</span><span class="contact-val"><a href="mailto:aikido_kojima@docomo.ne.jp">aikido_kojima@docomo.ne.jp</a></span></div>
     </div>

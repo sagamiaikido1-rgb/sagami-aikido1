@@ -77,12 +77,14 @@
     .fee-card{background:var(--white);border:1px solid var(--border);border-top:4px solid var(--gold-light);border-radius:14px;padding:22px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
     .fee-dojo{font-family:'Noto Serif JP',serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:2px;}
     .fee-day{font-size:12px;color:var(--gray);margin-bottom:14px;}
+    .fee-status-paused{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:999px;background:#fdecd1;color:#b45309;margin-left:6px;vertical-align:middle;}
     .fee-price{font-family:'Noto Serif JP',serif;font-size:26px;color:var(--accent);font-weight:700;}
     .fee-price span{font-size:12px;color:var(--gray);font-weight:400;margin-left:4px;}
     .fee-note{font-size:11.5px;color:var(--gray);margin-top:8px;line-height:1.7;}
     .fee-card.chigasaki{border-top-color:var(--chigasaki);}
     .fee-card.hiratsuka{border-top-color:var(--hiratsuka);}
     .fee-card.samukawa{border-top-color:var(--samukawa);}
+    .fee-card.fujisawa{border-top-color:var(--fujisawa);}
 
     /* 入会金：月会費カードとは別カテゴリと分かる横長バナー */
     /* 入会金：月会費カードとは別カテゴリと分かる横長バナー（控えめな色調） */
@@ -132,6 +134,11 @@
 
 
     .note-box{background:var(--light);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:18px 22px;font-size:12.5px;color:var(--gray);line-height:2;margin-bottom:20px;}
+    .dojo-rules-list{max-width:760px;margin:0 auto;counter-reset:rules;}
+    .dojo-rules-item{position:relative;padding:16px 0 16px 46px;border-bottom:1px solid var(--border);}
+    .dojo-rules-item:last-child{border-bottom:none;}
+    .dojo-rules-item::before{counter-increment:rules;content:counter(rules, cjk-ideographic) "、";position:absolute;left:0;top:16px;font-family:'Noto Serif JP',serif;font-weight:700;font-size:15px;color:var(--gold);}
+    .dojo-rules-item p{font-size:13.5px;color:var(--navy);line-height:1.9;}
     .note-box strong{color:var(--navy);}
 
     /* FAQ（既存踏襲） */
@@ -416,6 +423,11 @@
       <div class="fee-day">月会費</div>
       <div class="fee-price">3,000<span>円／月</span></div>
     </div>
+    <div class="fee-card fujisawa">
+      <div class="fee-dojo">湘南台合気会<span class="fee-status-paused">休止中</span></div>
+      <div class="fee-day">月会費</div>
+      <div class="fee-price">3,000<span>円／月</span></div>
+    </div>
   </div>
 
   <div class="multi-dojo-note">
@@ -424,8 +436,19 @@
 
   <div class="note-box">
     ※スポーツ安全保険にご加入いただきます。<br>
-    ※稽古道衣は当会でご購入いただけます。<br>
-    ※湘南台合気会（藤沢道場）の月会費については、お問い合わせください。
+    ※稽古道衣は当会でご購入いただけます。
+  </div>
+
+  <!-- 道場心得 -->
+  <h2 class="section-heading">道場心得</h2>
+  <div class="dojo-rules-list">
+    <div class="dojo-rules-item"><p>稽古は、礼に始まり礼に終わる。</p></div>
+    <div class="dojo-rules-item"><p>稽古は、指導者の教えに従う。</p></div>
+    <div class="dojo-rules-item"><p>稽古は、真剣に、けがのないように周囲にも気を配る。</p></div>
+    <div class="dojo-rules-item"><p>酒気を帯びて稽古をしてはいけない。</p></div>
+    <div class="dojo-rules-item"><p>品行の良くない者、会費滞納者は、退会して頂きます。</p></div>
+    <div class="dojo-rules-item"><p>体と共に心を鍛える場であり、先輩・同輩・後輩に対する礼儀・指導そして「和」の心掛けを大切にする。</p></div>
+    <div class="dojo-rules-item"><p>稽古の前後は、清掃・電気・戸締り等をきちんとする。</p></div>
   </div>
 
   <!-- FAQ -->
