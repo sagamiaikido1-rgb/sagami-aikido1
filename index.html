@@ -43,11 +43,11 @@
       height: 64px;
     }
     .logo { font-family: 'Noto Serif JP', serif; font-size: 18px; font-weight: 700; color: var(--white); letter-spacing: 2px; text-decoration: none; flex-shrink: 0; }
-    .since-badge { font-size: 10px; color: var(--gold-light); letter-spacing: 1.5px; font-weight: 600; margin-left: 12px; white-space: nowrap; opacity: 0.85; }
+    .since-badge { font-size: 10px; color: var(--gold-light); letter-spacing: 1.5px; font-weight: 600; margin-left: 10px; white-space: nowrap; opacity: 0.85; display:inline; }
     @media(max-width:640px){ .since-badge { display:none; } }
-    .logo span.since-badge-mobile { display:none; font-size: 9px; color: var(--gold-light); letter-spacing: 1px; font-weight: 600; margin-left: 6px; opacity: 0.85; }
-    @media(max-width:640px){ .logo span.since-badge-mobile { display:inline; } }
-    .logo span { font-size: 9px; color: var(--gold-light); display: block; letter-spacing: 2px; font-weight: 400; margin-top: 1px; }
+    .since-badge-mobile { display:none; font-size: 9px; color: var(--gold-light); letter-spacing: 1px; font-weight: 600; margin-left: 6px; opacity: 0.85; }
+    @media(max-width:640px){ .since-badge-mobile { display:inline; } }
+    .logo-en { font-size: 9px; color: var(--gold-light); display: block; letter-spacing: 2px; font-weight: 400; margin-top: 1px; }
     nav { display: flex; gap: 0; flex-wrap: wrap; justify-content: flex-end; }
     nav a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 12px; padding: 7px 9px; transition: all .2s; letter-spacing: 0.3px; position: relative; border-radius: 8px; white-space: nowrap; }
     nav a::after { content:''; position:absolute; bottom:0; left:50%; right:50%; height:2px; background:var(--gold-light); transition: all .2s; }
@@ -402,10 +402,9 @@
   <div class="header-inner">
     <div style="display:flex;align-items:center;flex-shrink:0;">
       <a class="logo" href="#hero">
-        相模合気道連盟<span class="since-badge-mobile">SINCE 1989</span>
-        <span>SAGAMI AIKIDO FEDERATION</span>
+        <span class="logo-jp">相模合気道連盟</span><span class="since-badge">SINCE 1989</span><span class="since-badge-mobile">SINCE 1989</span>
+        <span class="logo-en">SAGAMI AIKIDO FEDERATION</span>
       </a>
-      <span class="since-badge">SINCE 1989</span>
     </div>
     <nav>
       <a href="#hero" class="active">TOP</a>
