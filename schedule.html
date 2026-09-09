@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<script>
+  // ブラウザのスクロール位置自動復元を無効化する
+  // （URLにアンカー（#〜）が含まれる場合は、そのセクションへの移動を優先し、強制的な先頭スクロールは行わない）
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  if (!window.location.hash) {
+    window.scrollTo(0, 0);
+  }
+</script>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>スケジュール｜相模合気道連盟</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -169,7 +179,7 @@
     </div>
   </div>
 
-  <h2 class="section-title" style="margin-top:56px;">定期稽古スケジュール</h2>
+  <h2 class="section-title" id="regular-schedule" style="margin-top:56px;scroll-margin-top:88px;">定期稽古スケジュール</h2>
   <div class="regular-grid" style="margin-bottom:0;">
     <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">日曜日</div><div class="regular-time">09:30 〜 11:30</div></div>
     <div class="regular-card hiratsuka"><div class="dojo-label">平塚道場</div><div class="regular-day">日曜日</div><div class="regular-time">15:30 〜 16:30</div></div>

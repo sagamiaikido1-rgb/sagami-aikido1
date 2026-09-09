@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<script>
+  // ブラウザのスクロール位置自動復元を無効化する
+  // （URLにアンカー（#〜）が含まれる場合は、そのセクションへの移動を優先し、強制的な先頭スクロールは行わない）
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  if (!window.location.hash) {
+    window.scrollTo(0, 0);
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>相模合気道連盟</title>
@@ -575,7 +585,7 @@
         <div style="grid-column:span 7;text-align:center;padding:48px;color:var(--gray)">読み込み中...</div>
       </div>
       <div class="cal-more-link">
-        <a href="schedule.html" class="btn-outline" style="color:var(--navy);border-color:var(--border);">定期稽古スケジュールも見る</a>
+        <a href="schedule.html#regular-schedule" class="btn-outline" style="color:var(--navy);border-color:var(--border);">定期稽古スケジュールも見る</a>
       </div>
     </div>
   </div>
