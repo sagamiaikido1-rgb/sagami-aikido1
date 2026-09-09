@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+
 <script>
-  // ブラウザのスクロール位置自動復元を無効化する
-  // （URLにアンカー（#〜）が含まれる場合は、そのセクションへの移動を優先し、強制的な先頭スクロールは行わない）
+  // ページ表示位置を確実に制御する
+  // アンカー(#〜)がある場合はそのセクションへ、なければ必ずページ先頭へスクロールする
+  // Android Chrome等でのスクロール位置自動復元に対抗するため、複数のタイミングで実行する
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
-  if (!window.location.hash) {
-    window.scrollTo(0, 0);
-  }
-</script>
-<script>
-  // アンカー付きURLで開かれた場合、ページ読み込み完了後に
-  // 固定ヘッダーの高さ分を差し引いた正確な位置まで確実にスクロールする
-  window.addEventListener('load', function() {
+  function fixScrollPosition() {
     if (window.location.hash) {
       var target = document.querySelector(window.location.hash);
       if (target) {
-        setTimeout(function() {
-          target.scrollIntoView({ behavior: 'auto', block: 'start' });
-        }, 50);
+        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        return;
       }
     }
+    window.scrollTo(0, 0);
+  }
+  document.addEventListener('DOMContentLoaded', fixScrollPosition);
+  window.addEventListener('load', function() {
+    fixScrollPosition();
+    setTimeout(fixScrollPosition, 50);
+    setTimeout(fixScrollPosition, 200);
   });
 </script>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
