@@ -11,6 +11,20 @@
     window.scrollTo(0, 0);
   }
 </script>
+<script>
+  // アンカー付きURLで開かれた場合、ページ読み込み完了後に
+  // 固定ヘッダーの高さ分を差し引いた正確な位置まで確実にスクロールする
+  window.addEventListener('load', function() {
+    if (window.location.hash) {
+      var target = document.querySelector(window.location.hash);
+      if (target) {
+        setTimeout(function() {
+          target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }, 50);
+      }
+    }
+  });
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>写真ギャラリー｜相模合気道連盟</title>
