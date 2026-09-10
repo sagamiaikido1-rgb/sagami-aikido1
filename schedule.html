@@ -20,8 +20,12 @@
   window.addEventListener('load', function() {
     fixScrollPosition();
     setTimeout(fixScrollPosition, 50);
-    setTimeout(fixScrollPosition, 200);
+    setTimeout(fixScrollPosition, 150);
+    setTimeout(fixScrollPosition, 300);
+    setTimeout(fixScrollPosition, 600);
   });
+  // メニュー等の開閉やレイアウト変化が起きた後も、念のため一度だけ再補正する
+  setTimeout(fixScrollPosition, 1000);
 </script>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>スケジュール｜相模合気道連盟</title>
