@@ -88,8 +88,9 @@
     /* ── PC：ドロップダウン（親メニュー） ── */
     .nav-group { position: relative; }
     .nav-group > .nav-parent { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 12px; padding: 7px 9px; transition: all .2s; letter-spacing: 0.3px; position: relative; border-radius: 8px; white-space: nowrap; }
-    .nav-group:hover > .nav-parent, .nav-group:focus-within > .nav-parent { color: var(--white); background: rgba(255,255,255,0.12); }
-    .nav-group > .nav-parent::before { content: '▾'; font-size: 9px; margin-left: 2px; opacity: 0.7; }
+    .nav-group:hover > .nav-parent, .nav-group.open > .nav-parent { color: var(--white); background: rgba(255,255,255,0.12); }
+    .nav-group > .nav-parent::before { content: '▾'; font-size: 9px; margin-left: 2px; opacity: 0.7; transition: transform .2s; }
+    .nav-group.open > .nav-parent::before { transform: rotate(180deg); }
     .nav-dropdown {
       position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
       background: var(--navy); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
@@ -97,7 +98,7 @@
       opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(4px);
       transition: all .18s ease; z-index: 1100;
     }
-    .nav-group:hover .nav-dropdown, .nav-group:focus-within .nav-dropdown {
+    .nav-group:hover .nav-dropdown, .nav-group.open .nav-dropdown {
       opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
     }
     .nav-dropdown a { display: block; padding: 8px 12px; border-radius: 6px; font-size: 12px; white-space: nowrap; }
@@ -909,6 +910,32 @@
   document.querySelectorAll('.mobile-nav a').forEach(a => {
     a.addEventListener('click', () => {
       document.getElementById('mn').classList.remove('open');
+    });
+  });
+
+  // PC用ドロップダウン：クリック（タップ）で開閉
+  // iPad Safari等、:hoverが効かないタッチデバイスでも確実に動作するようにする
+  document.querySelectorAll('nav .nav-group > .nav-parent').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var group = btn.parentElement;
+      var wasOpen = group.classList.contains('open');
+      document.querySelectorAll('nav .nav-group.open').forEach(function(g){
+        if(g !== group) g.classList.remove('open');
+      });
+      group.classList.toggle('open', !wasOpen);
+    });
+  });
+  document.addEventListener('click', function(){
+    document.querySelectorAll('nav .nav-group.open').forEach(function(g){
+      g.classList.remove('open');
+    });
+  });
+  document.querySelectorAll('.nav-dropdown a').forEach(function(a){
+    a.addEventListener('click', function(){
+      document.querySelectorAll('nav .nav-group.open').forEach(function(g){
+        g.classList.remove('open');
+      });
     });
   });
 </script>
