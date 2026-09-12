@@ -53,10 +53,14 @@
       --hiratsuka: #378ADD;
       --samukawa: #D85A30;
       --fujisawa: #9F77DD;
-      --chigasaki-eve: #0E5C43;
-      --hiratsuka-eve: #1761AB;
-      --samukawa-eve: #9E3A18;
-      --fujisawa-eve: #702FD3;
+      --chigasaki-yu: #137556;
+      --hiratsuka-yu: #1D70C4;
+      --samukawa-yu: #B6451F;
+      --fujisawa-yu: #814BD6;
+      --chigasaki-yoru: #094230;
+      --hiratsuka-yoru: #115293;
+      --samukawa-yoru: #862F12;
+      --fujisawa-yoru: #6124BF;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -283,13 +287,13 @@
     .mini-regular-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
     .mini-regular-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:10px;padding:8px 4px;border-top:3px solid;background:var(--white);box-shadow:0 1px 4px rgba(0,0,0,0.06);}
     .mini-regular-card.chigasaki{border-color:var(--chigasaki);}
-    .mini-regular-card.chigasaki.eve{border-color:var(--chigasaki-eve);}
+    .mini-regular-card.chigasaki.eve{border-color:var(--chigasaki-yu);}
     .mini-regular-card.hiratsuka{border-color:var(--hiratsuka);}
-    .mini-regular-card.hiratsuka.eve{border-color:var(--hiratsuka-eve);}
+    .mini-regular-card.hiratsuka.eve{border-color:var(--hiratsuka-yu);}
     .mini-regular-card.samukawa{border-color:var(--samukawa);}
-    .mini-regular-card.samukawa.eve{border-color:var(--samukawa-eve);}
+    .mini-regular-card.samukawa.eve{border-color:var(--samukawa-yu);}
     .mini-regular-card.fujisawa{border-color:var(--fujisawa);}
-    .mini-regular-card.fujisawa.eve{border-color:var(--fujisawa-eve);}
+    .mini-regular-card.fujisawa.eve{border-color:var(--fujisawa-yu);}
     .mini-dojo{font-size:10.5px;font-weight:700;color:var(--navy);}
     .mini-day{font-size:9.5px;color:var(--gray);}
     .mini-time{font-size:10px;font-weight:600;color:var(--navy);}
@@ -310,10 +314,14 @@
     .list-event-dojo.samukawa{background:var(--samukawa);}
     .list-event-dojo.fujisawa{background:var(--fujisawa);}
     .list-event-dojo.special{background:var(--gold);}
-    .list-event-dojo.chigasaki.eve{background:var(--chigasaki-eve);}
-    .list-event-dojo.hiratsuka.eve{background:var(--hiratsuka-eve);}
-    .list-event-dojo.samukawa.eve{background:var(--samukawa-eve);}
-    .list-event-dojo.fujisawa.eve{background:var(--fujisawa-eve);}
+    .list-event-dojo.chigasaki.yu{background:var(--chigasaki-yu);}
+    .list-event-dojo.hiratsuka.yu{background:var(--hiratsuka-yu);}
+    .list-event-dojo.samukawa.yu{background:var(--samukawa-yu);}
+    .list-event-dojo.fujisawa.yu{background:var(--fujisawa-yu);}
+    .list-event-dojo.chigasaki.yoru{background:var(--chigasaki-yoru);}
+    .list-event-dojo.hiratsuka.yoru{background:var(--hiratsuka-yoru);}
+    .list-event-dojo.samukawa.yoru{background:var(--samukawa-yoru);}
+    .list-event-dojo.fujisawa.yoru{background:var(--fujisawa-yoru);}
     .list-event-time{flex-shrink:0;color:var(--navy);font-weight:600;font-size:12px;white-space:nowrap;}
     .list-event-title{color:var(--navy);}
     .list-empty{text-align:center;color:var(--gray);padding:28px;font-size:12.5px;}
@@ -330,10 +338,14 @@
     .cal-event.samukawa { background:#fde8df; color:#9a3412; }
     .cal-event.fujisawa { background:#ede9fe; color:#5b21b6; }
     .cal-event.special { background:#fef9c3; color:#713f12; }
-    .cal-event.chigasaki.eve { background:#0e5c43; color:#ffffff; }
-    .cal-event.hiratsuka.eve { background:#1761ab; color:#ffffff; }
-    .cal-event.samukawa.eve { background:#9e3a18; color:#ffffff; }
-    .cal-event.fujisawa.eve { background:#702fd3; color:#ffffff; }
+    .cal-event.chigasaki.yu { background:#8fd9bb; color:#08402e; }
+    .cal-event.hiratsuka.yu { background:#9dc4f5; color:#0f2f5c; }
+    .cal-event.samukawa.yu { background:#f7bfa3; color:#5c210c; }
+    .cal-event.fujisawa.yu { background:#cbbaf0; color:#331159; }
+    .cal-event.chigasaki.yoru { background:#0e5c43; color:#ffffff; }
+    .cal-event.hiratsuka.yoru { background:#1761ab; color:#ffffff; }
+    .cal-event.samukawa.yoru { background:#9e3a18; color:#ffffff; }
+    .cal-event.fujisawa.yoru { background:#702fd3; color:#ffffff; }
     .cal-more-link { text-align:center; margin-top: 8px; }
     @media (max-width:600px){ .cal-cell{min-height:56px;} .cal-event{font-size:8.5px;} }
 
@@ -926,10 +938,15 @@
   // ── カレンダー（スケジュールセクション） ──
   const DOJO_CLASS = {'茅ヶ崎':'chigasaki','平塚':'hiratsuka','寒川':'samukawa','藤沢':'fujisawa'};
   // 開始時刻が12:00以降なら「夕夜」区分として濃い色を適用する
-  function isEvening(startStr){
-    if(!startStr) return false;
+  // 管理画面の時間帯区分（朝・昼・夕・夜）と揃えたクラス名を返す
+  // 朝・昼は標準色、夕・夜は濃い色でトーンを分ける
+  function timeToneClass(startStr){
+    if(!startStr) return '';
     const h = parseInt(String(startStr).split(':')[0], 10);
-    return !isNaN(h) && h >= 12;
+    if(isNaN(h)) return '';
+    if(h < 16) return '';       // 朝・昼は標準色
+    if(h < 18) return ' yu';    // 夕
+    return ' yoru';             // 夜
   }
   let allEvents = [], activeFilter = 'all';
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth();
@@ -981,6 +998,7 @@
     for(let d=1; d<=last; d++){
       const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const evs = allEvents.filter(e=>e.date===ds && (activeFilter==='all' || e.dojo===activeFilter));
+      evs.sort((a,b) => (a.start||'').localeCompare(b.start||''));
       if(evs.length>0) daysWithEvents.push({day:d, date:ds, events:evs});
     }
 
@@ -998,7 +1016,7 @@
       const heading = `${dayInfo.day}日（${WEEKDAY_JP[dt.getDay()]}）` + (isToday ? '　本日' : '');
       const rows = dayInfo.events.map(function(ev){
         const cls = DOJO_CLASS[ev.dojo] || 'special';
-        const eveCls = isEvening(ev.start) ? ' eve' : '';
+        const eveCls = timeToneClass(ev.start);
         const dojoLabel = ev.dojo || 'その他';
         const title = ev.dojo ? (ev.title||'稽古') : (ev.memo || ev.title || '');
         return `<div class="list-event-row">
@@ -1018,10 +1036,10 @@
     const cell=document.createElement('div');cell.className='cal-cell';
     const dd=document.createElement('div');dd.className='cal-date';dd.textContent=day;cell.appendChild(dd);
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    allEvents.filter(e=>e.date===ds).forEach(ev=>{
+    allEvents.filter(e=>e.date===ds).sort((a,b)=>(a.start||'').localeCompare(b.start||'')).forEach(ev=>{
       if(activeFilter!=='all'&&ev.dojo!==activeFilter)return;
       const cls=DOJO_CLASS[ev.dojo]||'special';
-      const eveCls=isEvening(ev.start)?' eve':'';
+      const eveCls=timeToneClass(ev.start);
       const evDiv=document.createElement('div');evDiv.className=`cal-event ${cls}${eveCls}`;
       const dispText=ev.dojo?`${ev.start} ${ev.title}`:(ev.memo||ev.title);
       evDiv.textContent=dispText.substring(0,12);
