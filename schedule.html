@@ -31,7 +31,7 @@
   <title>スケジュール｜相模合気道連盟</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root{--navy:#1a1a2e;--navy-light:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;--white:#ffffff;--cream:#faf8f5;--gray:#666666;--light:#f0ebe3;--border:#ddd5c8;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;}
+    :root{--navy:#1a1a2e;--navy-light:#2d3561;--accent:#c0392b;--gold:#b8860b;--gold-light:#d4a017;--white:#ffffff;--cream:#faf8f5;--gray:#666666;--light:#f0ebe3;--border:#ddd5c8;--chigasaki:#1D9E75;--hiratsuka:#378ADD;--samukawa:#D85A30;--fujisawa:#9F77DD;--chigasaki-eve:#0E5C43;--hiratsuka-eve:#1761AB;--samukawa-eve:#9E3A18;--fujisawa-eve:#702FD3;}
     *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:#2c2c2c;line-height:1.8;}
     header{background:rgba(26,26,46,0.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
     .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
@@ -101,6 +101,10 @@
     .list-event-dojo.samukawa{background:var(--samukawa);}
     .list-event-dojo.fujisawa{background:var(--fujisawa);}
     .list-event-dojo.special{background:var(--gold);}
+    .list-event-dojo.chigasaki.eve{background:var(--chigasaki-eve);}
+    .list-event-dojo.hiratsuka.eve{background:var(--hiratsuka-eve);}
+    .list-event-dojo.samukawa.eve{background:var(--samukawa-eve);}
+    .list-event-dojo.fujisawa.eve{background:var(--fujisawa-eve);}
     .list-event-time{flex-shrink:0;color:var(--navy);font-weight:600;font-size:12.5px;white-space:nowrap;}
     .list-event-title{color:var(--navy);}
     .list-empty{text-align:center;color:var(--gray);padding:32px;font-size:13px;}
@@ -134,6 +138,10 @@
     .cal-event.samukawa{background:#fde8df;color:#9a3412;}
     .cal-event.fujisawa{background:#ede9fe;color:#5b21b6;}
     .cal-event.special{background:#fef9c3;color:#713f12;}
+    .cal-event.chigasaki.eve{background:#0e5c43;color:#ffffff;}
+    .cal-event.hiratsuka.eve{background:#1761ab;color:#ffffff;}
+    .cal-event.samukawa.eve{background:#9e3a18;color:#ffffff;}
+    .cal-event.fujisawa.eve{background:#702fd3;color:#ffffff;}
 
     footer{background:var(--navy);color:rgba(255,255,255,0.55);text-align:center;padding:48px 20px;font-size:12px;line-height:2.4;}
     .footer-logo{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--white);letter-spacing:3px;margin-bottom:10px;}
@@ -161,7 +169,7 @@
       <div class="nav-group">
         <span class="nav-parent">スケジュール・アクセス</span>
         <div class="nav-dropdown">
-          <a href="schedule.html" class="active">スケジュール</a>
+          <a href="schedule.html#calendar-schedule" class="active">スケジュール</a>
           <a href="access.html">アクセス</a>
         </div>
       </div>
@@ -186,7 +194,7 @@
     <div class="mobile-nav-acc">
       <button type="button" class="mobile-nav-acc-btn" onclick="this.parentElement.classList.toggle('open')">スケジュール・アクセス</button>
       <div class="mobile-nav-acc-panel">
-        <a href="schedule.html" class="active">スケジュール</a>
+        <a href="schedule.html#calendar-schedule" class="active">スケジュール</a>
         <a href="access.html">アクセス</a>
       </div>
     </div>
@@ -203,7 +211,7 @@
 </div>
 
 <main>
-  <h2 class="section-title">定期稽古スケジュール</h2>
+  <h2 class="section-title" id="regular-schedule" style="scroll-margin-top:88px;">定期稽古スケジュール</h2>
   <p style="font-size:12.5px;color:var(--gray);margin:-16px 0 20px;">各道場の原則の曜日・時間帯です。都合により変更になる場合がありますので、下記のスケジュールもあわせてご確認ください。</p>
   <div class="regular-grid">
     <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">日曜日</div><div class="regular-time">09:30 〜 11:30</div></div>
@@ -212,7 +220,7 @@
     <div class="regular-card samukawa"><div class="dojo-label">寒川道場</div><div class="regular-day">土曜日</div><div class="regular-time">12:30 〜 14:30</div></div>
   </div>
 
-  <h2 class="section-title" id="regular-schedule" style="scroll-margin-top:88px;">スケジュール</h2>
+  <h2 class="section-title" id="calendar-schedule" style="scroll-margin-top:88px;">スケジュール</h2>
 
   <div class="sched-tabs">
     <button type="button" class="sched-tab active" id="tabCalendar">📅 カレンダー表示</button>
@@ -284,6 +292,12 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const DOJO_CLASS = {'茅ヶ崎':'chigasaki','平塚':'hiratsuka','寒川':'samukawa','藤沢':'fujisawa'};
+  // 開始時刻が12:00以降なら「夕夜」区分として濃い色を適用する
+  function isEvening(startStr){
+    if(!startStr) return false;
+    const h = parseInt(String(startStr).split(':')[0], 10);
+    return !isNaN(h) && h >= 12;
+  }
 
   let allEvents = [], activeFilter = 'all';
   let currentYear = new Date().getFullYear(), currentMonth = new Date().getMonth();
@@ -329,6 +343,7 @@
     for(let d=1; d<=last; d++){
       const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const evs = allEvents.filter(e=>e.date===ds && (activeFilter==='all' || e.dojo===activeFilter));
+      evs.sort((a,b) => (a.start||'').localeCompare(b.start||''));
       if(evs.length>0) daysWithEvents.push({day:d, date:ds, events:evs});
     }
 
@@ -346,10 +361,11 @@
       const heading = `${dayInfo.day}日（${WEEKDAY_JP[dt.getDay()]}）` + (isToday ? '　本日' : '');
       const rows = dayInfo.events.map(function(ev){
         const cls = DOJO_CLASS[ev.dojo] || 'special';
+        const eveCls = isEvening(ev.start) ? ' eve' : '';
         const dojoLabel = ev.dojo || 'その他';
         const title = ev.dojo ? (ev.title||'稽古') : (ev.memo || ev.title || '');
         return `<div class="list-event-row">
-          <span class="list-event-dojo ${cls}">${dojoLabel}</span>
+          <span class="list-event-dojo ${cls}${eveCls}">${dojoLabel}</span>
           <span class="list-event-time">${ev.start||''}</span>
           <span class="list-event-title">${title}</span>
         </div>`;
@@ -375,10 +391,11 @@
     const cell=document.createElement('div');cell.className='cal-cell';
     const dd=document.createElement('div');dd.className='cal-date';dd.textContent=day;cell.appendChild(dd);
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    allEvents.filter(e=>e.date===ds).forEach(ev=>{
+    allEvents.filter(e=>e.date===ds).sort((a,b)=>(a.start||'').localeCompare(b.start||'')).forEach(ev=>{
       if(activeFilter!=='all'&&ev.dojo!==activeFilter)return;
       const cls=DOJO_CLASS[ev.dojo]||'special';
-      const evDiv=document.createElement('div');evDiv.className=`cal-event ${cls}`;
+      const eveCls=isEvening(ev.start)?' eve':'';
+      const evDiv=document.createElement('div');evDiv.className=`cal-event ${cls}${eveCls}`;
       const dispText=ev.dojo?`${ev.start} ${ev.title}`:(ev.memo||ev.title);
       evDiv.textContent=dispText.substring(0,12);
       cell.appendChild(evDiv);
