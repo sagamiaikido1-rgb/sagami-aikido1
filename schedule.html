@@ -91,6 +91,8 @@
     .list-day-group{margin-bottom:18px;}
     .list-day-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:14px;color:var(--navy);padding:8px 0;border-bottom:2px solid var(--light);margin-bottom:8px;}
     .list-day-heading.today{color:var(--accent);}
+    #listBody{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;align-content:start;}
+    @media(max-width:600px){#listBody{grid-template-columns:1fr;gap:0;}}
     .list-event-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px dashed var(--border);font-size:13px;}
     .list-event-row:last-child{border-bottom:none;}
     .list-event-dojo{flex-shrink:0;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap;}
@@ -213,8 +215,8 @@
   <h2 class="section-title" id="regular-schedule" style="scroll-margin-top:88px;">スケジュール</h2>
 
   <div class="sched-tabs">
-    <button type="button" class="sched-tab active" id="tabCalendar" onclick="switchSchedView('calendar')">📅 カレンダー表示</button>
-    <button type="button" class="sched-tab" id="tabList" onclick="switchSchedView('list')">📋 リスト表示</button>
+    <button type="button" class="sched-tab active" id="tabCalendar">📅 カレンダー表示</button>
+    <button type="button" class="sched-tab" id="tabList">📋 リスト表示</button>
   </div>
 
   <div class="dojo-filter">
@@ -359,13 +361,15 @@
     }).join('');
   }
 
-  window.switchSchedView = function(view){
+  function switchSchedView(view){
     document.getElementById('tabCalendar').classList.toggle('active', view==='calendar');
     document.getElementById('tabList').classList.toggle('active', view==='list');
     document.getElementById('viewCalendar').classList.toggle('active', view==='calendar');
     document.getElementById('viewList').classList.toggle('active', view==='list');
     if(view==='list') renderList();
-  };
+  }
+  document.getElementById('tabCalendar').addEventListener('click', function(){ switchSchedView('calendar'); });
+  document.getElementById('tabList').addEventListener('click', function(){ switchSchedView('list'); });
 
   function makeCell(day,year,month){
     const cell=document.createElement('div');cell.className='cal-cell';

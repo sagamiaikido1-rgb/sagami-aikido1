@@ -271,6 +271,29 @@
     .dojo-chip.samukawa { background:var(--samukawa); color:#fff; }
     .dojo-chip.fujisawa { background:var(--fujisawa); color:#fff; }
     .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; background:var(--border); border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.08); margin-bottom: 28px; }
+
+    /* スケジュール表示切り替えタブ（index.html簡易版） */
+    .sched-tabs{display:flex;gap:8px;margin-bottom:16px;}
+    .sched-tab{flex:1;text-align:center;padding:11px 10px;border-radius:10px;border:1px solid var(--border);background:var(--white);color:var(--gray);font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;letter-spacing:1px;}
+    .sched-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+    .sched-view{display:none;}
+    .sched-view.active{display:block;}
+    .list-day-group{margin-bottom:16px;}
+    .list-day-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:13.5px;color:var(--navy);padding:7px 0;border-bottom:2px solid var(--light);margin-bottom:7px;}
+    .list-day-heading.today{color:var(--accent);}
+    #idxListBody{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
+    @media(max-width:700px){#idxListBody{grid-template-columns:1fr;gap:0;}}
+    .list-event-row{display:flex;align-items:center;gap:9px;padding:8px 4px;border-bottom:1px dashed var(--border);font-size:12.5px;}
+    .list-event-row:last-child{border-bottom:none;}
+    .list-event-dojo{flex-shrink:0;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;color:#fff;white-space:nowrap;}
+    .list-event-dojo.chigasaki{background:var(--chigasaki);}
+    .list-event-dojo.hiratsuka{background:var(--hiratsuka);}
+    .list-event-dojo.samukawa{background:var(--samukawa);}
+    .list-event-dojo.fujisawa{background:var(--fujisawa);}
+    .list-event-dojo.special{background:var(--gold);}
+    .list-event-time{flex-shrink:0;color:var(--navy);font-weight:600;font-size:12px;white-space:nowrap;}
+    .list-event-title{color:var(--navy);}
+    .list-empty{text-align:center;color:var(--gray);padding:28px;font-size:12.5px;}
     .cal-day-header { background:var(--light); text-align:center; padding:8px 4px; font-size:11px; color:var(--gray); font-weight:700; }
     .cal-day-header:first-child { color:var(--accent); } .cal-day-header:last-child { color:#1565c0; }
     .cal-cell { background:var(--white); min-height:70px; padding:4px; }
@@ -586,7 +609,21 @@
     <div class="section-label">SCHEDULE</div>
     <h2 class="section-title">スケジュール</h2>
     <div class="section-line"></div>
-    <div class="cal-wrap">
+
+    <div class="sched-tabs">
+      <button type="button" class="sched-tab active" id="idxTabCalendar">📅 カレンダー表示</button>
+      <button type="button" class="sched-tab" id="idxTabList">📋 リスト表示</button>
+    </div>
+
+    <div class="dojo-filter">
+      <button class="dojo-chip all active" onclick="filterDojo('all',this)">全て</button>
+      <button class="dojo-chip chigasaki active" onclick="filterDojo('茅ヶ崎',this)">茅ヶ崎</button>
+      <button class="dojo-chip hiratsuka active" onclick="filterDojo('平塚',this)">平塚</button>
+      <button class="dojo-chip samukawa active" onclick="filterDojo('寒川',this)">寒川</button>
+      <button class="dojo-chip fujisawa active" onclick="filterDojo('藤沢',this)">藤沢</button>
+    </div>
+
+    <div class="cal-wrap sched-view active" id="idxViewCalendar">
       <div class="cal-header">
         <h3 id="calTitle">読み込み中...</h3>
         <div class="cal-nav">
@@ -594,19 +631,26 @@
           <button onclick="nextMonth()">▶</button>
         </div>
       </div>
-      <div class="dojo-filter">
-        <button class="dojo-chip all active" onclick="filterDojo('all',this)">全て</button>
-        <button class="dojo-chip chigasaki active" onclick="filterDojo('茅ヶ崎',this)">茅ヶ崎</button>
-        <button class="dojo-chip hiratsuka active" onclick="filterDojo('平塚',this)">平塚</button>
-        <button class="dojo-chip samukawa active" onclick="filterDojo('寒川',this)">寒川</button>
-        <button class="dojo-chip fujisawa active" onclick="filterDojo('藤沢',this)">藤沢</button>
-      </div>
       <div class="cal-grid" id="calGrid">
         <div style="grid-column:span 7;text-align:center;padding:48px;color:var(--gray)">読み込み中...</div>
       </div>
-      <div class="cal-more-link">
-        <a href="schedule.html#regular-schedule" class="btn-outline" style="color:var(--navy);border-color:var(--border);">定期稽古スケジュールも見る</a>
+    </div>
+
+    <div class="sched-view" id="idxViewList">
+      <div class="cal-header">
+        <h3 id="idxListTitle">読み込み中...</h3>
+        <div class="cal-nav">
+          <button onclick="prevMonth()">◀</button>
+          <button onclick="nextMonth()">▶</button>
+        </div>
       </div>
+      <div id="idxListBody">
+        <div class="list-empty">読み込み中...</div>
+      </div>
+    </div>
+
+    <div class="cal-more-link">
+      <a href="schedule.html#regular-schedule" class="btn-outline" style="color:var(--navy);border-color:var(--border);">定期稽古スケジュールも見る</a>
     </div>
   </div>
 </section>
@@ -851,6 +895,52 @@
       grid.appendChild(c);
     }
     for(let i=1;i<=42-first-last;i++){const c=makeCell(i,year,month+1);c.classList.add('other-month');grid.appendChild(c);}
+    renderList();
+  }
+
+  const WEEKDAY_JP = ['日','月','火','水','木','金','土'];
+  function renderList(){
+    const listTitle = document.getElementById('idxListTitle');
+    const listBody = document.getElementById('idxListBody');
+    if(!listTitle || !listBody) return;
+    const year=currentYear, month=currentMonth;
+    listTitle.textContent = `${year}年${month+1}月`;
+    const last=new Date(year,month+1,0).getDate();
+
+    const daysWithEvents = [];
+    for(let d=1; d<=last; d++){
+      const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const evs = allEvents.filter(e=>e.date===ds && (activeFilter==='all' || e.dojo===activeFilter));
+      if(evs.length>0) daysWithEvents.push({day:d, date:ds, events:evs});
+    }
+
+    if(daysWithEvents.length===0){
+      listBody.innerHTML = '<div class="list-empty">この月の稽古予定はありません</div>';
+      return;
+    }
+
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    listBody.innerHTML = daysWithEvents.map(function(dayInfo){
+      const dt = new Date(dayInfo.date);
+      const isToday = dayInfo.date === todayStr;
+      const heading = `${dayInfo.day}日（${WEEKDAY_JP[dt.getDay()]}）` + (isToday ? '　本日' : '');
+      const rows = dayInfo.events.map(function(ev){
+        const cls = DOJO_CLASS[ev.dojo] || 'special';
+        const dojoLabel = ev.dojo || 'その他';
+        const title = ev.dojo ? (ev.title||'稽古') : (ev.memo || ev.title || '');
+        return `<div class="list-event-row">
+          <span class="list-event-dojo ${cls}">${dojoLabel}</span>
+          <span class="list-event-time">${ev.start||''}</span>
+          <span class="list-event-title">${title}</span>
+        </div>`;
+      }).join('');
+      return `<div class="list-day-group">
+        <div class="list-day-heading${isToday?' today':''}">${heading}</div>
+        ${rows}
+      </div>`;
+    }).join('');
   }
 
   function makeCell(day,year,month){
@@ -875,6 +965,16 @@
     document.querySelectorAll('.dojo-filter .dojo-chip').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');renderCalendar();
   };
+
+  function idxSwitchSchedView(view){
+    document.getElementById('idxTabCalendar').classList.toggle('active', view==='calendar');
+    document.getElementById('idxTabList').classList.toggle('active', view==='list');
+    document.getElementById('idxViewCalendar').classList.toggle('active', view==='calendar');
+    document.getElementById('idxViewList').classList.toggle('active', view==='list');
+    if(view==='list') renderList();
+  }
+  document.getElementById('idxTabCalendar').addEventListener('click', function(){ idxSwitchSchedView('calendar'); });
+  document.getElementById('idxTabList').addEventListener('click', function(){ idxSwitchSchedView('list'); });
 
   loadEvents();
 </script>
