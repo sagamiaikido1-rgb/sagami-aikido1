@@ -63,18 +63,45 @@
     .page-line{width:60px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--gold));margin:14px auto 0;}
     main{max-width:1000px;margin:0 auto;padding:64px 24px;}
     .section-title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;color:var(--navy);letter-spacing:2px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid var(--light);}
-    .regular-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:56px;}
-    .regular-card{border-top:4px solid;border-radius:16px;padding:24px 20px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:box-shadow .3s ease,transform .3s ease;}
+    .regular-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px;}
+    .regular-card{border-top:4px solid;border-radius:14px;padding:16px 14px;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:box-shadow .3s ease,transform .3s ease;}
     .regular-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-4px);}
     .regular-card.chigasaki{border-color:var(--chigasaki);background:#f0fdf7;}
     .regular-card.hiratsuka{border-color:var(--hiratsuka);background:#eff6ff;}
     .regular-card.samukawa{border-color:var(--samukawa);background:#fff7f3;}
-    .dojo-label{font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:8px;}
+    .regular-card.fujisawa{border-color:var(--fujisawa);background:#faf5ff;}
+    .dojo-label{font-size:10.5px;font-weight:700;letter-spacing:1px;margin-bottom:6px;white-space:nowrap;}
     .regular-card.chigasaki .dojo-label{color:var(--chigasaki);}
     .regular-card.hiratsuka .dojo-label{color:var(--hiratsuka);}
     .regular-card.samukawa .dojo-label{color:var(--samukawa);}
-    .regular-day{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--navy);font-weight:700;margin-bottom:4px;}
-    .regular-time{font-size:13px;color:var(--gray);}
+    .regular-card.fujisawa .dojo-label{color:var(--fujisawa);}
+    .regular-day{font-family:'Noto Serif JP',serif;font-size:14px;color:var(--navy);font-weight:700;margin-bottom:3px;}
+    .regular-time{font-size:11.5px;color:var(--gray);}
+    @media(max-width:700px){.regular-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.regular-card{padding:13px 11px;}.regular-day{font-size:13px;}.regular-time{font-size:11px;}}
+
+    /* スケジュール表示切り替えタブ */
+    .sched-tabs{display:flex;gap:8px;margin-bottom:20px;}
+    .sched-tab{flex:1;text-align:center;padding:12px 10px;border-radius:10px;border:1px solid var(--border);background:var(--white);color:var(--gray);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;letter-spacing:1px;}
+    .sched-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+    .sched-view{display:none;}
+    .sched-view.active{display:block;}
+
+    /* リスト表示 */
+    .list-month-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .list-day-group{margin-bottom:18px;}
+    .list-day-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:14px;color:var(--navy);padding:8px 0;border-bottom:2px solid var(--light);margin-bottom:8px;}
+    .list-day-heading.today{color:var(--accent);}
+    .list-event-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px dashed var(--border);font-size:13px;}
+    .list-event-row:last-child{border-bottom:none;}
+    .list-event-dojo{flex-shrink:0;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap;}
+    .list-event-dojo.chigasaki{background:var(--chigasaki);}
+    .list-event-dojo.hiratsuka{background:var(--hiratsuka);}
+    .list-event-dojo.samukawa{background:var(--samukawa);}
+    .list-event-dojo.fujisawa{background:var(--fujisawa);}
+    .list-event-dojo.special{background:var(--gold);}
+    .list-event-time{flex-shrink:0;color:var(--navy);font-weight:600;font-size:12.5px;white-space:nowrap;}
+    .list-event-title{color:var(--navy);}
+    .list-empty{text-align:center;color:var(--gray);padding:32px;font-size:13px;}
 
     /* カレンダー */
     .cal-wrap{position:relative;}
@@ -130,7 +157,7 @@
       </div>
       <a href="join.html">入会案内</a>
       <div class="nav-group">
-        <span class="nav-parent">稽古・アクセス</span>
+        <span class="nav-parent">スケジュール・アクセス</span>
         <div class="nav-dropdown">
           <a href="schedule.html" class="active">スケジュール</a>
           <a href="access.html">アクセス</a>
@@ -155,7 +182,7 @@
     </div>
     <a href="join.html">入会案内</a>
     <div class="mobile-nav-acc">
-      <button type="button" class="mobile-nav-acc-btn" onclick="this.parentElement.classList.toggle('open')">稽古・アクセス</button>
+      <button type="button" class="mobile-nav-acc-btn" onclick="this.parentElement.classList.toggle('open')">スケジュール・アクセス</button>
       <div class="mobile-nav-acc-panel">
         <a href="schedule.html" class="active">スケジュール</a>
         <a href="access.html">アクセス</a>
@@ -174,33 +201,58 @@
 </div>
 
 <main>
-  <h2 class="section-title">月別スケジュール</h2>
-  <div class="cal-wrap">
-    <div class="cal-header">
-      <h2 id="calTitle">読み込み中...</h2>
+  <h2 class="section-title">定期稽古スケジュール</h2>
+  <p style="font-size:12.5px;color:var(--gray);margin:-16px 0 20px;">各道場の原則の曜日・時間帯です。都合により変更になる場合がありますので、下記のスケジュールもあわせてご確認ください。</p>
+  <div class="regular-grid">
+    <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">日曜日</div><div class="regular-time">09:30 〜 11:30</div></div>
+    <div class="regular-card hiratsuka"><div class="dojo-label">平塚道場</div><div class="regular-day">日曜日</div><div class="regular-time">15:30 〜 16:30</div></div>
+    <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">水曜日</div><div class="regular-time">18:30 〜 20:30</div></div>
+    <div class="regular-card samukawa"><div class="dojo-label">寒川道場</div><div class="regular-day">土曜日</div><div class="regular-time">12:30 〜 14:30</div></div>
+  </div>
+
+  <h2 class="section-title" id="regular-schedule" style="scroll-margin-top:88px;">スケジュール</h2>
+
+  <div class="sched-tabs">
+    <button type="button" class="sched-tab active" id="tabCalendar" onclick="switchSchedView('calendar')">📅 カレンダー表示</button>
+    <button type="button" class="sched-tab" id="tabList" onclick="switchSchedView('list')">📋 リスト表示</button>
+  </div>
+
+  <div class="dojo-filter">
+    <button class="dojo-chip all active" onclick="filterDojo('all',this)">全て</button>
+    <button class="dojo-chip chigasaki active" onclick="filterDojo('茅ヶ崎',this)">茅ヶ崎</button>
+    <button class="dojo-chip hiratsuka active" onclick="filterDojo('平塚',this)">平塚</button>
+    <button class="dojo-chip samukawa active" onclick="filterDojo('寒川',this)">寒川</button>
+    <button class="dojo-chip fujisawa active" onclick="filterDojo('藤沢',this)">藤沢</button>
+  </div>
+
+  <!-- カレンダー表示 -->
+  <div class="sched-view active" id="viewCalendar">
+    <div class="cal-wrap">
+      <div class="cal-header">
+        <h2 id="calTitle">読み込み中...</h2>
+        <div class="cal-nav">
+          <button onclick="prevMonth()">◀</button>
+          <button onclick="nextMonth()">▶</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="calGrid">
+        <div style="grid-column:span 7;text-align:center;padding:48px;color:var(--gray)">読み込み中...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- リスト表示 -->
+  <div class="sched-view" id="viewList">
+    <div class="list-month-row">
+      <h2 id="listTitle">読み込み中...</h2>
       <div class="cal-nav">
         <button onclick="prevMonth()">◀</button>
         <button onclick="nextMonth()">▶</button>
       </div>
     </div>
-    <div class="dojo-filter">
-      <button class="dojo-chip all active" onclick="filterDojo('all',this)">全て</button>
-      <button class="dojo-chip chigasaki active" onclick="filterDojo('茅ヶ崎',this)">茅ヶ崎</button>
-      <button class="dojo-chip hiratsuka active" onclick="filterDojo('平塚',this)">平塚</button>
-      <button class="dojo-chip samukawa active" onclick="filterDojo('寒川',this)">寒川</button>
-      <button class="dojo-chip fujisawa active" onclick="filterDojo('藤沢',this)">藤沢</button>
+    <div id="listBody">
+      <div class="list-empty">読み込み中...</div>
     </div>
-    <div class="cal-grid" id="calGrid">
-      <div style="grid-column:span 7;text-align:center;padding:48px;color:var(--gray)">読み込み中...</div>
-    </div>
-  </div>
-
-  <h2 class="section-title" id="regular-schedule" style="margin-top:56px;scroll-margin-top:88px;">定期稽古スケジュール</h2>
-  <div class="regular-grid" style="margin-bottom:0;">
-    <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">日曜日</div><div class="regular-time">09:30 〜 11:30</div></div>
-    <div class="regular-card hiratsuka"><div class="dojo-label">平塚道場</div><div class="regular-day">日曜日</div><div class="regular-time">15:30 〜 16:30</div></div>
-    <div class="regular-card chigasaki"><div class="dojo-label">茅ヶ崎道場</div><div class="regular-day">水曜日</div><div class="regular-time">18:30 〜 20:30</div></div>
-    <div class="regular-card samukawa"><div class="dojo-label">寒川道場</div><div class="regular-day">土曜日</div><div class="regular-time">12:30 〜 14:30</div></div>
   </div>
 </main>
 
@@ -259,7 +311,61 @@
       grid.appendChild(c);
     }
     for(let i=1;i<=42-first-last;i++){const c=makeCell(i,year,month+1);c.classList.add('other-month');grid.appendChild(c);}
+    renderList();
   }
+
+  const WEEKDAY_JP = ['日','月','火','水','木','金','土'];
+  function renderList(){
+    const listTitle = document.getElementById('listTitle');
+    const listBody = document.getElementById('listBody');
+    if(!listTitle || !listBody) return;
+    const year=currentYear, month=currentMonth;
+    listTitle.textContent = `${year}年${month+1}月`;
+    const last=new Date(year,month+1,0).getDate();
+
+    const daysWithEvents = [];
+    for(let d=1; d<=last; d++){
+      const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const evs = allEvents.filter(e=>e.date===ds && (activeFilter==='all' || e.dojo===activeFilter));
+      if(evs.length>0) daysWithEvents.push({day:d, date:ds, events:evs});
+    }
+
+    if(daysWithEvents.length===0){
+      listBody.innerHTML = '<div class="list-empty">この月の稽古予定はありません</div>';
+      return;
+    }
+
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    listBody.innerHTML = daysWithEvents.map(function(dayInfo){
+      const dt = new Date(dayInfo.date);
+      const isToday = dayInfo.date === todayStr;
+      const heading = `${dayInfo.day}日（${WEEKDAY_JP[dt.getDay()]}）` + (isToday ? '　本日' : '');
+      const rows = dayInfo.events.map(function(ev){
+        const cls = DOJO_CLASS[ev.dojo] || 'special';
+        const dojoLabel = ev.dojo || 'その他';
+        const title = ev.dojo ? (ev.title||'稽古') : (ev.memo || ev.title || '');
+        return `<div class="list-event-row">
+          <span class="list-event-dojo ${cls}">${dojoLabel}</span>
+          <span class="list-event-time">${ev.start||''}</span>
+          <span class="list-event-title">${title}</span>
+        </div>`;
+      }).join('');
+      return `<div class="list-day-group">
+        <div class="list-day-heading${isToday?' today':''}">${heading}</div>
+        ${rows}
+      </div>`;
+    }).join('');
+  }
+
+  window.switchSchedView = function(view){
+    document.getElementById('tabCalendar').classList.toggle('active', view==='calendar');
+    document.getElementById('tabList').classList.toggle('active', view==='list');
+    document.getElementById('viewCalendar').classList.toggle('active', view==='calendar');
+    document.getElementById('viewList').classList.toggle('active', view==='list');
+    if(view==='list') renderList();
+  };
 
   function makeCell(day,year,month){
     const cell=document.createElement('div');cell.className='cal-cell';
