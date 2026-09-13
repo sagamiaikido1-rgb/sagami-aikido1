@@ -88,35 +88,39 @@
 
     /* リスト表示 */
     .list-month-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-    .list-day-group{display:flex;gap:0;margin-bottom:14px;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);background:var(--white);}
+    .list-day-group{display:flex;gap:0;margin-bottom:12px;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);background:var(--white);}
     .list-day-badge{flex-shrink:0;width:64px;background:var(--navy);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;}
-    .list-day-badge.today{background:var(--accent);}
-    .list-day-badge .num{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;line-height:1;}
+    .list-day-badge.today{background:var(--accent) !important;}
+    .list-day-badge .num{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:700;line-height:1;}
     .list-day-badge .dow{font-size:10.5px;margin-top:3px;opacity:0.85;}
-    .list-day-body{flex:1;padding:10px 14px;min-width:0;}
+    .list-day-body{flex:1;padding:14px 16px;min-width:0;}
     .list-day-today-label{font-size:10.5px;color:var(--accent);font-weight:700;margin-bottom:4px;}
-    #listBody{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start;}
+    #listBody{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;}
     @media(max-width:600px){#listBody{grid-template-columns:1fr;gap:10px;}}
-    .list-event-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px dashed var(--border);font-size:12.5px;}
-    .list-event-row:last-child{border-bottom:none;}
-    .list-event-dojo{flex-shrink:0;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap;}
-    .list-event-dojo.chigasaki{background:var(--chigasaki);}
-    .list-event-dojo.hiratsuka{background:var(--hiratsuka);}
-    .list-event-dojo.samukawa{background:var(--samukawa);}
-    .list-event-dojo.fujisawa{background:var(--fujisawa);}
-    .list-event-dojo.special{background:var(--gold);}
-    .list-event-dojo.chigasaki.yu{background:var(--chigasaki-yu);}
-    .list-event-dojo.hiratsuka.yu{background:var(--hiratsuka-yu);}
-    .list-event-dojo.samukawa.yu{background:var(--samukawa-yu);}
-    .list-event-dojo.fujisawa.yu{background:var(--fujisawa-yu);}
-    .list-event-dojo.chigasaki.yoru{background:var(--chigasaki-yoru);}
-    .list-event-dojo.hiratsuka.yoru{background:var(--hiratsuka-yoru);}
-    .list-event-dojo.samukawa.yoru{background:var(--samukawa-yoru);}
-    .list-event-dojo.fujisawa.yoru{background:var(--fujisawa-yoru);}
-    .list-event-dojo.yu::after{content:'夕';margin-left:4px;font-size:9px;opacity:0.85;border-left:1px solid rgba(255,255,255,0.5);padding-left:4px;}
-    .list-event-dojo.yoru::after{content:'夜';margin-left:4px;font-size:9px;opacity:0.85;border-left:1px solid rgba(255,255,255,0.5);padding-left:4px;}
-    .list-event-time{flex-shrink:0;color:var(--navy);font-weight:600;font-size:12.5px;white-space:nowrap;}
-    .list-event-title{color:var(--navy);}
+    .list-card-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+    .list-card-dojo-name{font-family:'Noto Serif JP',serif;font-weight:700;font-size:15px;color:var(--navy);}
+    .list-card-tag{font-size:10.5px;padding:2px 9px;border-radius:999px;font-weight:700;}
+    .list-card-tag.practice{background:#e3f2ea;color:#1d6b45;}
+    .list-card-tag.member{background:#eeeeee;color:#555;}
+    .list-card-tag.tone-yu{background:#fdecd1;color:#9a5a12;}
+    .list-card-tag.tone-yoru{background:#e4e4f5;color:#3d3d8a;}
+    .list-card-detail{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--gray);margin-top:4px;}
+    .list-card-detail .ic{flex-shrink:0;}
+
+    /* 日付バッジの道場別カラー（左帯） */
+    .list-day-badge.chigasaki{background:var(--chigasaki);}
+    .list-day-badge.hiratsuka{background:var(--hiratsuka);}
+    .list-day-badge.samukawa{background:var(--samukawa);}
+    .list-day-badge.fujisawa{background:var(--fujisawa);}
+    .list-day-badge.chigasaki.yu{background:var(--chigasaki-yu);}
+    .list-day-badge.hiratsuka.yu{background:var(--hiratsuka-yu);}
+    .list-day-badge.samukawa.yu{background:var(--samukawa-yu);}
+    .list-day-badge.fujisawa.yu{background:var(--fujisawa-yu);}
+    .list-day-badge.chigasaki.yoru{background:var(--chigasaki-yoru);}
+    .list-day-badge.hiratsuka.yoru{background:var(--hiratsuka-yoru);}
+    .list-day-badge.samukawa.yoru{background:var(--samukawa-yoru);}
+    .list-day-badge.fujisawa.yoru{background:var(--fujisawa-yoru);}
+    .list-day-badge.special{background:var(--gold);}
     .list-empty{text-align:center;color:var(--gray);padding:32px;font-size:13px;}
 
     /* カレンダー */
@@ -363,7 +367,7 @@
       const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const evs = allEvents.filter(e=>e.date===ds && (activeFilter==='all' || e.dojo===activeFilter));
       evs.sort((a,b) => (a.start||'').localeCompare(b.start||''));
-      if(evs.length>0) daysWithEvents.push({day:d, date:ds, events:evs});
+      evs.forEach(ev => daysWithEvents.push({day:d, date:ds, event:ev}));
     }
 
     if(daysWithEvents.length===0){
@@ -374,31 +378,45 @@
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-    listBody.innerHTML = daysWithEvents.map(function(dayInfo){
-      const dt = new Date(dayInfo.date);
-      const isToday = dayInfo.date === todayStr;
-      const rows = dayInfo.events.map(function(ev){
-        const cls = DOJO_CLASS[ev.dojo] || 'special';
-        const eveCls = timeToneClass(ev.start);
-        const dojoLabel = ev.dojo || 'その他';
-        const title = ev.dojo ? (ev.title||'稽古') : (ev.memo || ev.title || '');
-        return `<div class="list-event-row">
-          <span class="list-event-dojo ${cls}${eveCls}">${dojoLabel}</span>
-          <span class="list-event-time">${ev.start||''}</span>
-          <span class="list-event-title">${title}</span>
-        </div>`;
-      }).join('');
+    listBody.innerHTML = daysWithEvents.map(function(item){
+      const ev = item.event;
+      const dt = new Date(item.date);
+      const isToday = item.date === todayStr;
+      const cls = DOJO_CLASS[ev.dojo] || 'special';
+      const toneCls = timeToneClass(ev.start);
+      const dojoName = ev.dojo || (ev.memo || ev.title || 'その他');
+      const timeLabel = ev.dojo ? getTimeSlotLabel(ev.start) : '';
+      const badgeCls = isToday ? ' today' : ` ${cls}${toneCls}`;
+      const toneTagHtml = toneCls === ' yu'
+        ? '<span class="list-card-tag tone-yu">夕</span>'
+        : (toneCls === ' yoru' ? '<span class="list-card-tag tone-yoru">夜</span>' : '');
       return `<div class="list-day-group">
-        <div class="list-day-badge${isToday?' today':''}">
-          <div class="num">${dayInfo.day}</div>
-          <div class="dow">${WEEKDAY_JP[dt.getDay()]}曜日</div>
+        <div class="list-day-badge${badgeCls}">
+          <div class="num">${item.day}</div>
+          <div class="dow">${WEEKDAY_JP[dt.getDay()]}</div>
         </div>
         <div class="list-day-body">
-          ${isToday ? '<div class="list-day-today-label">本日</div>' : ''}
-          ${rows}
+          <div class="list-card-head">
+            <span class="list-card-dojo-name">${dojoName}</span>
+            <span class="list-card-tag practice">稽古</span>
+            <span class="list-card-tag member">全会員</span>
+            ${toneTagHtml}
+          </div>
+          <div class="list-card-detail"><span class="ic">🕐</span>${ev.start||''}${ev.end ? '〜'+ev.end : ''}${timeLabel ? '　'+timeLabel : ''}</div>
         </div>
       </div>`;
     }).join('');
+  }
+
+  // 開始時刻から「朝・昼・夕・夜」の日本語ラベルを返す（管理画面のgetTimeLabelと同じ基準）
+  function getTimeSlotLabel(startStr){
+    if(!startStr) return '';
+    const h = parseInt(String(startStr).split(':')[0], 10);
+    if(isNaN(h)) return '';
+    if(h < 12) return '（朝）';
+    if(h < 16) return '（昼）';
+    if(h < 18) return '（夕）';
+    return '（夜）';
   }
 
   function switchSchedView(view){
