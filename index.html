@@ -301,29 +301,28 @@
     .sched-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
     .sched-view{display:none;}
     .sched-view.active{display:block;}
-    .list-day-group{margin-bottom:16px;}
-    .list-day-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:13.5px;color:var(--navy);padding:7px 0;border-bottom:2px solid var(--light);margin-bottom:7px;}
-    .list-day-heading.today{color:var(--accent);}
-    #idxListBody{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
-    @media(max-width:700px){#idxListBody{grid-template-columns:1fr;gap:0;}}
-    .list-event-row{display:flex;align-items:center;gap:9px;padding:8px 4px;border-bottom:1px dashed var(--border);font-size:12.5px;}
-    .list-event-row:last-child{border-bottom:none;}
-    .list-event-dojo{flex-shrink:0;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;color:#fff;white-space:nowrap;}
-    .list-event-dojo.chigasaki{background:var(--chigasaki);}
-    .list-event-dojo.hiratsuka{background:var(--hiratsuka);}
-    .list-event-dojo.samukawa{background:var(--samukawa);}
-    .list-event-dojo.fujisawa{background:var(--fujisawa);}
-    .list-event-dojo.special{background:var(--gold);}
-    .list-event-dojo.chigasaki.yu{background:var(--chigasaki-yu);}
-    .list-event-dojo.hiratsuka.yu{background:var(--hiratsuka-yu);}
-    .list-event-dojo.samukawa.yu{background:var(--samukawa-yu);}
-    .list-event-dojo.fujisawa.yu{background:var(--fujisawa-yu);}
-    .list-event-dojo.chigasaki.yoru{background:var(--chigasaki-yoru);}
-    .list-event-dojo.hiratsuka.yoru{background:var(--hiratsuka-yoru);}
-    .list-event-dojo.samukawa.yoru{background:var(--samukawa-yoru);}
-    .list-event-dojo.fujisawa.yoru{background:var(--fujisawa-yoru);}
-    .list-event-time{flex-shrink:0;color:var(--navy);font-weight:600;font-size:12px;white-space:nowrap;}
-    .list-event-title{color:var(--navy);}
+    .list-day-group{display:flex;gap:0;margin-bottom:12px;border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:0 3px 10px rgba(0,0,0,0.1);background:var(--white);}
+    .list-day-badge{flex-shrink:0;width:64px;background:var(--navy);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;}
+    .list-day-badge.today{background:var(--accent) !important;}
+    .list-day-badge .num{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:700;line-height:1;}
+    .list-day-badge .dow{font-size:10.5px;margin-top:3px;opacity:0.85;}
+    .list-day-body{flex:1;padding:14px 16px;min-width:0;}
+    #idxListBody{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;}
+    @media(max-width:600px){#idxListBody{grid-template-columns:1fr;gap:10px;}}
+    .list-card-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+    .list-card-dojo-name{font-family:'Noto Serif JP',serif;font-weight:700;font-size:15px;color:var(--navy);}
+    .list-card-detail{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--navy);margin-top:2px;font-weight:600;}
+    .list-card-detail .ic{flex-shrink:0;}
+    .time-slot-badge{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:999px;letter-spacing:0.5px;}
+    .time-slot-badge.slot-asa{background:#FDF0E6;color:#7A3500;}
+    .time-slot-badge.slot-hiru{background:#E3F2FD;color:#0D47A1;}
+    .time-slot-badge.slot-yu{background:#FCE4EC;color:#AD1457;}
+    .time-slot-badge.slot-yoru{background:#1A2456;color:#FFFFFF;}
+    .list-day-badge.chigasaki{background:var(--chigasaki);}
+    .list-day-badge.hiratsuka{background:var(--hiratsuka);}
+    .list-day-badge.samukawa{background:var(--samukawa);}
+    .list-day-badge.fujisawa{background:var(--fujisawa);}
+    .list-day-badge.special{background:var(--gold);}
     .list-empty{text-align:center;color:var(--gray);padding:28px;font-size:12.5px;}
     .cal-day-header { background:var(--light); text-align:center; padding:8px 4px; font-size:11px; color:var(--gray); font-weight:700; }
     .cal-day-header:first-child { color:var(--accent); } .cal-day-header:last-child { color:#1565c0; }
@@ -516,10 +515,12 @@
       #schedule .cal-event { font-size: 8px; padding: 1px 3px; margin-top: 1px; }
       #schedule .cal-more-link { margin-top: 12px; }
       #schedule .cal-more-link .btn-outline { padding: 10px 16px; font-size: 12.5px; }
-      #schedule .list-day-heading { font-size: 12px; padding: 5px 0; margin-bottom: 5px; }
-      #schedule .list-event-row { padding: 6px 3px; font-size: 11.5px; gap: 7px; }
-      #schedule .list-event-dojo { font-size: 9px; padding: 2px 7px; }
-      #schedule .list-event-time { font-size: 11px; }
+      #schedule .list-day-badge { width: 52px; }
+      #schedule .list-day-badge .num { font-size: 19px; }
+      #schedule .list-day-body { padding: 10px 12px; }
+      #schedule .list-card-dojo-name { font-size: 13px; }
+      #schedule .time-slot-badge { font-size: 10px; padding: 2px 8px; }
+      #schedule .list-card-detail { font-size: 11.5px; }
     }
   </style>
 </head>
@@ -999,7 +1000,7 @@
       const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const evs = allEvents.filter(e=>e.date===ds && (activeFilter==='all' || e.dojo===activeFilter));
       evs.sort((a,b) => (a.start||'').localeCompare(b.start||''));
-      if(evs.length>0) daysWithEvents.push({day:d, date:ds, events:evs});
+      evs.forEach(ev => daysWithEvents.push({day:d, date:ds, event:ev}));
     }
 
     if(daysWithEvents.length===0){
@@ -1010,26 +1011,42 @@
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-    listBody.innerHTML = daysWithEvents.map(function(dayInfo){
-      const dt = new Date(dayInfo.date);
-      const isToday = dayInfo.date === todayStr;
-      const heading = `${dayInfo.day}日（${WEEKDAY_JP[dt.getDay()]}）` + (isToday ? '　本日' : '');
-      const rows = dayInfo.events.map(function(ev){
-        const cls = DOJO_CLASS[ev.dojo] || 'special';
-        const eveCls = timeToneClass(ev.start);
-        const dojoLabel = ev.dojo || 'その他';
-        const title = ev.dojo ? (ev.title||'稽古') : (ev.memo || ev.title || '');
-        return `<div class="list-event-row">
-          <span class="list-event-dojo ${cls}${eveCls}">${dojoLabel}</span>
-          <span class="list-event-time">${ev.start||''}</span>
-          <span class="list-event-title">${title}</span>
-        </div>`;
-      }).join('');
+    listBody.innerHTML = daysWithEvents.map(function(item){
+      const ev = item.event;
+      const dt = new Date(item.date);
+      const isToday = item.date === todayStr;
+      const cls = DOJO_CLASS[ev.dojo] || 'special';
+      const dojoName = ev.dojo || (ev.memo || ev.title || 'その他');
+      const badgeCls = isToday ? ' today' : ` ${cls}`;
+      const slotInfo = ev.dojo ? getTimeSlotInfo(ev.start) : null;
+      const slotBadgeHtml = slotInfo
+        ? `<span class="time-slot-badge slot-${slotInfo.key}">${slotInfo.label}</span>`
+        : '';
       return `<div class="list-day-group">
-        <div class="list-day-heading${isToday?' today':''}">${heading}</div>
-        ${rows}
+        <div class="list-day-badge${badgeCls}">
+          <div class="num">${item.day}</div>
+          <div class="dow">${WEEKDAY_JP[dt.getDay()]}</div>
+        </div>
+        <div class="list-day-body">
+          <div class="list-card-head">
+            <span class="list-card-dojo-name">${dojoName}</span>
+            ${slotBadgeHtml}
+          </div>
+          <div class="list-card-detail"><span class="ic">🕐</span>${ev.start||''}${ev.end ? '〜'+ev.end : ''}</div>
+        </div>
       </div>`;
     }).join('');
+  }
+
+  // 開始時刻から時間帯の区分キーとラベルを返す（管理画面のgetTimeLabelと同じ基準）
+  function getTimeSlotInfo(startStr){
+    if(!startStr) return null;
+    const h = parseInt(String(startStr).split(':')[0], 10);
+    if(isNaN(h)) return null;
+    if(h < 12) return {key:'asa', label:'朝'};
+    if(h < 16) return {key:'hiru', label:'昼'};
+    if(h < 18) return {key:'yu', label:'夕'};
+    return {key:'yoru', label:'夜'};
   }
 
   function makeCell(day,year,month){
