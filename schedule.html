@@ -88,12 +88,16 @@
 
     /* リスト表示 */
     .list-month-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-    .list-day-group{margin-bottom:18px;}
-    .list-day-heading{font-family:'Noto Serif JP',serif;font-weight:700;font-size:14px;color:var(--navy);padding:8px 0;border-bottom:2px solid var(--light);margin-bottom:8px;}
-    .list-day-heading.today{color:var(--accent);}
-    #listBody{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;align-content:start;}
-    @media(max-width:600px){#listBody{grid-template-columns:1fr;gap:0;}}
-    .list-event-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px dashed var(--border);font-size:13px;}
+    .list-day-group{display:flex;gap:0;margin-bottom:14px;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);background:var(--white);}
+    .list-day-badge{flex-shrink:0;width:64px;background:var(--navy);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;}
+    .list-day-badge.today{background:var(--accent);}
+    .list-day-badge .num{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;line-height:1;}
+    .list-day-badge .dow{font-size:10.5px;margin-top:3px;opacity:0.85;}
+    .list-day-body{flex:1;padding:10px 14px;min-width:0;}
+    .list-day-today-label{font-size:10.5px;color:var(--accent);font-weight:700;margin-bottom:4px;}
+    #listBody{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start;}
+    @media(max-width:600px){#listBody{grid-template-columns:1fr;gap:10px;}}
+    .list-event-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px dashed var(--border);font-size:12.5px;}
     .list-event-row:last-child{border-bottom:none;}
     .list-event-dojo{flex-shrink:0;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap;}
     .list-event-dojo.chigasaki{background:var(--chigasaki);}
@@ -109,6 +113,8 @@
     .list-event-dojo.hiratsuka.yoru{background:var(--hiratsuka-yoru);}
     .list-event-dojo.samukawa.yoru{background:var(--samukawa-yoru);}
     .list-event-dojo.fujisawa.yoru{background:var(--fujisawa-yoru);}
+    .list-event-dojo.yu::after{content:'夕';margin-left:4px;font-size:9px;opacity:0.85;border-left:1px solid rgba(255,255,255,0.5);padding-left:4px;}
+    .list-event-dojo.yoru::after{content:'夜';margin-left:4px;font-size:9px;opacity:0.85;border-left:1px solid rgba(255,255,255,0.5);padding-left:4px;}
     .list-event-time{flex-shrink:0;color:var(--navy);font-weight:600;font-size:12.5px;white-space:nowrap;}
     .list-event-title{color:var(--navy);}
     .list-empty{text-align:center;color:var(--gray);padding:32px;font-size:13px;}
@@ -371,7 +377,6 @@
     listBody.innerHTML = daysWithEvents.map(function(dayInfo){
       const dt = new Date(dayInfo.date);
       const isToday = dayInfo.date === todayStr;
-      const heading = `${dayInfo.day}日（${WEEKDAY_JP[dt.getDay()]}）` + (isToday ? '　本日' : '');
       const rows = dayInfo.events.map(function(ev){
         const cls = DOJO_CLASS[ev.dojo] || 'special';
         const eveCls = timeToneClass(ev.start);
@@ -384,8 +389,14 @@
         </div>`;
       }).join('');
       return `<div class="list-day-group">
-        <div class="list-day-heading${isToday?' today':''}">${heading}</div>
-        ${rows}
+        <div class="list-day-badge${isToday?' today':''}">
+          <div class="num">${dayInfo.day}</div>
+          <div class="dow">${WEEKDAY_JP[dt.getDay()]}曜日</div>
+        </div>
+        <div class="list-day-body">
+          ${isToday ? '<div class="list-day-today-label">本日</div>' : ''}
+          ${rows}
+        </div>
       </div>`;
     }).join('');
   }
