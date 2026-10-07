@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin.html
 
-Sitemap: https://sagamiaikido1-rgb.github.io/sagami-aikido1/sitemap.xml
+Sitemap: https://www.sagamiaikido.com/sitemap.xml
