@@ -424,7 +424,7 @@
       <div class="section-card" style="border-top:3px solid #1a1a2e;">
         <h3>💾 データのバックアップ</h3>
         <p style="font-size:14px; margin-bottom:12px; line-height:1.8;">
-          稽古スケジュール・お知らせ・お問い合わせ・写真ギャラリーの登録内容を、1つのファイルにまとめてダウンロードします。
+          稽古スケジュール・お知らせ・お問い合わせ・写真ギャラリーの登録内容を、1つのファイルにまとめてダウンロードします。今後、新しい機能が増えても、そのデータは自動でバックアップに含まれます。
           ダウンロードしたファイルは、USBメモリやDVDなどに保存してください。
         </p>
         <button class="btn-primary" id="backupBtn" onclick="downloadBackup()">💾 バックアップをダウンロード</button>
@@ -574,8 +574,8 @@
       <div class="section-card" style="border-top:3px solid #38a169;">
         <h3>💰 料金について</h3>
         <div style="background:#f0fff4;border:2px solid #38a169;border-radius:6px;padding:14px 18px;font-size:14px;">
-          ✅ このサイトは<b>完全無料</b>で運用できます。<br>
-          GitHub Pages・Firebase ともに無料プランで十分対応できます。
+          ✅ サイトの運用（GitHub Pages・Firebase）は<b>無料プラン</b>で十分対応できます。<br>
+          独自ドメイン（sagamiaikido.com）の更新料のみかかります（2028年10月まで支払い済み）。
         </div>
       </div>
     </div>
@@ -588,7 +588,7 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, serverTimestamp, writeBatch, Timestamp }
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, serverTimestamp, writeBatch, Timestamp, GeoPoint }
     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
   // Firebase Storage は無料プラン非対応のため不使用。画像はFirestoreに圧縮保存。
 
@@ -1423,60 +1423,93 @@
 
 
   /* =============================================
-     データのバックアップ（Firestore → JSONファイル）
+     データのバックアップ・復元
+     ・バックアップ対象は、下の基本リストに加えて、サイト内のページから
+       Firebaseのデータの保存場所（コレクション）を自動で探して追加します。
+       新しい機能でデータの保存場所が増えても、自動でバックアップに含まれます。
+     ・日時・位置・参照などの特殊なデータも種類を保ったまま保存します。
      ============================================= */
   const BACKUP_COLLECTIONS = ['events','news','contacts','gallery_events','gallery_photos'];
+  const BACKUP_SCAN_PAGES = ['admin.html','join.html','contact.html','index.html','schedule.html','news.html','photos.html'];
+  const BACKUP_FORMAT = 3;
+
+  async function discoverCollections(){
+    const found=new Set(BACKUP_COLLECTIONS);
+    const re=/collection\(\s*db\s*,\s*['"]([A-Za-z0-9_\-]+)['"]/g;
+    await Promise.all(BACKUP_SCAN_PAGES.map(async p=>{
+      try{
+        const r=await fetch(p,{cache:'no-store'});
+        if(!r.ok) return;
+        const t=await r.text(); let m;
+        while((m=re.exec(t))) found.add(m[1]);
+      }catch(e){}
+    }));
+    return [...found];
+  }
   function toPlain(v){
     if(v===null||v===undefined) return v;
     if(typeof v.toDate==='function') return { __type:'timestamp', value:v.toDate().toISOString() };
+    if(typeof v.latitude==='number' && typeof v.longitude==='number' && typeof v.isEqual==='function')
+      return { __type:'geopoint', lat:v.latitude, lng:v.longitude };
+    if(typeof v.path==='string' && v.firestore && typeof v.id==='string')
+      return { __type:'ref', path:v.path };
     if(Array.isArray(v)) return v.map(toPlain);
     if(typeof v==='object'){ const o={}; for(const k in v) o[k]=toPlain(v[k]); return o; }
     return v;
   }
+  function fieldNames(docs){
+    const s=new Set(); docs.forEach(d=>Object.keys(d).forEach(k=>{ if(k!=='id') s.add(k); })); return [...s].sort();
+  }
+  function todayStr(){
+    const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+  }
+
   window.downloadBackup=async function(){
     const btn=document.getElementById('backupBtn');
     const st=document.getElementById('backupStatus');
     btn.disabled=true; st.textContent='データを読み込んでいます…';
     try{
-      const out={ site:'https://www.sagamiaikido.com', format:2, exportedAt:new Date().toISOString(), collections:{} };
-      const counts=[];
-      for(const name of BACKUP_COLLECTIONS){
-        const snap=await getDocs(collection(db,name));
-        out.collections[name]=snap.docs.map(d=>({ id:d.id, ...toPlain(d.data()) }));
-        counts.push(name+'：'+snap.size+'件');
+      const names=await discoverCollections();
+      const out={ site:'https://www.sagamiaikido.com', format:BACKUP_FORMAT, exportedAt:new Date().toISOString(),
+                  collectionList:names, fields:{}, collections:{} };
+      const counts=[], failed=[];
+      for(const name of names){
+        try{
+          const snap=await getDocs(collection(db,name));
+          const docs=snap.docs.map(d=>({ id:d.id, ...toPlain(d.data()) }));
+          out.collections[name]=docs;
+          out.fields[name]=fieldNames(docs);
+          counts.push(name+'：'+snap.size+'件');
+        }catch(e){ failed.push(name); }
       }
-      const now=new Date();
-      const ymd=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
       const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
       const a=document.createElement('a');
       a.href=URL.createObjectURL(blob);
-      a.download='sagami-aikido_backup_'+ymd+'.json';
+      a.download='sagami-aikido_backup_'+todayStr()+'.json';
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(()=>URL.revokeObjectURL(a.href),10000);
-      st.textContent='ダウンロードしました（'+counts.join('、')+'）';
+      st.textContent='ダウンロードしました（'+counts.join('、')+'）'+(failed.length?'　※読み込めなかった項目：'+failed.join('、'):'');
       showToast('💾 バックアップをダウンロードしました');
     }catch(e){
       st.textContent='エラー：'+(e.message||e)+'（ログインし直してから再度お試しください）';
     }finally{ btn.disabled=false; }
   };
 
-  /* =============================================
-     バックアップから復元（JSONファイル → Firestore）
-     ・同じIDのデータは上書き、無いデータは追加
-     ・バックアップ後に追加されたデータは消さない
-     ============================================= */
-  function fromPlain(v, key, isOld){
+  function fromPlain(v, key, fmt){
     if(v===null||v===undefined) return v;
-    if(Array.isArray(v)) return v.map(x=>fromPlain(x,null,isOld));
+    if(Array.isArray(v)) return v.map(x=>fromPlain(x,null,fmt));
     if(typeof v==='object'){
       if(v.__type==='timestamp' && typeof v.value==='string') return Timestamp.fromDate(new Date(v.value));
-      const o={}; for(const k in v) o[k]=fromPlain(v[k],k,isOld); return o;
+      if(v.__type==='geopoint') return new GeoPoint(v.lat, v.lng);
+      if(v.__type==='ref' && typeof v.path==='string') return doc(db, v.path);
+      const o={}; for(const k in v) o[k]=fromPlain(v[k],k,fmt); return o;
     }
-    if(isOld && key==='createdAt' && typeof v==='string' && /^\d{4}-\d{2}-\d{2}T/.test(v)){
+    if(fmt<2 && key==='createdAt' && typeof v==='string' && /^\d{4}-\d{2}-\d{2}T/.test(v)){
       const d=new Date(v); if(!isNaN(d)) return Timestamp.fromDate(d);
     }
     return v;
   }
+
   window.restoreBackup=async function(input){
     const st=document.getElementById('restoreStatus');
     const file=input.files&&input.files[0];
@@ -1488,33 +1521,53 @@
     if(!data||typeof data.collections!=='object'||data.site!=='https://www.sagamiaikido.com'){
       st.textContent='相模合気道連盟のバックアップファイルではないようです。'; input.value=''; return;
     }
-    const names=BACKUP_COLLECTIONS.filter(n=>Array.isArray(data.collections[n]));
-    const summary=names.map(n=>'・'+n+'：'+data.collections[n].length+'件').join('\n');
-    const when=data.exportedAt?new Date(data.exportedAt).toLocaleString('ja-JP'):'不明';
-    if(!confirm('次のバックアップから復元します。\n\n保存日時：'+when+'\n'+summary+
-      '\n\n・同じデータは上書きされ、消えたデータは元に戻ります。\n・バックアップ後に追加したデータは消えずに残ります。\n\n復元してよろしいですか？')){
-      input.value=''; return;
+    const fmt=Number(data.format)||1;
+    st.textContent='現在のデータと照らし合わせています…';
+    const current=await discoverCollections();
+    const names=Object.keys(data.collections).filter(n=>Array.isArray(data.collections[n]));
+    const unknown=names.filter(n=>!current.includes(n));
+    const missing=current.filter(n=>!names.includes(n));
+    const notes=[];
+    for(const n of names){
+      if(unknown.includes(n)) continue;
+      try{
+        const snap=await getDocs(collection(db,n));
+        const now=fieldNames(snap.docs.map(d=>d.data()));
+        const old=fieldNames(data.collections[n]);
+        if(now.length&&old.length){
+          const gone=old.filter(k=>!now.includes(k)), added=now.filter(k=>!old.includes(k));
+          if(gone.length||added.length) notes.push('・'+n+'：項目の構成が現在と少し違います（今は使われていない項目：'+(gone.join('・')||'なし')+'／新しい項目：'+(added.join('・')||'なし')+'）');
+        }
+      }catch(e){}
     }
-    const isOld=!data.format||data.format<2;
+    const when=data.exportedAt?new Date(data.exportedAt).toLocaleString('ja-JP'):'不明';
+    const summary=names.map(n=>'・'+n+'：'+data.collections[n].length+'件'+(unknown.includes(n)?'（現在のサイトでは使われていない可能性）':'')).join('\n');
+    let msg='次のバックアップから復元します。\n\n保存日時：'+when+'\n'+summary;
+    if(missing.length) msg+='\n\n※ 次の項目はこのバックアップに含まれていないため、変更されません：'+missing.join('、');
+    if(notes.length) msg+='\n\n【ご注意】バックアップ後に機能が変わった可能性があります。\n'+notes.join('\n')+'\n復元したデータは、その時点の形のまま戻ります。';
+    msg+='\n\n・同じデータは上書きされ、消えたデータは元に戻ります。\n・バックアップ後に追加したデータは消えずに残ります。\n\n復元してよろしいですか？';
+    if(!confirm(msg)){ input.value=''; st.textContent='復元を取りやめました。'; return; }
+    let targets=names;
+    if(unknown.length){
+      const inc=confirm('「'+unknown.join('、')+'」は、現在のサイトでは使われていない可能性があります。\n\nこれらも復元しますか？\n（OK：復元する／キャンセル：これらは復元しない）');
+      if(!inc) targets=names.filter(n=>!unknown.includes(n));
+    }
     const results=[];
     st.textContent='復元しています…';
-    for(const name of names){
-      const docs=data.collections[name];
+    for(const name of targets){
+      const docs=data.collections[name].filter(d=>d&&d.id);
       let ok=0;
       try{
         for(let i=0;i<docs.length;i+=400){
+          const part=docs.slice(i,i+400);
           const batch=writeBatch(db);
-          for(const d of docs.slice(i,i+400)){
-            if(!d||!d.id) continue;
-            const {id,...rest}=d;
-            batch.set(doc(db,name,String(id)), fromPlain(rest,null,isOld));
-          }
+          for(const d of part){ const {id,...rest}=d; batch.set(doc(db,name,String(id)), fromPlain(rest,null,fmt)); }
           await batch.commit();
-          ok+=Math.min(400,docs.length-i);
+          ok+=part.length;
         }
         results.push(name+'：'+ok+'件 復元');
       }catch(e){
-        results.push(name+'：失敗（'+(e.code||e.message||e)+'）');
+        results.push(name+'：失敗（'+(e.code||e.message||e)+'）'+(ok?'　※'+ok+'件までは復元済み':''));
       }
     }
     input.value='';
