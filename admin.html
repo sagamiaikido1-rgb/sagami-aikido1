@@ -421,6 +421,20 @@
         </p>
       </div>
 
+      <div class="section-card" style="border-top:3px solid #1a1a2e;">
+        <h3>💾 データのバックアップ</h3>
+        <p style="font-size:14px; margin-bottom:12px; line-height:1.8;">
+          稽古スケジュール・お知らせ・お問い合わせ・写真ギャラリーの登録内容を、1つのファイルにまとめてダウンロードします。
+          ダウンロードしたファイルは、USBメモリやDVDなどに保存してください。
+        </p>
+        <button class="btn-primary" id="backupBtn" onclick="downloadBackup()">💾 バックアップをダウンロード</button>
+        <p id="backupStatus" style="font-size:12px; color:var(--text2); margin-top:10px;"></p>
+        <p style="font-size:11px; color:var(--text2); margin-top:6px; line-height:1.7;">
+          ※ お問い合わせには個人情報（氏名・連絡先）が含まれます。保存先にはパスワードをかけるなど、取り扱いにご注意ください。<br>
+          ※ ホームページのファイルや写真そのものは含まれません。GitHubの「Code」→「Download ZIP」で別途保存してください。
+        </p>
+      </div>
+
       <div class="section-card">
         <h3>重要なURL一覧</h3>
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
@@ -1395,6 +1409,44 @@
     showToast('🗑 写真を削除しました');
   };
 
+
+  /* =============================================
+     データのバックアップ（Firestore → JSONファイル）
+     ============================================= */
+  const BACKUP_COLLECTIONS = ['events','news','contacts','gallery_events','gallery_photos'];
+  function toPlain(v){
+    if(v===null||v===undefined) return v;
+    if(typeof v.toDate==='function') return v.toDate().toISOString();
+    if(Array.isArray(v)) return v.map(toPlain);
+    if(typeof v==='object'){ const o={}; for(const k in v) o[k]=toPlain(v[k]); return o; }
+    return v;
+  }
+  window.downloadBackup=async function(){
+    const btn=document.getElementById('backupBtn');
+    const st=document.getElementById('backupStatus');
+    btn.disabled=true; st.textContent='データを読み込んでいます…';
+    try{
+      const out={ site:'https://www.sagamiaikido.com', exportedAt:new Date().toISOString(), collections:{} };
+      const counts=[];
+      for(const name of BACKUP_COLLECTIONS){
+        const snap=await getDocs(collection(db,name));
+        out.collections[name]=snap.docs.map(d=>({ id:d.id, ...toPlain(d.data()) }));
+        counts.push(name+'：'+snap.size+'件');
+      }
+      const now=new Date();
+      const ymd=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+      const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download='sagami-aikido_backup_'+ymd+'.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href),10000);
+      st.textContent='ダウンロードしました（'+counts.join('、')+'）';
+      showToast('💾 バックアップをダウンロードしました');
+    }catch(e){
+      st.textContent='エラー：'+(e.message||e)+'（ログインし直してから再度お試しください）';
+    }finally{ btn.disabled=false; }
+  };
 </script>
 </body>
 </html>
