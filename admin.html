@@ -454,35 +454,6 @@
         </p>
       </div>
 
-      <div class="section-card" style="border-top:3px solid #1a1a2e;">
-        <h3>💾 データのバックアップ <span style="color:#c0392b;letter-spacing:1px;">【管理者編】</span></h3>
-        <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:12px;font-size:13px;line-height:1.7;color:#b02a2a;">
-          ⚠️ <b>管理者が行う作業です。通常は行わないでください。</b><br>バックアップ・復元が必要なときは、管理者にご連絡ください。
-        </div>
-        <p style="font-size:14px; margin-bottom:12px; line-height:1.8;">
-          稽古スケジュール・お知らせ・お問い合わせ・写真ギャラリーの登録内容を、1つのファイルにまとめてダウンロードします。今後、新しい機能が増えても、そのデータは自動でバックアップに含まれます。
-          ダウンロードしたファイルは、USBメモリやDVDなどに保存してください。
-        </p>
-        <button class="btn-primary" id="backupBtn" onclick="downloadBackup()">💾 バックアップをダウンロード</button>
-        <p id="backupStatus" style="font-size:12px; color:var(--text2); margin-top:10px;"></p>
-        <div style="border-top:1px dashed #ccc; margin-top:16px; padding-top:14px;">
-          <h3 style="font-size:13px;">♻️ バックアップから復元 <span style="color:#c0392b;">【管理者編】</span></h3>
-          <p style="font-size:13px; margin-bottom:10px; line-height:1.8;">
-            データを誤って消してしまったときなどに、保存しておいたバックアップファイルを選ぶと、その時点の内容に戻します。
-            同じデータは上書きされ、バックアップの後に追加したデータは消えずに残ります。
-          </p>
-          <label class="btn-secondary" style="display:inline-block; cursor:pointer;">
-            📂 バックアップファイルを選んで復元
-            <input type="file" accept=".json,application/json" style="display:none;" onchange="restoreBackup(this)">
-          </label>
-          <p id="restoreStatus" style="font-size:12px; color:var(--text2); margin-top:10px;"></p>
-        </div>
-        <p style="font-size:11px; color:var(--text2); margin-top:6px; line-height:1.7;">
-          ※ お問い合わせには個人情報（氏名・連絡先）が含まれます。保存先にはパスワードをかけるなど、取り扱いにご注意ください。<br>
-          ※ ホームページのファイルや写真そのものは含まれません。GitHubの「Code」→「Download ZIP」で別途保存してください。
-        </p>
-      </div>
-
       <div class="section-card">
         <h3>重要なURL一覧</h3>
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
@@ -668,6 +639,34 @@
           ✅ サイトの運用（GitHub Pages・Firebase）は<b>無料プラン</b>で十分対応できます。<br>
           独自ドメイン（sagamiaikido.com）の更新料のみかかります（2028年10月まで支払い済み）。
         </div>
+      </div>
+      <div class="section-card" style="border-top:3px solid #1a1a2e;">
+        <h3>💾 データのバックアップ <span style="color:#c0392b;letter-spacing:1px;">【管理者編】</span></h3>
+        <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:12px;font-size:13px;line-height:1.7;color:#b02a2a;">
+          ⚠️ <b>管理者が行う作業です。通常は行わないでください。</b><br>バックアップ・復元が必要なときは、管理者にご連絡ください。
+        </div>
+        <p style="font-size:14px; margin-bottom:12px; line-height:1.8;">
+          稽古スケジュール・お知らせ・お問い合わせ・写真ギャラリーの登録内容を、1つのファイルにまとめてダウンロードします。今後、新しい機能が増えても、そのデータは自動でバックアップに含まれます。
+          ダウンロードしたファイルは、USBメモリやDVDなどに保存してください。
+        </p>
+        <button class="btn-primary" id="backupBtn" onclick="downloadBackup()">💾 バックアップをダウンロード</button>
+        <p id="backupStatus" style="font-size:12px; color:var(--text2); margin-top:10px;"></p>
+        <div style="border-top:1px dashed #ccc; margin-top:16px; padding-top:14px;">
+          <h3 style="font-size:13px;">♻️ バックアップから復元 <span style="color:#c0392b;">【管理者編】</span></h3>
+          <p style="font-size:13px; margin-bottom:10px; line-height:1.8;">
+            データを誤って消してしまったときなどに、保存しておいたバックアップファイルを選ぶと、その時点の内容に戻します。
+            同じデータは上書きされ、バックアップの後に追加したデータは消えずに残ります。
+          </p>
+          <label class="btn-secondary" style="display:inline-block; cursor:pointer;">
+            📂 バックアップファイルを選んで復元
+            <input type="file" accept=".json,application/json" style="display:none;" onchange="restoreBackup(this)">
+          </label>
+          <p id="restoreStatus" style="font-size:12px; color:var(--text2); margin-top:10px;"></p>
+        </div>
+        <p style="font-size:11px; color:var(--text2); margin-top:6px; line-height:1.7;">
+          ※ お問い合わせには個人情報（氏名・連絡先）が含まれます。保存先にはパスワードをかけるなど、取り扱いにご注意ください。<br>
+          ※ ホームページのファイルや写真そのものは含まれません。GitHubの「Code」→「Download ZIP」で別途保存してください。
+        </p>
       </div>
     </div>
   </main>
