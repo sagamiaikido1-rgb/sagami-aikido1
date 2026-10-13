@@ -75,6 +75,15 @@
     .cal-event.samukawa{background:#fde8df;color:#9a3412;}
     .cal-event.fujisawa{background:#ede9fe;color:#5b21b6;}
     .cal-event.special{background:#fef9c3;color:#713f12;}
+    .cal-event.lot-add{background:#1D9E75;color:#fff;}
+    .cal-event.lot-keep{background:#e5e7eb;color:#374151;}
+    .cal-event.lot-del{background:#fee2e2;color:#b91c1c;text-decoration:line-through;}
+    .cal-event.lot-check{background:#fef3c7;color:#92400e;}
+    .lot-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;margin-bottom:10px;}
+    .lot-legend span{display:inline-flex;align-items:center;gap:5px;}
+    .lot-legend i{display:inline-block;width:14px;height:14px;border-radius:4px;}
+    .lot-note{font-size:13px;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:10px;line-height:1.6;}
+    .lot-row{font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);}
 
     /* セクションカード */
     .section-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
@@ -191,6 +200,7 @@
   <nav>
     <button class="active" onclick="showTab('cal')">📅 カレンダー</button>
     <button onclick="showTab('bulk')">🔄 月次生成</button>
+    <button onclick="showTab('lottery')">🎯 抽選取込</button>
     <button onclick="showTab('list')">📋 一覧・削除</button>
     <button onclick="showTab('add')">➕ 個別追加</button>
     <button onclick="showTab('news')">📢 お知らせ</button>
@@ -241,6 +251,29 @@
     </div>
 
     <!-- 一覧・削除 -->
+    <!-- 抽選取込 -->
+    <div id="tab-lottery" class="tab-content">
+      <div class="section-card">
+        <h3>🎯 抽選結果の取込（茅ヶ崎）</h3>
+        <p style="font-size:13px;line-height:1.7;margin-bottom:10px;">毎月18日の朝6時に、全IDの抽選結果が自動で集計されます。<br>読み込むと、カレンダーとの違いが色分けで表示されます。確認してから「HPに反映」を押してください。</p>
+        <div class="month-select"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="lotMonth"></div>
+        <button class="btn-secondary" onclick="loadLottery()">📥 集計結果を読み込む</button>
+        <div id="lotInfo"></div>
+      </div>
+      <div class="section-card" id="lotPreviewCard" style="display:none">
+        <h3 id="lotTitle"></h3>
+        <div class="lot-legend">
+          <span><i style="background:#1D9E75"></i>追加される</span>
+          <span><i style="background:#e5e7eb"></i>登録済み（そのまま）</span>
+          <span><i style="background:#fee2e2"></i>削除される（落選）</span>
+          <span><i style="background:#fef3c7"></i>要確認（変更しない）</span>
+        </div>
+        <div class="cal-grid" id="lotGrid"></div>
+        <div id="lotList" style="margin-top:12px;"></div>
+        <button class="btn-primary" id="lotApplyBtn" onclick="applyLottery()">✅ HPに反映</button>
+      </div>
+    </div>
+
     <div id="tab-list" class="tab-content">
       <div class="dojo-filter" style="margin-bottom:12px">
         <button class="dojo-chip all active" onclick="filterListDojo('all',this)">全て</button>
@@ -879,13 +912,138 @@
 
   window.clearAddForm=function(){document.getElementById('addMemo').value='';}
 
+  // ── 抽選取込（茅ヶ崎） ──
+  // 集計プログラム（aikido-chigasaki-monitor）が18日朝に保存する結果ファイルを読む
+  const LOT_BASE='https://raw.githubusercontent.com/sagamiaikido1-rgb/aikido-chigasaki-monitor/main/summary/';
+  let lotPlan=null;
+
+  // 施設の枠 → HPの予定（月次生成・個別追加と同じ形式）
+  function lotSlotToEvent(s){
+    const label=getTimeLabel(s.start);
+    let start=s.start,end=s.end;
+    if(label==='朝'){start='09:30';end='11:30';}
+    else if(label==='夜'){start='18:30';end='20:30';}
+    return {dojo:'茅ヶ崎',title:`茅ヶ崎 ${label}`,type:'一般稽古',date:s.date,start,end,memo:''};
+  }
+  const lotKey=(date,start)=>`${date}|${getTimeLabel(start)}`;
+
+  window.openLotteryTab=async function(){
+    const inp=document.getElementById('lotMonth');
+    if(inp.value)return;
+    try{
+      const r=await fetch(LOT_BASE+'latest.json?t='+Date.now(),{cache:'no-store'});
+      if(r.ok){const d=await r.json();inp.value=`${d.year}-${String(d.month).padStart(2,'0')}`;loadLottery();return;}
+    }catch(e){}
+    const t=new Date();t.setMonth(t.getMonth()+2);
+    inp.value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
+  };
+
+  window.loadLottery=async function(){
+    const ym=document.getElementById('lotMonth').value;
+    const info=document.getElementById('lotInfo');
+    document.getElementById('lotPreviewCard').style.display='none';
+    if(!ym){showToast('対象年月を選んでください');return;}
+    info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
+    let data;
+    try{
+      const r=await fetch(`${LOT_BASE}summary_${ym}.json?t=${Date.now()}`,{cache:'no-store'});
+      if(!r.ok)throw new Error(r.status);
+      data=await r.json();
+    }catch(e){
+      info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の集計結果はまだありません。<br>集計は毎月18日の朝6時に行われます。</div>';
+      return;
+    }
+    const partial=(data.failed_ids||[]).length>0;
+    // 既存の茅ヶ崎・一般稽古（同じ日・同じ区分で照合）
+    const existing={};
+    allEvents.filter(e=>e.dojo==='茅ヶ崎'&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym)&&e.start)
+      .forEach(e=>{(existing[lotKey(e.date,e.start)]=existing[lotKey(e.date,e.start)]||[]).push(e);});
+    const items=[];const seen=new Set();
+    (data.secured||[]).forEach(s=>{
+      const k=lotKey(s.date,s.start);if(seen.has(k))return;seen.add(k);
+      const ev=lotSlotToEvent(s);
+      if(existing[k])items.push({kind:'keep',ev:existing[k][0],note:s.facility});
+      else items.push({kind:'add',ev,note:s.facility});
+    });
+    (data.lost||[]).forEach(s=>{
+      const k=lotKey(s.date,s.start);if(seen.has(k))return;seen.add(k);
+      if(!existing[k])return;
+      existing[k].forEach(e=>items.push(partial
+        ?{kind:'check',ev:e,note:'全IDで落選（一部IDが未確認のため削除しません）'}
+        :{kind:'del',ev:e,note:'全IDで落選'}));
+    });
+    Object.keys(existing).forEach(k=>{
+      if(seen.has(k))return;
+      existing[k].forEach(e=>items.push({kind:'check',ev:e,note:'抽選結果にない枠（そのまま残します）'}));
+    });
+    items.sort((a,b)=>a.ev.date.localeCompare(b.ev.date)||a.ev.start.localeCompare(b.ev.start));
+    lotPlan={ym,items};
+    const n=t=>items.filter(i=>i.kind===t).length;
+    info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">集計日時：${escH(data.generated_at||'')}<br>追加 ${n('add')}件 ／ 登録済み ${n('keep')}件 ／ 削除 ${n('del')}件 ／ 要確認 ${n('check')}件</div>`
+      +(partial?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 読み取れなかったIDがあります（ID番号 ${data.failed_ids.join(', ')}）。念のため削除は行いません。</div>`:'');
+    renderLotCalendar();
+    document.getElementById('lotPreviewCard').style.display='block';
+  };
+
+  function renderLotCalendar(){
+    const [y,m]=lotPlan.ym.split('-').map(Number);
+    document.getElementById('lotTitle').textContent=`${y}年${m}月 取込プレビュー`;
+    const grid=document.getElementById('lotGrid');grid.innerHTML='';
+    ['日','月','火','水','木','金','土'].forEach(d=>{const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);});
+    const first=new Date(y,m-1,1).getDay(),last=new Date(y,m,0).getDate();
+    for(let i=0;i<first;i++){const c=document.createElement('div');c.className='cal-cell other-month';grid.appendChild(c);}
+    for(let d=1;d<=last;d++){
+      const ds=`${lotPlan.ym}-${String(d).padStart(2,'0')}`;
+      const c=document.createElement('div');c.className='cal-cell';
+      c.innerHTML=`<div class="cal-date">${d}</div>`;
+      lotPlan.items.filter(i=>i.ev.date===ds).forEach(i=>{
+        const e=document.createElement('div');e.className=`cal-event lot-${i.kind}`;
+        e.textContent=`${i.ev.start} ${i.ev.title}`;
+        e.onclick=()=>showToast(`${i.ev.date} ${i.ev.start}〜${i.ev.end} ${i.ev.title}／${i.note||''}`);
+        c.appendChild(e);
+      });
+      grid.appendChild(c);
+    }
+    const label={add:'追加',keep:'登録済み',del:'削除',check:'要確認'};
+    document.getElementById('lotList').innerHTML=lotPlan.items.map(i=>
+      `<div class="lot-row"><span class="cal-event lot-${i.kind}" style="display:inline-block;margin-right:6px;">${label[i.kind]}</span>${escH(i.ev.date)} ${escH(i.ev.start)}〜${escH(i.ev.end)} ${escH(i.ev.title)}<span style="color:var(--text2);font-size:12px;">　${escH(i.note||'')}</span></div>`
+    ).join('')||'<p style="font-size:13px;">変更はありません。</p>';
+    const changes=lotPlan.items.filter(i=>i.kind==='add'||i.kind==='del').length;
+    const btn=document.getElementById('lotApplyBtn');
+    btn.disabled=changes===0;btn.style.opacity=changes?1:.5;
+    btn.textContent=changes?`✅ HPに反映（${changes}件）`:'変更はありません';
+  }
+
+  window.applyLottery=async function(){
+    if(!lotPlan)return;
+    const adds=lotPlan.items.filter(i=>i.kind==='add'),dels=lotPlan.items.filter(i=>i.kind==='del');
+    if(!adds.length&&!dels.length)return;
+    if(!confirm(`追加 ${adds.length}件・削除 ${dels.length}件をHPに反映します。よろしいですか？`))return;
+    const btn=document.getElementById('lotApplyBtn');btn.disabled=true;
+    let ok=0,ng=0;const total=adds.length+dels.length;
+    for(const i of adds){
+      try{const ref=await addDoc(collection(db,'events'),i.ev);allEvents.push({id:ref.id,...i.ev});ok++;}catch(e){ng++;}
+      btn.textContent=`⏳ 反映中... ${ok+ng}/${total}件`;
+    }
+    for(const i of dels){
+      try{await deleteDoc(doc(db,'events',i.ev.id));allEvents=allEvents.filter(e=>e.id!==i.ev.id);ok++;}catch(e){ng++;}
+      btn.textContent=`⏳ 反映中... ${ok+ng}/${total}件`;
+    }
+    allEvents.sort((a,b)=>a.date.localeCompare(b.date));
+    renderCalendar();renderEventList();
+    showToast(ng?`⚠ ${ok}件反映、${ng}件失敗しました`:`✅ ${ok}件を反映しました`);
+    btn.disabled=false;
+    loadLottery();
+  };
+
   window.showTab=function(tab){
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
     document.getElementById('tab-'+tab).classList.add('active');
-    ['cal','bulk','list','add','news','photo','contact','manual'].forEach((t,i)=>{if(t===tab)document.querySelectorAll('nav button')[i].classList.add('active');});
+    ['cal','bulk','lottery','list','add','news','photo','contact','manual'].forEach((t,i)=>{if(t===tab)document.querySelectorAll('nav button')[i].classList.add('active');});
     if(tab==='list')renderEventList();
     if(tab==='cal')renderCalendar();
+    if(tab==='lottery')openLotteryTab();
     if(tab==='news')renderNewsList();
     if(tab==='photo'){loadPat();renderGalleryEventList();}
     if(tab==='contact'){loadContacts();}
