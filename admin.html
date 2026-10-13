@@ -534,6 +534,46 @@
       </div>
 
       <div class="section-card">
+        <h3>🎯 抽選結果の取込（毎月18日以降・茅ヶ崎）</h3>
+        <p style="font-size:14px;margin-bottom:12px;line-height:1.8;">
+          茅ヶ崎道場の施設抽選の結果は、<b>毎月18日の朝6時</b>に全IDぶん自動で集計されます。「🎯 抽選取込」タブで、集計結果とカレンダーの違いを確認し、ボタン1つでホームページに反映できます。
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="font-size:14px;">その月の定例稽古が「🔄 月次生成」で登録済みか確認（まだなら先に月次生成で登録）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="font-size:14px;">「🎯 抽選取込」タブをクリック（最新の集計月が自動で表示されます）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="font-size:14px;">色分けのカレンダーと下の一覧で内容を確認</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="font-size:14px;">「✅ HPに反映（○件）」ボタンを押し、確認画面で「OK」を押して完了</div>
+          </div>
+        </div>
+        <div style="font-size:13px;background:#f8f8f8;border-radius:6px;padding:10px 14px;margin-top:14px;line-height:2.1;">
+          <b>色の見方</b><br>
+          <span style="background:#1D9E75;color:#fff;padding:2px 10px;border-radius:8px;font-size:12px;font-weight:bold;">緑</span> 当選したのに未登録 → <b>追加されます</b><br>
+          <span style="background:#e5e7eb;color:#374151;padding:2px 10px;border-radius:8px;font-size:12px;font-weight:bold;">灰</span> 当選・登録済み → そのまま<br>
+          <span style="background:#fee2e2;color:#b91c1c;padding:2px 10px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:line-through;">赤</span> 全IDで落選 → <b>削除されます</b><br>
+          <span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:8px;font-size:12px;font-weight:bold;">黄</span> 要確認（抽選結果にない枠など） → そのまま（必要なら手動で）
+        </div>
+        <p style="font-size:13px;margin-top:12px;line-height:1.8;">
+          <b>登録される時間：</b>茅ヶ崎 朝 09:30〜11:30 ／ 茅ヶ崎 夜 18:30〜20:30（水曜・日曜夜とも）<br>
+          <b>反映先：</b>ボタンを押すと、管理画面のカレンダーとホームページの両方に同時に反映されます。押すまでは公開されません。<br>
+          <b>変更がないとき：</b>ボタンが「変更はありません」と表示され、押せません。
+        </p>
+        <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;line-height:1.7;">
+          ⚠️ 必ず「月次生成」の後に取り込んでください。先に取り込むと、後の月次生成で落選した枠が再び登録されます。
+        </div>
+      </div>
+
+      <div class="section-card">
         <h3>➕ スケジュール個別追加（行事・特別稽古）</h3>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:12px;align-items:flex-start;">
@@ -954,6 +994,7 @@
       return;
     }
     const partial=(data.failed_ids||[]).length>0;
+    const notGenerated=!allEvents.some(e=>e.dojo==='茅ヶ崎'&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym));
     // 既存の茅ヶ崎・一般稽古（同じ日・同じ区分で照合）
     const existing={};
     allEvents.filter(e=>e.dojo==='茅ヶ崎'&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym)&&e.start)
@@ -980,6 +1021,7 @@
     lotPlan={ym,items};
     const n=t=>items.filter(i=>i.kind===t).length;
     info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">集計日時：${escH(data.generated_at||'')}<br>追加 ${n('add')}件 ／ 登録済み ${n('keep')}件 ／ 削除 ${n('del')}件 ／ 要確認 ${n('check')}件</div>`
+      +(notGenerated?`<div class="lot-note" style="background:#fff5f5;border-left:4px solid #e53e3e;">⚠ この月の茅ヶ崎の定例稽古がまだ登録されていません。<br>先に「🔄 月次生成」でこの月を登録してから取り込んでください（後から月次生成すると、落選した枠が再び登録されます）。</div>`:'')
       +(partial?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 読み取れなかったIDがあります（ID番号 ${data.failed_ids.join(', ')}）。念のため削除は行いません。</div>`:'');
     renderLotCalendar();
     document.getElementById('lotPreviewCard').style.display='block';
