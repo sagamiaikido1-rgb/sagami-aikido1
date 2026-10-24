@@ -166,6 +166,22 @@
     .contact-message{font-size:13px;color:var(--text);margin-top:10px;line-height:1.7;white-space:pre-wrap;background:var(--surface2);border-radius:10px;padding:10px 12px;}
     .contact-actions{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;}
     .contact-actions select{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;font-family:inherit;}
+    /* 抽選申込 */
+    .apl-steps{font-size:15px;line-height:1.9;margin:6px 0 10px;padding-left:1.4em;}
+    .apl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:10px;border:1px solid var(--border);border-radius:10px;}
+    .apl-table{border-collapse:collapse;font-size:15px;min-width:100%;}
+    .apl-table th,.apl-table td{border:1px solid var(--border);padding:8px 6px;text-align:center;white-space:nowrap;}
+    .apl-table thead th{background:var(--navy);color:#fff;font-weight:700;position:sticky;top:0;}
+    .apl-table th.apl-id{position:sticky;left:0;background:var(--surface2);color:var(--text);z-index:1;min-width:64px;}
+    .apl-table thead th.apl-id{background:var(--navy);color:#fff;z-index:2;}
+    .apl-cell{cursor:pointer;font-size:20px;font-weight:700;color:var(--chigasaki);min-width:52px;user-select:none;}
+    .apl-cell.on{background:#e6f6f0;}
+    .apl-cell.added{background:#fef3c7;}
+    .apl-cell.removed{background:#fee2e2;color:#b91c1c;}
+    .apl-over{color:#b91c1c;font-weight:700;}
+    .apl-foot td,.apl-foot th{background:var(--cream);font-size:13px;}
+    .apl-big{font-size:18px;padding:16px 20px;margin-top:14px;}
+    .apl-status{font-size:15px;line-height:1.8;margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--surface2);white-space:pre-wrap;}
   </style>
 </head>
 <body>
@@ -201,6 +217,7 @@
     <button class="active" onclick="showTab('cal')">📅 カレンダー</button>
     <button onclick="showTab('bulk')">🔄 月次生成</button>
     <button onclick="showTab('lottery')">🎯 抽選取込</button>
+    <button onclick="showTab('apply')">🗳 抽選申込</button>
     <button onclick="showTab('list')">📋 一覧・削除</button>
     <button onclick="showTab('add')">➕ 個別追加</button>
     <button onclick="showTab('news')">📢 お知らせ</button>
@@ -271,6 +288,30 @@
         <div class="cal-grid" id="lotGrid"></div>
         <div id="lotList" style="margin-top:12px;"></div>
         <button class="btn-primary" id="lotApplyBtn" onclick="applyLottery()">✅ HPに反映</button>
+      </div>
+    </div>
+
+    <!-- 抽選申込 -->
+    <div id="tab-apply" class="tab-content">
+      <div class="section-card">
+        <h3>🗳 抽選申込（茅ヶ崎・総合体育館 柔道場）</h3>
+        <ol class="apl-steps">
+          <li>表を確認します（○＝そのIDでその日に申し込む）</li>
+          <li>直したいところは、<b>マスを押すと ○ が付いたり消えたり</b>します</li>
+          <li>最後に、いちばん下の<b>「この内容で申し込む」</b>を押します</li>
+        </ol>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;">押したあとは自動で登録されます（申込期間は毎月1日〜15日。それより前に押した場合は1日に登録します）。結果はこの画面とメールでお知らせします。</p>
+        <div class="month-select"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="aplMonth"></div>
+        <button class="btn-secondary" onclick="loadApply()">📥 申込案を読み込む</button>
+        <div id="aplInfo"></div>
+      </div>
+      <div class="section-card" id="aplCard" style="display:none">
+        <h3 id="aplTitle"></h3>
+        <div id="aplRevise"></div>
+        <div class="apl-wrap"><table class="apl-table" id="aplTable"></table></div>
+        <p style="font-size:12px;color:var(--text2);margin-top:6px;">黄色＝今回付けた ○ ／ 赤＝今回消した ○。番号と団体名の対応は、申込案メールのExcelをご覧ください。</p>
+        <button class="btn-primary apl-big" id="aplSubmit" onclick="submitApply()">✅ この内容で申し込む</button>
+        <div id="aplStatus"></div>
       </div>
     </div>
 
@@ -678,7 +719,7 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, serverTimestamp, writeBatch, Timestamp, GeoPoint }
+  import { getFirestore, collection, addDoc, getDocs, getDoc, setDoc, deleteDoc, doc, updateDoc, query, orderBy, serverTimestamp, writeBatch, Timestamp, GeoPoint }
     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
   // Firebase Storage は無料プラン非対応のため不使用。画像はFirestoreに圧縮保存。
 
@@ -1095,14 +1136,150 @@
     loadLottery();
   };
 
+
+  // ── 抽選申込（茅ヶ崎・総合体育館 柔道場） ──
+  // 申込案は aikido-chigasaki-monitor が18日に作る plan/plan_YYYY-MM.json。
+  // 「この内容で申し込む」で Firestore の lottery_requests/{年月} に保存 → GitHub Actions が30分おきに確認して登録する。
+  const PLAN_BASE='https://raw.githubusercontent.com/sagamiaikido1-rgb/aikido-chigasaki-monitor/main/plan/';
+  const APL_TIME={'日曜朝':'0900-1200','水曜夜':'1800-2100'};
+  let apl=null; // {ym, slots, cap, base:{id:Set}, cur:{id:Set}, doc}
+
+  function aplSlotLabel(s){
+    const d=new Date(s.slice(0,10)+'T00:00:00');
+    const t=s.slice(11,13);
+    return `${d.getMonth()+1}/${d.getDate()}(${'日月火水木金土'[d.getDay()]})${t<'12'?'朝':(t>='18'?'夜':'昼')}`;
+  }
+  function aplStatusText(d){
+    if(!d||!d.status)return '';
+    const st={'承認済み':'⏳ 申込を受け付けました。自動登録を待っています（最大30分ほど。申込期間前なら1日に登録します）',
+              '登録中':'⏳ いま登録しています…','登録済み':'✅ 登録が終わりました','一部失敗':'⚠ 一部の登録に失敗しました',
+              '確認のみ':'📝 登録予定を確認しました（自動登録は準備中のため、まだ申込はしていません）'}[d.status]||d.status;
+    let t=`<b>${escH(st)}</b>`;
+    if(d.approved_by)t+=`<br><span style="font-size:13px;color:var(--text2)">確定：${escH(d.approved_by)}（${d.revision||1}回目）</span>`;
+    if(d.result&&d.result.lines){t+=`<br><span style="font-size:13px;">${escH(d.result.checked_at||'')} の処理結果</span><br>`+d.result.lines.map(escH).join('<br>');}
+    return `<div class="apl-status">${t}</div>`;
+  }
+
+  window.openApplyTab=function(){
+    const inp=document.getElementById('aplMonth');
+    if(inp.value)return;
+    const t=new Date();t.setDate(1);t.setMonth(t.getMonth()+(new Date().getDate()<=15?2:3));
+    inp.value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
+    loadApply();
+  };
+
+  window.loadApply=async function(){
+    const ym=document.getElementById('aplMonth').value;
+    const info=document.getElementById('aplInfo');
+    document.getElementById('aplCard').style.display='none';
+    if(!ym){showToast('対象年月を選んでください');return;}
+    info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
+    let plan=null,saved=null,rev=null;
+    try{const r=await fetch(`${PLAN_BASE}plan_${ym}.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok)plan=await r.json();}catch(e){}
+    try{const snap=await getDoc(doc(db,'lottery_requests',ym));if(snap.exists())saved=snap.data();}catch(e){console.warn(e);}
+    try{const r=await fetch(`${PLAN_BASE}revise_latest.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok){const d=await r.json();if(`${d.year}-${String(d.month).padStart(2,'0')}`===ym)rev=d;}}catch(e){}
+    if(!plan&&!saved){
+      info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の申込案はまだありません。<br>申込案は毎月18日の朝に自動で作られます。</div>';
+      return;
+    }
+    const src=saved||plan;
+    let slots=(saved&&saved.slots)||(plan&&plan.slots);
+    if(!slots&&plan)slots=Object.keys(plan.competitors||{}).map(k=>`${k.slice(0,10)} ${APL_TIME[k.slice(11)]||''}`).filter(s=>s.length>11).sort();
+    const toSets=a=>{const o={};Object.entries(a||{}).forEach(([k,v])=>o[k]=new Set(v));return o;};
+    const base=toSets(src.applications);
+    Object.keys((plan&&plan.applications)||{}).forEach(k=>{if(!base[k])base[k]=new Set();});
+    apl={ym,slots,cap:src.cap||(plan&&plan.cap)||5,base,cur:toSets(src.applications),doc:saved,rev};
+    Object.keys(base).forEach(k=>{if(!apl.cur[k])apl.cur[k]=new Set();});
+    info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">`
+      +(saved?`前回「この内容で申し込む」を押した内容を表示しています。`:`18日に作られた申込案を表示しています（${escH(plan.generated_at||'')}）。`)
+      +`<br>1IDあたり最大 ${apl.cap}件まで申し込めます。</div>`;
+    renderApply();
+    document.getElementById('aplCard').style.display='block';
+  };
+
+  function renderApply(){
+    const [y,m]=apl.ym.split('-').map(Number);
+    document.getElementById('aplTitle').textContent=`${y}年${m}月分の申込`;
+    const ids=Object.keys(apl.cur).sort((a,b)=>Number(a)-Number(b));
+    let h='<thead><tr><th class="apl-id">番号</th>'+apl.slots.map(s=>`<th>${escH(aplSlotLabel(s))}</th>`).join('')+'<th>件数</th></tr></thead><tbody>';
+    ids.forEach(id=>{
+      const n=apl.cur[id].size;
+      h+=`<tr><th class="apl-id">${escH(id)}</th>`;
+      apl.slots.forEach(s=>{
+        const on=apl.cur[id].has(s),was=apl.base[id]&&apl.base[id].has(s);
+        const cls=on?(was?'on':'added'):(was?'removed':'');
+        h+=`<td class="apl-cell ${cls}" onclick="toggleApply('${id}','${s}')">${on?'○':(was?'×':'')}</td>`;
+      });
+      h+=`<td class="${n>apl.cap?'apl-over':''}">${n}</td></tr>`;
+    });
+    h+='</tbody><tfoot class="apl-foot"><tr><th class="apl-id">申込数</th>'+apl.slots.map(s=>`<td>${ids.filter(id=>apl.cur[id].has(s)).length}</td>`).join('')+'<td></td></tr></tfoot>';
+    document.getElementById('aplTable').innerHTML=h;
+    // 修正案
+    const rv=document.getElementById('aplRevise');
+    if(apl.rev&&apl.rev.moves&&apl.rev.moves.length){
+      const lbl=s=>s?aplSlotLabel(s.replace(/^(\S+) (\d{4})-(\d{4})$/,'$1 $2-$3')):'';
+      rv.innerHTML=`<div class="lot-note" style="background:#fff7ed;border-left:4px solid #ea580c;font-size:15px;"><b>📣 修正案があります（${escH(apl.rev.checked_at||'')} 時点の申込件数から）</b><br>`
+        +apl.rev.moves.map((mv,i)=>`${i+1}. 番号${mv.id}：`+(mv.from?`${lbl(mv.from)} をやめて → `:'')+`${lbl(mv.to)} に申込`).join('<br>')
+        +`<br><button class="btn-secondary" style="margin-top:10px;font-size:15px;" onclick="applyRevise()">修正案を表に反映する（まだ申し込みません）</button></div>`;
+    }else rv.innerHTML='';
+    const changed=ids.some(id=>{const a=apl.cur[id],b=apl.base[id]||new Set();return a.size!==b.size||[...a].some(x=>!b.has(x));});
+    const over=ids.filter(id=>apl.cur[id].size>apl.cap);
+    const btn=document.getElementById('aplSubmit');
+    btn.disabled=over.length>0;btn.style.opacity=over.length?.5:1;
+    btn.textContent=over.length?`⚠ 番号${over.join('・')}が上限（${apl.cap}件）を超えています`:'✅ この内容で申し込む';
+    document.getElementById('aplStatus').innerHTML=(changed?'<div class="apl-status">✏️ まだ申し込んでいない変更があります。よければ「この内容で申し込む」を押してください。</div>':'')+aplStatusText(apl.doc);
+  }
+
+  window.toggleApply=function(id,s){
+    const set=apl.cur[id];
+    if(set.has(s))set.delete(s);
+    else{if(set.size>=apl.cap){showToast(`番号${id}はすでに${apl.cap}件です。先にどれかを消してください`);return;}set.add(s);}
+    renderApply();
+  };
+
+  window.applyRevise=function(){
+    const norm=s=>s;
+    let n=0;
+    apl.rev.moves.forEach(mv=>{
+      const set=apl.cur[String(mv.id)];if(!set)return;
+      if(mv.from)set.delete(norm(mv.from));
+      if(apl.slots.includes(norm(mv.to))){set.add(norm(mv.to));n++;}
+    });
+    renderApply();
+    showToast(`修正案 ${n}件を表に反映しました。よければ「この内容で申し込む」を押してください`);
+  };
+
+  window.submitApply=async function(){
+    if(!apl)return;
+    const ids=Object.keys(apl.cur);
+    const total=ids.reduce((a,id)=>a+apl.cur[id].size,0);
+    if(!confirm(`この内容（合計 ${total}件）で申し込みます。よろしいですか？`))return;
+    const btn=document.getElementById('aplSubmit');btn.disabled=true;btn.textContent='⏳ 保存中...';
+    const applications={};ids.forEach(id=>applications[id]=[...apl.cur[id]].sort());
+    const rev=(apl.doc&&apl.doc.revision||0)+1;
+    try{
+      await setDoc(doc(db,'lottery_requests',apl.ym),{
+        ym:apl.ym,slots:apl.slots,cap:apl.cap,applications,total,status:'承認済み',revision:rev,
+        approved_by:(auth.currentUser&&auth.currentUser.email)||'',approved_at:serverTimestamp()
+      },{merge:true});
+      showToast('✅ 申込を受け付けました。自動で登録されます');
+      await loadApply();
+    }catch(e){
+      console.error(e);
+      showToast('⚠ 保存できませんでした：'+(e.code||e.message));
+      btn.disabled=false;btn.textContent='✅ この内容で申し込む';
+    }
+  };
+
   window.showTab=function(tab){
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
     document.getElementById('tab-'+tab).classList.add('active');
-    ['cal','bulk','lottery','list','add','news','photo','contact','manual'].forEach((t,i)=>{if(t===tab)document.querySelectorAll('nav button')[i].classList.add('active');});
+    ['cal','bulk','lottery','apply','list','add','news','photo','contact','manual'].forEach((t,i)=>{if(t===tab)document.querySelectorAll('nav button')[i].classList.add('active');});
     if(tab==='list')renderEventList();
     if(tab==='cal')renderCalendar();
     if(tab==='lottery')openLotteryTab();
+    if(tab==='apply')openApplyTab();
     if(tab==='news')renderNewsList();
     if(tab==='photo'){loadPat();renderGalleryEventList();}
     if(tab==='contact'){loadContacts();}
