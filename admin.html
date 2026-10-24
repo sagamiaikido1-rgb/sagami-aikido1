@@ -172,7 +172,9 @@
     .apl-table{border-collapse:collapse;font-size:15px;min-width:100%;}
     .apl-table th,.apl-table td{border:1px solid var(--border);padding:8px 6px;text-align:center;white-space:nowrap;}
     .apl-table thead th{background:var(--navy);color:#fff;font-weight:700;position:sticky;top:0;}
-    .apl-table th.apl-id{position:sticky;left:0;background:var(--surface2);color:var(--text);z-index:1;min-width:64px;}
+    .apl-table th.apl-id{position:sticky;left:0;background:var(--surface2);color:var(--text);z-index:1;min-width:64px;max-width:150px;white-space:normal;text-align:left;padding-left:10px;}
+    .apl-table th.apl-id .apl-no{font-size:16px;}
+    .apl-table th.apl-id .apl-name{display:block;font-size:11px;font-weight:400;color:var(--text2);line-height:1.3;margin-top:2px;}
     .apl-table thead th.apl-id{background:var(--navy);color:#fff;z-index:2;}
     .apl-cell{cursor:pointer;font-size:20px;font-weight:700;color:var(--chigasaki);min-width:52px;user-select:none;}
     .apl-cell.on{background:#e6f6f0;}
@@ -309,7 +311,7 @@
         <h3 id="aplTitle"></h3>
         <div id="aplRevise"></div>
         <div class="apl-wrap"><table class="apl-table" id="aplTable"></table></div>
-        <p style="font-size:12px;color:var(--text2);margin-top:6px;">黄色＝今回付けた ○ ／ 赤＝今回消した ○。番号と団体名の対応は、申込案メールのExcelをご覧ください。</p>
+        <p style="font-size:12px;color:var(--text2);margin-top:6px;">黄色＝今回付けた ○ ／ 赤＝今回消した ○</p>
         <button class="btn-primary apl-big" id="aplSubmit" onclick="submitApply()">✅ この内容で申し込む</button>
         <div id="aplStatus"></div>
       </div>
@@ -1142,7 +1144,7 @@
   // 「この内容で申し込む」で Firestore の lottery_requests/{年月} に保存 → GitHub Actions が30分おきに確認して登録する。
   const PLAN_BASE='https://raw.githubusercontent.com/sagamiaikido1-rgb/aikido-chigasaki-monitor/main/plan/';
   const APL_TIME={'日曜朝':'0900-1200','水曜夜':'1800-2100'};
-  let apl=null; // {ym, slots, cap, base:{id:Set}, cur:{id:Set}, doc}
+  let apl=null; // {ym, slots, cap, base:{id:Set}, cur:{id:Set}, doc, names}
 
   function aplSlotLabel(s){
     const d=new Date(s.slice(0,10)+'T00:00:00');
@@ -1177,6 +1179,8 @@
     let plan=null,saved=null,rev=null;
     try{const r=await fetch(`${PLAN_BASE}plan_${ym}.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok)plan=await r.json();}catch(e){}
     try{const snap=await getDoc(doc(db,'lottery_requests',ym));if(snap.exists())saved=snap.data();}catch(e){console.warn(e);}
+    let names={};
+    try{const snap=await getDoc(doc(db,'lottery_settings','names'));if(snap.exists())names=snap.data().names||{};}catch(e){console.warn(e);}
     try{const r=await fetch(`${PLAN_BASE}revise_latest.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok){const d=await r.json();if(`${d.year}-${String(d.month).padStart(2,'0')}`===ym)rev=d;}}catch(e){}
     if(!plan&&!saved){
       info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の申込案はまだありません。<br>申込案は毎月18日の朝に自動で作られます。</div>';
@@ -1188,7 +1192,7 @@
     const toSets=a=>{const o={};Object.entries(a||{}).forEach(([k,v])=>o[k]=new Set(v));return o;};
     const base=toSets(src.applications);
     Object.keys((plan&&plan.applications)||{}).forEach(k=>{if(!base[k])base[k]=new Set();});
-    apl={ym,slots,cap:src.cap||(plan&&plan.cap)||5,base,cur:toSets(src.applications),doc:saved,rev};
+    apl={ym,slots,cap:src.cap||(plan&&plan.cap)||5,base,cur:toSets(src.applications),doc:saved,rev,names};
     Object.keys(base).forEach(k=>{if(!apl.cur[k])apl.cur[k]=new Set();});
     info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">`
       +(saved?`前回「この内容で申し込む」を押した内容を表示しています。`:`18日に作られた申込案を表示しています（${escH(plan.generated_at||'')}）。`)
@@ -1201,10 +1205,11 @@
     const [y,m]=apl.ym.split('-').map(Number);
     document.getElementById('aplTitle').textContent=`${y}年${m}月分の申込`;
     const ids=Object.keys(apl.cur).sort((a,b)=>Number(a)-Number(b));
-    let h='<thead><tr><th class="apl-id">番号</th>'+apl.slots.map(s=>`<th>${escH(aplSlotLabel(s))}</th>`).join('')+'<th>件数</th></tr></thead><tbody>';
+    let h='<thead><tr><th class="apl-id">番号・団体名</th>'+apl.slots.map(s=>`<th>${escH(aplSlotLabel(s))}</th>`).join('')+'<th>件数</th></tr></thead><tbody>';
     ids.forEach(id=>{
       const n=apl.cur[id].size;
-      h+=`<tr><th class="apl-id">${escH(id)}</th>`;
+      const nm=apl.names[id]||'';
+      h+=`<tr><th class="apl-id"><span class="apl-no">${escH(id)}</span>${nm?`<span class="apl-name">${escH(nm)}</span>`:''}</th>`;
       apl.slots.forEach(s=>{
         const on=apl.cur[id].has(s),was=apl.base[id]&&apl.base[id].has(s);
         const cls=on?(was?'on':'added'):(was?'removed':'');
@@ -1219,7 +1224,7 @@
     if(apl.rev&&apl.rev.moves&&apl.rev.moves.length){
       const lbl=s=>s?aplSlotLabel(s.replace(/^(\S+) (\d{4})-(\d{4})$/,'$1 $2-$3')):'';
       rv.innerHTML=`<div class="lot-note" style="background:#fff7ed;border-left:4px solid #ea580c;font-size:15px;"><b>📣 修正案があります（${escH(apl.rev.checked_at||'')} 時点の申込件数から）</b><br>`
-        +apl.rev.moves.map((mv,i)=>`${i+1}. 番号${mv.id}：`+(mv.from?`${lbl(mv.from)} をやめて → `:'')+`${lbl(mv.to)} に申込`).join('<br>')
+        +apl.rev.moves.map((mv,i)=>`${i+1}. 番号${mv.id}${apl.names[mv.id]?`（${escH(apl.names[mv.id])}）`:''}：`+(mv.from?`${lbl(mv.from)} をやめて → `:'')+`${lbl(mv.to)} に申込`).join('<br>')
         +`<br><button class="btn-secondary" style="margin-top:10px;font-size:15px;" onclick="applyRevise()">修正案を表に反映する（まだ申し込みません）</button></div>`;
     }else rv.innerHTML='';
     const changed=ids.some(id=>{const a=apl.cur[id],b=apl.base[id]||new Set();return a.size!==b.size||[...a].some(x=>!b.has(x));});
