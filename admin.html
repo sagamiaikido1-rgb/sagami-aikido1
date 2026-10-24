@@ -184,6 +184,24 @@
     .apl-foot td,.apl-foot th{background:var(--cream);font-size:13px;}
     .apl-big{font-size:18px;padding:16px 20px;margin-top:14px;}
     .apl-status{font-size:15px;line-height:1.8;margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--surface2);white-space:pre-wrap;}
+    .apl-table thead th .apl-d{display:block;}
+    .apl-table thead th .apl-w{display:inline;}
+    .apl-table thead th .apl-m{display:none;}
+    @media (max-width:700px){
+      #tab-apply .section-card{padding:14px 10px;}
+      .apl-wrap{border-radius:8px;}
+      .apl-table{font-size:12px;min-width:0;width:100%;table-layout:fixed;}
+      .apl-table th,.apl-table td{padding:5px 1px;}
+      .apl-table thead th{font-size:11px;line-height:1.25;}
+      .apl-table thead th .apl-w{display:none;}
+      .apl-table thead th .apl-m{display:block;font-weight:400;font-size:10px;}
+      .apl-table thead th{font-size:10px;}
+      .apl-table th.apl-id{width:64px;min-width:0;max-width:64px;padding-left:5px;}
+      .apl-table th.apl-id .apl-no{font-size:14px;}
+      .apl-table th.apl-id .apl-name{font-size:9px;line-height:1.2;}
+      .apl-cell{font-size:17px;min-width:0;}
+      .apl-table th.apl-cnt,.apl-table td.apl-cnt{width:28px;}
+    }
   </style>
 </head>
 <body>
@@ -1205,7 +1223,8 @@
     const [y,m]=apl.ym.split('-').map(Number);
     document.getElementById('aplTitle').textContent=`${y}年${m}月分の申込`;
     const ids=Object.keys(apl.cur).sort((a,b)=>Number(a)-Number(b));
-    let h='<thead><tr><th class="apl-id">番号・団体名</th>'+apl.slots.map(s=>`<th>${escH(aplSlotLabel(s))}</th>`).join('')+'<th>件数</th></tr></thead><tbody>';
+    const head=s=>{const t=aplSlotLabel(s),i=t.indexOf('(');return `<span class="apl-d">${escH(t.slice(0,i))}</span><span class="apl-w">${escH(t.slice(i))}</span><span class="apl-m">${escH(t.slice(i).replace(/[()]/g,''))}</span>`;};
+    let h='<thead><tr><th class="apl-id">番号・団体名</th>'+apl.slots.map(s=>`<th>${head(s)}</th>`).join('')+'<th class="apl-cnt">件数</th></tr></thead><tbody>';
     ids.forEach(id=>{
       const n=apl.cur[id].size;
       const nm=apl.names[id]||'';
@@ -1215,9 +1234,9 @@
         const cls=on?(was?'on':'added'):(was?'removed':'');
         h+=`<td class="apl-cell ${cls}" onclick="toggleApply('${id}','${s}')">${on?'○':(was?'×':'')}</td>`;
       });
-      h+=`<td class="${n>apl.cap?'apl-over':''}">${n}</td></tr>`;
+      h+=`<td class="apl-cnt ${n>apl.cap?'apl-over':''}">${n}</td></tr>`;
     });
-    h+='</tbody><tfoot class="apl-foot"><tr><th class="apl-id">申込数</th>'+apl.slots.map(s=>`<td>${ids.filter(id=>apl.cur[id].has(s)).length}</td>`).join('')+'<td></td></tr></tfoot>';
+    h+='</tbody><tfoot class="apl-foot"><tr><th class="apl-id">申込数</th>'+apl.slots.map(s=>`<td>${ids.filter(id=>apl.cur[id].has(s)).length}</td>`).join('')+'<td class="apl-cnt"></td></tr></tfoot>';
     document.getElementById('aplTable').innerHTML=h;
     // 修正案
     const rv=document.getElementById('aplRevise');
