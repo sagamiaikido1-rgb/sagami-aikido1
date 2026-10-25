@@ -237,7 +237,7 @@
     <button class="active" onclick="showTab('cal')">📅 カレンダー</button>
     <button onclick="showTab('bulk')">🔄 月次生成</button>
     <button onclick="showTab('lottery')">🎯 抽選取込</button>
-    <button onclick="showTab('apply')">🗳 抽選申込</button>
+    <button onclick="showTab('apply')">🗳 抽選申込<span id="applyBadge" style="display:none;background:#ea580c;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:5px;">修正案</span></button>
     <button onclick="showTab('list')">📋 一覧・削除</button>
     <button onclick="showTab('add')">➕ 個別追加</button>
     <button onclick="showTab('news')">📢 お知らせ</button>
@@ -543,6 +543,8 @@
           <tr style="background:#1a1a2e;color:#fff;"><th style="padding:7px 8px;text-align:left;width:30%;">いつ</th><th style="padding:7px 8px;text-align:left;">やること</th></tr>
           <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月18日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">①「🔄 月次生成」で12月を登録（全部当選した前提の予定）<br>② 朝6時以降、「🎯 抽選取込」で茅ヶ崎の結果を反映 → <b>茅ヶ崎が確定</b></td></tr>
           <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月中<br><span style="font-weight:normal;font-size:12px;">（寒川の発表後）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">土曜（寒川）の落選分を「📋 一覧・削除」で削除（手作業） → <b>寒川が確定</b></td></tr>
+          <tr style="background:#fdf9ef;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月18日〜31日<br><span style="font-weight:normal;font-size:12px;">（試行中）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">「🗳 抽選申込」で翌々月（1月）の申込案を確認・修正し、「この内容で申し込む」を押す</td></tr>
+          <tr style="background:#fdf9ef;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1日〜15日<br><span style="font-weight:normal;font-size:12px;">（試行中）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">確定した案で1月分を申込（自動申込は11月1日から試行）。修正案のメールが届いたら判断する</td></tr>
           <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1〜2日<br><span style="font-weight:normal;font-size:12px;">（平塚の発表後）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">日曜（平塚）の落選分を「📋 一覧・削除」で削除（手作業） → <b>全道場が確定</b></td></tr>
           <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1日〜当日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">茅ヶ崎の落選枠は空き枠を自動で検索し、空きが出るとメールが届きます。予約できたら「➕ 個別追加」で登録。寒川・平塚の空きは手動で確認します。</td></tr>
         </table>
@@ -620,6 +622,102 @@
         </p>
         <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;line-height:1.7;">
           ⚠️ 必ず「月次生成」の後に取り込んでください。先に取り込むと、後の月次生成で落選した枠が再び登録されます。
+        </div>
+      </div>
+
+      <div class="section-card" style="border-top:3px solid #b8860b;">
+        <h3>🗳 抽選申込（毎月18日〜月末・茅ヶ崎）<span style="color:#b8860b;font-size:12px;margin-left:6px;">【試行中：1月分から】</span></h3>
+        <p style="font-size:14px;margin-bottom:12px;line-height:1.8;">
+          18日の抽選結果の取込のあと、過去の当選・落選の実績をもとに、<b>翌々月の申込案（どのIDがどの日に申し込むか）</b>が自動で作られます（Excelはメールでも届きます）。「🗳 抽選申込」タブで確認・修正し、確定してください。
+        </p>
+        <p style="font-size:14px;font-weight:bold;margin-bottom:8px;">代表の作業（毎月18日〜月末）</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="font-size:14px;line-height:1.7;">「🗳 抽選申込」タブをクリックし、「📥 申込案を読み込む」を押す</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="font-size:14px;line-height:1.7;">表を確認します（○＝その番号・団体でその日に申し込む）。直したいマスを押すと ○ が付いたり消えたりします（1IDの上限を超える ○ は付けられません）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="font-size:14px;line-height:1.7;">いちばん下の「✅ この内容で申し込む」を押し、確認画面で「OK」</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="font-size:14px;line-height:1.7;">1日〜15日に「修正案」のメールが届いたら、表の上の「修正案を表に反映する」で取り込み、よければもう一度「この内容で申し込む」を押す</div>
+          </div>
+        </div>
+        <div style="font-size:13px;background:#f8f8f8;border-radius:6px;padding:10px 14px;margin-top:14px;line-height:1.9;">
+          <b>上限：</b>1IDあたり「その月で一番多い曜日の日数（休館日は数えない）」。例：1月は4件<br>
+          <b>色：</b>黄色＝今回付けた ○ ／ 赤＝今回消した ○<br>
+          <b>ご経験の反映：</b>案は参考です。長年の経験（初めて登録したIDは当たりやすい、など）を優先して自由に直してください
+        </div>
+        <div style="background:#fffbeb;border-left:4px solid #d4a017;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;line-height:1.8;">
+          <b>🚧 現在の状況（作成・検討中）</b><br>
+          「この内容で申し込む」を押すと、内容の保存と「追加・取消の予定」の確認までが自動で行われます。<b>施設予約サイトへの実際の申込（自動申込）は作成中</b>で、申込画面が開く11月1日に作り始めます。<br>
+          作成にかかる時間の目安：<b>申込画面のキャプチャーをいただいてから半日程度</b>（作成1〜2時間＋テスト）。締切は15日なので、1月分から試行できる見込みです。
+        </div>
+        <p style="font-size:14px;font-weight:bold;margin:16px 0 8px;">11月1日の試行の手順（1月分）</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="font-size:14px;line-height:1.7;">11月1日は、<b>すぐに全件を申し込まず、少しお待ちください</b>（全件の申込は15日 23:59まで間に合います）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="font-size:14px;line-height:1.7;">担当者が、確定した表の中から<b>1件だけ</b>手で申し込み、各画面をキャプチャーします（枠を選ぶ → 申込トレイに入れる → 申込トレイ → 確定 → 完了、あわせて取消の画面）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="font-size:14px;line-height:1.7;">キャプチャーをもとに自動申込を作成します</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="font-size:14px;line-height:1.7;">テスト①：1つのIDで、確定ボタンの<b>手前で止める</b>（申込はしない）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">5</div>
+            <div style="font-size:14px;line-height:1.7;">テスト②：1つのIDで1件だけ本番の申込 →「抽選申込一覧」に載ったことを確認</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">6</div>
+            <div style="font-size:14px;line-height:1.7;">全IDで本番の申込 → 結果（ID別の登録件数・失敗）がメールと「🗳 抽選申込」タブに表示されます</div>
+          </div>
+        </div>
+        <p style="font-size:14px;font-weight:bold;margin:16px 0 8px;">1日〜15日：修正案のお知らせと、その後の申込</p>
+        <p style="font-size:14px;line-height:1.8;margin-bottom:10px;">毎日19時40分ごろ（15日は10時40分ごろにも）、施設予約サイトの申込件数を見て、他団体の申込が多い日へ移したほうが有利かを自動で調べます。<b>申込の変更は、代表が確定するまで行いません。</b></p>
+        <div style="font-size:13px;background:#f8f8f8;border-radius:6px;padding:10px 14px;line-height:1.9;">
+          <b>お知らせの方法（2つ）</b><br>
+          📧 <b>メール</b>：修正案が出たとき・内容が変わったとき・修正が不要になったときに届きます。同じ修正案は毎日くり返し送りません。1日・14日・15日は、修正の有無にかかわらず状況のお知らせが届きます。<br>
+          🔶 <b>管理画面</b>：「🗳 抽選申込」タブに<span style="background:#ea580c;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;">修正案</span>の印が付き、表の上に修正案が表示されます（確定し直すと消えます）。
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
+            <div style="font-size:14px;line-height:1.7;">メールか印で修正案に気づいたら、「🗳 抽選申込」タブを開く</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
+            <div style="font-size:14px;line-height:1.7;">修正案を読み、取り入れる場合は「修正案を表に反映する」を押す（この時点ではまだ申し込みません）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
+            <div style="font-size:14px;line-height:1.7;">表を確かめて「✅ この内容で申し込む」を押す</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
+            <div style="font-size:14px;line-height:1.7;"><b>自動で</b>、変わった分だけ取消・申込し直しが行われ、結果がメールと画面に出ます（30分ほどで開始）</div>
+          </div>
+        </div>
+        <div style="background:#fffbeb;border-left:4px solid #d4a017;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:12px;font-size:13px;line-height:1.7;">
+          ⚠️ 取消のあとの申込に失敗すると、その日の申込がなくなります。失敗したときはすぐにメールでお知らせしますので、手で申し込み直してください。<b>15日の夜は時間がないため、修正は15日のお昼までに</b>確定してください。<br>
+          （試行中の1月分で自動申込がまだ使えない場合は、修正案に沿って手で取消・申込し直します）
+        </div>
+        <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:14px;font-size:13px;line-height:1.7;">
+          🛟 <b>自動申込がうまくいかないとき（予備の手順）</b><br>
+          確定した表（「🗳 抽選申込」タブ、またはメールのExcel）を見ながら、各IDで手で申し込みます。<b>締切の15日 23:59</b>までに済ませてください。
         </div>
       </div>
 
@@ -783,6 +881,7 @@
       loadNews();
       loadGalleryEvents();
       loadContacts();
+      checkApplyBadge();
       loadPat();
       renderCalendar();
       const t=new Date(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');
@@ -1180,6 +1279,26 @@
     return `<div class="apl-status">${t}</div>`;
   }
 
+  // 修正案が出ていて、まだ代表が確定し直していないときは、タブに「修正案」の印を出す
+  function aplReviseIsNew(rev,saved){
+    if(!rev||!rev.moves||!rev.moves.length)return false;
+    const at=saved&&saved.approved_at&&saved.approved_at.toDate?saved.approved_at.toDate():null;
+    if(!at)return true;
+    const c=new Date((rev.checked_at||'').replace(' ','T')+':00+09:00');
+    return isNaN(c)||c>at;
+  }
+  async function checkApplyBadge(){
+    try{
+      const r=await fetch(`${PLAN_BASE}revise_latest.json?t=${Date.now()}`,{cache:'no-store'});
+      if(!r.ok)return;
+      const rev=await r.json();
+      const ym=`${rev.year}-${String(rev.month).padStart(2,'0')}`;
+      let saved=null;
+      try{const snap=await getDoc(doc(db,'lottery_requests',ym));if(snap.exists())saved=snap.data();}catch(e){}
+      document.getElementById('applyBadge').style.display=aplReviseIsNew(rev,saved)?'inline':'none';
+    }catch(e){}
+  }
+
   window.openApplyTab=function(){
     const inp=document.getElementById('aplMonth');
     if(inp.value)return;
@@ -1240,7 +1359,7 @@
     document.getElementById('aplTable').innerHTML=h;
     // 修正案
     const rv=document.getElementById('aplRevise');
-    if(apl.rev&&apl.rev.moves&&apl.rev.moves.length){
+    if(aplReviseIsNew(apl.rev,apl.doc)){
       const lbl=s=>s?aplSlotLabel(s.replace(/^(\S+) (\d{4})-(\d{4})$/,'$1 $2-$3')):'';
       rv.innerHTML=`<div class="lot-note" style="background:#fff7ed;border-left:4px solid #ea580c;font-size:15px;"><b>📣 修正案があります（${escH(apl.rev.checked_at||'')} 時点の申込件数から）</b><br>`
         +apl.rev.moves.map((mv,i)=>`${i+1}. 番号${mv.id}${apl.names[mv.id]?`（${escH(apl.names[mv.id])}）`:''}：`+(mv.from?`${lbl(mv.from)} をやめて → `:'')+`${lbl(mv.to)} に申込`).join('<br>')
@@ -1287,6 +1406,7 @@
         approved_by:(auth.currentUser&&auth.currentUser.email)||'',approved_at:serverTimestamp()
       },{merge:true});
       showToast('✅ 申込を受け付けました。自動で登録されます');
+      document.getElementById('applyBadge').style.display='none';
       await loadApply();
     }catch(e){
       console.error(e);
