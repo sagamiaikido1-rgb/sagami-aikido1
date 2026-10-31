@@ -1272,7 +1272,7 @@
     if(!d||!d.status)return '';
     const st={'承認済み':'⏳ 申込を受け付けました。自動登録を待っています（最大30分ほど。申込期間前なら1日に登録します）',
               '登録中':'⏳ いま登録しています…','登録済み':'✅ 登録が終わりました','一部失敗':'⚠ 一部の登録に失敗しました',
-              '確認のみ':'📝 登録予定を確認しました（自動登録は準備中のため、まだ申込はしていません）'}[d.status]||d.status;
+              '確認のみ':'📝 登録予定を確認しました（まだ申込はしていません。下の「この内容で申し込む」を押すと、この予定どおりに申し込みます）'}[d.status]||d.status;
     let t=`<b>${escH(st)}</b>`;
     if(d.approved_by)t+=`<br><span style="font-size:13px;color:var(--text2)">確定：${escH(d.approved_by)}（${d.revision||1}回目）</span>`;
     if(d.result&&d.result.lines){t+=`<br><span style="font-size:13px;">${escH(d.result.checked_at||'')} の処理結果</span><br>`+d.result.lines.map(escH).join('<br>');}
