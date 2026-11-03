@@ -79,6 +79,7 @@
     .cal-event.lot-keep{background:#e5e7eb;color:#374151;}
     .cal-event.lot-del{background:#fee2e2;color:#b91c1c;text-decoration:line-through;}
     .cal-event.lot-check{background:#fef3c7;color:#92400e;}
+    .cal-event.lot-manual{background:#e0f2fe;color:#075985;}
     .lot-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;margin-bottom:10px;}
     .lot-legend span{display:inline-flex;align-items:center;gap:5px;}
     .lot-legend i{display:inline-block;width:14px;height:14px;border-radius:4px;}
@@ -304,6 +305,7 @@
           <span><i style="background:#e5e7eb"></i>登録済み（そのまま）</span>
           <span><i style="background:#fee2e2"></i>削除される（落選）</span>
           <span><i style="background:#fef3c7"></i>要確認（変更しない）</span>
+          <span><i style="background:#e0f2fe"></i>個別追加（変更しない）</span>
         </div>
         <div class="cal-grid" id="lotGrid"></div>
         <div id="lotList" style="margin-top:12px;"></div>
@@ -958,7 +960,7 @@
     const cell=document.createElement('div');cell.className='cal-cell';
     const dd=document.createElement('div');dd.className='cal-date';dd.textContent=day;cell.appendChild(dd);
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    allEvents.filter(e=>e.date===ds).forEach(ev=>{
+    allEvents.filter(e=>e.date===ds).sort((a,b)=>(a.start||'99:99').localeCompare(b.start||'99:99')).forEach(ev=>{
       const dojoName=Object.keys(DOJO_CLASS).find(d=>ev.dojo===d);
       if(activeFilter!=='all'&&ev.dojo!==activeFilter)return;
       const cls=dojoName?DOJO_CLASS[dojoName]:'special';
@@ -1117,7 +1119,7 @@
     const label=getTimeLabel(start);
     const title=isSpecial?type:(type==='一般稽古'?`${selectedDojo} ${label}`:`${selectedDojo} ${type}`);
     const dojo=isSpecial?'':selectedDojo;
-    const eventData={dojo,title,type,date,start,end,memo:memo||''};
+    const eventData={dojo,title,type,date,start,end,memo:memo||'',source:'manual'};
     try{
       const docRef=await addDoc(collection(db,'events'),eventData);
       allEvents.push({id:docRef.id,...eventData});
@@ -1186,18 +1188,22 @@
     (data.lost||[]).forEach(s=>{
       const k=lotKey(s.date,s.start);if(seen.has(k))return;seen.add(k);
       if(!existing[k])return;
-      existing[k].forEach(e=>items.push(partial
+      existing[k].forEach(e=>items.push(e.source==='manual'
+        ?{kind:'manual',ev:e,note:'個別追加した予定のため変更しません'}
+        :partial
         ?{kind:'check',ev:e,note:'全IDで落選（一部IDが未確認のため削除しません）'}
         :{kind:'del',ev:e,note:'全IDで落選'}));
     });
     Object.keys(existing).forEach(k=>{
       if(seen.has(k))return;
-      existing[k].forEach(e=>items.push({kind:'check',ev:e,note:'抽選結果にない枠（そのまま残します）'}));
+      existing[k].forEach(e=>items.push(e.source==='manual'
+        ?{kind:'manual',ev:e,note:'個別追加した予定のため変更しません'}
+        :{kind:'check',ev:e,note:'抽選結果にない枠（そのまま残します）'}));
     });
     items.sort((a,b)=>a.ev.date.localeCompare(b.ev.date)||a.ev.start.localeCompare(b.ev.start));
     lotPlan={ym,items};
     const n=t=>items.filter(i=>i.kind===t).length;
-    info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">集計日時：${escH(data.generated_at||'')}<br>追加 ${n('add')}件 ／ 登録済み ${n('keep')}件 ／ 削除 ${n('del')}件 ／ 要確認 ${n('check')}件</div>`
+    info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">集計日時：${escH(data.generated_at||'')}<br>追加 ${n('add')}件 ／ 登録済み ${n('keep')}件 ／ 削除 ${n('del')}件 ／ 要確認 ${n('check')}件${n('manual')?` ／ 個別追加 ${n('manual')}件`:''}</div>`
       +(notGenerated?`<div class="lot-note" style="background:#fff5f5;border-left:4px solid #e53e3e;">⚠ この月の茅ヶ崎の定例稽古がまだ登録されていません。<br>先に「🔄 月次生成」でこの月を登録してから取り込んでください（後から月次生成すると、落選した枠が再び登録されます）。</div>`:'')
       +(partial?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 読み取れなかったIDがあります（ID番号 ${data.failed_ids.join(', ')}）。念のため削除は行いません。</div>`:'');
     renderLotCalendar();
@@ -1223,7 +1229,7 @@
       });
       grid.appendChild(c);
     }
-    const label={add:'追加',keep:'登録済み',del:'削除',check:'要確認'};
+    const label={add:'追加',keep:'登録済み',del:'削除',check:'要確認',manual:'個別追加'};
     document.getElementById('lotList').innerHTML=lotPlan.items.map(i=>
       `<div class="lot-row"><span class="cal-event lot-${i.kind}" style="display:inline-block;margin-right:6px;">${label[i.kind]}</span>${escH(i.ev.date)} ${escH(i.ev.start)}〜${escH(i.ev.end)} ${escH(i.ev.title)}<span style="color:var(--text2);font-size:12px;">　${escH(i.note||'')}</span></div>`
     ).join('')||'<p style="font-size:13px;">変更はありません。</p>';
