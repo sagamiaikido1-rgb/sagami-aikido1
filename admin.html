@@ -203,6 +203,30 @@
       .apl-cell{font-size:17px;min-width:0;}
       .apl-table th.apl-cnt,.apl-table td.apl-cnt{width:28px;}
     }
+    /* 抽選分析(2026-11 追加) */
+    .ana-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+    .ana-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px;}
+    .ana-t{border-collapse:collapse;font-size:14px;width:100%;font-variant-numeric:tabular-nums;}
+    .ana-t th,.ana-t td{border:1px solid var(--border);padding:7px 8px;text-align:center;white-space:nowrap;}
+    .ana-t th{background:var(--surface2);font-weight:500;font-size:13px;}
+    .ana-t td.l,.ana-t th.l{text-align:left;}
+    .ana-t td.w{white-space:normal;min-width:180px;}
+    .ana-t tfoot td{font-weight:700;background:var(--surface2);}
+    .ana-t th.gs,.ana-t td.gs{border-left:3px solid var(--navy);}
+    .ana-chip{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;font-weight:500;}
+    .ana-chip.j{background:#e3f4ee;color:#137a5a;} .ana-chip.k{background:#efeafb;color:#5b3fb0;}
+    .ana-chip.n{background:#f6ecd6;color:#8a6414;} .ana-chip.x{background:#fee2e2;color:#b91c1c;}
+    .ana-ok{color:#137a5a;font-weight:700;} .ana-warn{background:#fdf1d8;color:#8a6414;font-weight:700;} .ana-bad{background:#fee2e2;color:#b91c1c;font-weight:700;}
+    .ana-mute{color:var(--text2);}
+    .ana-tiles{display:flex;gap:10px;flex-wrap:wrap;}
+    .ana-tiles div{border:1px solid var(--border);border-radius:8px;padding:8px 14px;background:var(--white);min-width:7.5em;}
+    .ana-tiles b{display:block;font-size:22px;font-variant-numeric:tabular-nums;}
+    .ana-tiles span{font-size:12px;color:var(--text2);}
+    .ana-note{font-size:13px;color:var(--text2);line-height:1.7;margin-top:8px;}
+    .ana-num{display:inline-block;min-width:1.6em;font-size:12px;font-weight:700;color:#fff;background:var(--navy);border-radius:50%;text-align:center;margin-right:6px;line-height:1.6em;}
+    .ana-alert{margin-top:10px;padding:8px 12px;border-left:3px solid #b91c1c;background:#fff5f5;font-size:14px;}
+    .ana-target{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:4px;flex-wrap:wrap;}
+    .ana-target select{font:inherit;padding:5px 8px;border:1px solid var(--border);border-radius:6px;}
   </style>
 </head>
 <body>
@@ -239,6 +263,7 @@
     <button onclick="showTab('bulk')">🔄 月次生成</button>
     <button onclick="showTab('lottery')">🎯 抽選取込</button>
     <button onclick="showTab('apply')">🗳 抽選申込<span id="applyBadge" style="display:none;background:#ea580c;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:5px;">修正案</span></button>
+    <button onclick="showTab('analysis')">📊 抽選分析</button>
     <button onclick="showTab('list')">📋 一覧・削除</button>
     <button onclick="showTab('add')">➕ 個別追加</button>
     <button onclick="showTab('news')">📢 お知らせ</button>
@@ -334,6 +359,45 @@
         <p style="font-size:12px;color:var(--text2);margin-top:6px;">黄色＝今回付けた ○ ／ 赤＝今回消した ○</p>
         <button class="btn-primary apl-big" id="aplSubmit" onclick="submitApply()">✅ この内容で申し込む</button>
         <div id="aplStatus"></div>
+      </div>
+    </div>
+
+    <!-- 抽選分析 -->
+    <div id="tab-analysis" class="tab-content">
+      <div class="section-card">
+        <h3>📊 抽選分析（茅ヶ崎・総合体育館 柔道場・柔剣道場）</h3>
+        <p class="ana-note" style="margin-top:0">申込期間（1〜15日）の毎日 朝7時・夜7時ごろに、市のサイトから抽選の件数と全IDの申込を読み取ります。申込や取消はしません。</p>
+        <div class="ana-bar">
+          <div class="month-select" style="margin:0"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="anaMonth"></div>
+          <button class="btn-secondary" onclick="loadAnalysis()">📥 読み込む</button>
+          <button class="btn-secondary" id="anaCsvBtn" onclick="anaCsv()" style="display:none">⬇ CSVで保存</button>
+        </div>
+        <div id="anaInfo"></div>
+      </div>
+      <div id="anaBody" style="display:none">
+        <div class="section-card">
+          <h3><span class="ana-num">1</span>現時点の抽選状況</h3>
+          <div class="ana-tiles" id="anaTiles"></div>
+          <h4 style="font-size:15px;margin:16px 0 4px">稽古枠ごとの件数（市のサイトの表示）</h4>
+          <div class="ana-wrap"><table class="ana-t" id="anaRaw"></table></div>
+          <p class="ana-note">「抽選(n)」は市のサイトに出ている申込数です。柔剣道場の数は、その時間帯の全部（柔道場・柔剣道場・剣道場）の申込を含みます。</p>
+          <h4 style="font-size:15px;margin:16px 0 4px">ID別の申込</h4>
+          <div class="ana-wrap"><table class="ana-t" id="anaIds"></table></div>
+          <div id="anaWarn"></div>
+        </div>
+        <div class="section-card">
+          <h3><span class="ana-num">2</span>稽古枠ごとの当選確率</h3>
+          <div class="ana-wrap"><table class="ana-t" id="anaRate"></table></div>
+          <p class="ana-note">当選確率＝連盟の申込数÷（連盟＋他団体）。日曜朝は柔道場と柔剣道場を合わせて数えます。緑＝85%以上、金＝70〜85%、赤＝70%未満。</p>
+        </div>
+        <div class="section-card">
+          <h3><span class="ana-num">3</span>あと何件足せば確率が上がるか</h3>
+          <div class="ana-target"><label for="anaGoal">目標の当選確率</label>
+            <select id="anaGoal" onchange="anaRender()"><option value="0.8">80%</option><option value="0.85">85%</option><option value="0.9" selected>90%</option><option value="0.95">95%</option></select></div>
+          <div class="ana-wrap"><table class="ana-t" id="anaAdd"></table></div>
+          <div id="anaAddSum"></div>
+          <p class="ana-note">「足せるID」は、上限（4件）に残りがあり、その日にまだ申し込んでいないIDです。番号の大きい順に並べています。日曜朝に足すときは柔剣道場を考えています。実際に足すかどうかは、先生と代表代行の判断です。</p>
+        </div>
       </div>
     </div>
 
@@ -1421,15 +1485,139 @@
     }
   };
 
+  // ── 抽選分析（2026-11 追加） ──
+  // aikido-chigasaki-monitor の analyze.py が 1〜15日の 7:11・19:11 に作る plan/analysis_latest.json を読む。
+  const ANA_BASE='https://raw.githubusercontent.com/sagamiaikido1-rgb/aikido-chigasaki-monitor/main/plan/';
+  let ana=null;
+  const anaDay=s=>{const d=new Date(s.slice(0,10)+'T00:00:00');return `${d.getMonth()+1}/${d.getDate()}(${'日月火水木金土'[d.getDay()]})`;};
+  const anaSlot=x=>`${anaDay(x.g)} ${x.kind.slice(2)}`;
+  const anaRate=(o,x)=>o>0?o/(o+x):0;
+  const anaPct=r=>r==null?'—':(r*100).toFixed(1)+'%';
+  const anaCls=r=>r==null?'ana-mute':r<0.7?'ana-bad':r<0.85?'ana-warn':'ana-ok';
+  const anaLab=k=>{const d=anaDay(k);return `${d}${k.slice(11,13)==='09'?'朝':'夜'}${k.endsWith(' 柔剣')?'・柔剣':''}`;};
+  const anaNeed=(o,x,goal)=>{if(x==null)return null;if(x===0)return 0;return Math.max(0,Math.ceil(goal*x/(1-goal)-o-1e-9));};
+
+  window.openAnalysisTab=function(){
+    const inp=document.getElementById('anaMonth');
+    if(inp.value)return;
+    const t=new Date();t.setDate(1);t.setMonth(t.getMonth()+(new Date().getDate()<=15?2:3));
+    inp.value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
+    loadAnalysis();
+  };
+
+  window.loadAnalysis=async function(){
+    const ym=document.getElementById('anaMonth').value;
+    const info=document.getElementById('anaInfo');
+    document.getElementById('anaBody').style.display='none';
+    document.getElementById('anaCsvBtn').style.display='none';
+    if(!ym){showToast('対象年月を選んでください');return;}
+    info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
+    let d=null,names={};
+    try{const r=await fetch(`${ANA_BASE}analysis_latest.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok)d=await r.json();}catch(e){}
+    try{const snap=await getDoc(doc(db,'lottery_settings','names'));if(snap.exists())names=snap.data().names||{};}catch(e){}
+    if(!d||`${d.year}-${String(d.month).padStart(2,'0')}`!==ym){
+      info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の分析データはまだありません。<br>申込期間（1〜15日）の朝7時・夜7時ごろに自動で作られます。今すぐ作るときは、GitHub の Actions で「合気道 抽選分析」を動かしてください。</div>';
+      ana=null;return;
+    }
+    ana={d,names};
+    info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">${escH(d.checked_at)} 時点の数です。他団体は15日まで申し込めるので、数は変わります。</div>`;
+    document.getElementById('anaBody').style.display='block';
+    document.getElementById('anaCsvBtn').style.display='inline-block';
+    anaRender();
+  };
+
+  // IDごとの申込の数・その日に申し込んでいるか
+  function anaIdState(d){
+    const st={};
+    for(let i=1;i<=18;i++){const id=String(i);const apps=(d.ids&&d.ids[id])||[];
+      st[id]={apps,days:new Set(apps.map(k=>k.slice(0,10))),judo:apps.filter(k=>!k.endsWith(' 柔剣')).length,kendo:apps.filter(k=>k.endsWith(' 柔剣')).length,
+        other:(d.other_facility&&d.other_facility[id])||[],failed:(d.failed_ids||[]).includes(i)};}
+    return st;
+  }
+
+  window.anaRender=function(){
+    if(!ana)return;
+    const d=ana.d,gs=d.groups||[],st=anaIdState(d),cap=d.cap||4;
+    const total=Object.values(st).reduce((a,s)=>a+s.apps.length,0);
+    const sum=gs.reduce((a,x)=>a+(x.others==null?0:anaRate(x.ours,x.others)),0);
+    const low=gs.filter(x=>x.others!=null&&anaRate(x.ours,x.others)<0.85).length;
+    const oth=gs.reduce((a,x)=>a+(x.others||0),0);
+    document.getElementById('anaTiles').innerHTML=`<div><b>${gs.length}</b><span>稽古枠</span></div><div><b>${total}</b><span>連盟の申込数</span></div><div><b>${oth}</b><span>他団体の申込数</span></div><div><b>${sum.toFixed(1)}</b><span>取れる見込みの枠数</span></div><div><b class="${low?'ana-bad':''}" style="background:none">${low}</b><span>確率85%未満の枠</span></div><div><b>${18*cap-total}</b><span>予備（${18*cap}件中）</span></div>`;
+
+    // ① 枠ごとの件数(市のサイトの表示)
+    const mk=(x,room)=>{if(!(room in (x.counts||{})))return '<td class="ana-mute">—</td>';const c=x.counts[room];return c==null?`<td class="ana-mute">${escH(x.marks[room]||'')}</td>`:`<td>抽選(${c})</td>`;};
+    let h='<thead><tr><th class="l">稽古枠</th><th>柔道場の表示</th><th>柔剣道場の表示</th><th class="gs">連盟 柔道場</th><th>連盟 柔剣道場</th><th>連盟の番号</th></tr></thead><tbody>';
+    gs.forEach(x=>{const oj=x.ours_ids['柔道']||[],ok=x.ours_ids['柔剣']||[];
+      h+=`<tr><td class="l">${anaSlot(x)}</td>${mk(x,'柔道')}${mk(x,'柔剣')}<td class="gs">${oj.length}</td><td>${ok.length}</td><td class="l w">${oj.length?'柔道 '+oj.join('・'):''}${oj.length&&ok.length?'<br>':''}${ok.length?'柔剣 '+ok.join('・'):''}</td></tr>`;});
+    document.getElementById('anaRaw').innerHTML=h+'</tbody>';
+
+    let t='<thead><tr><th>番号</th><th class="l">団体名</th><th class="l">申込（抽選待ち）</th><th>柔道</th><th>柔剣</th><th>残り</th></tr></thead><tbody>';
+    let tj=0,tk=0;
+    for(let i=1;i<=18;i++){const id=String(i),s=st[id];tj+=s.judo;tk+=s.kendo;const left=cap-s.apps.length;
+      t+=`<tr><th>${id}</th><td class="l">${escH(ana.names[id]||'')}</td><td class="l w">${s.failed?'<span class="ana-chip x">読み取れませんでした</span>':s.apps.map(anaLab).join('、')||'<span class="ana-mute">なし</span>'}${s.other.length?' <span class="ana-chip x">★他の施設 '+s.other.map(escH).join('、')+'</span>':''}</td><td>${s.judo}</td><td>${s.kendo}</td><td class="${left<0?'ana-bad':left===0?'ana-mute':''}">${left}</td></tr>`;}
+    t+=`</tbody><tfoot><tr><td colspan="3">計</td><td>${tj}</td><td>${tk}</td><td>${18*cap-tj-tk}</td></tr></tfoot>`;
+    document.getElementById('anaIds').innerHTML=t;
+    const warn=[];
+    const otherIds=Object.keys(st).filter(id=>st[id].other.length);
+    if(otherIds.length)warn.push(`総合体育館以外の申込があります（番号 ${otherIds.join('・')}）。取り消しが必要か確認してください。`);
+    if((d.failed_ids||[]).length)warn.push(`読み取れなかったID：${d.failed_ids.join('・')}（数に入っていません）`);
+    if(!d.read_kendo)warn.push('柔剣道場の表を読めませんでした。日曜朝の他団体の数は、柔道場の表示だけで数えています。');
+    const out=Object.entries(d.outside||{});
+    if(out.length)warn.push('対象外の枠の申込：'+out.map(([k,l])=>`${anaLab(k)}（番号 ${l.join('・')}）`).join('、'));
+    document.getElementById('anaWarn').innerHTML=warn.map(w=>`<div class="ana-alert">${escH(w)}</div>`).join('');
+
+    // ② 当選確率
+    let r='<thead><tr><th class="l">稽古枠</th><th>部屋</th><th class="gs">連盟</th><th>他団体</th><th>当選確率</th></tr></thead><tbody>';
+    gs.forEach(x=>{const rt=x.others==null?null:anaRate(x.ours,x.others);
+      const room=x.kind==='日曜朝'?'<span class="ana-chip j">柔道</span> <span class="ana-chip k">柔剣</span>':(x.kind==='日曜夜'?'<span class="ana-chip n">夜</span> ':'')+'<span class="ana-chip j">柔道</span>';
+      r+=`<tr><td class="l">${anaSlot(x)}</td><td>${room}</td><td class="gs">${x.ours}</td><td>${x.others==null?'不明':x.others}</td><td class="${anaCls(rt)}">${anaPct(rt)}</td></tr>`;});
+    r+=`</tbody><tfoot><tr><td colspan="2">計</td><td class="gs">${total}</td><td>${oth}</td><td>取れる見込み ${sum.toFixed(1)}枠</td></tr></tfoot>`;
+    document.getElementById('anaRate').innerHTML=r;
+
+    // ③ あと何件
+    const goal=parseFloat(document.getElementById('anaGoal').value);
+    let a=`<thead><tr><th class="l">稽古枠</th><th>今</th><th>＋1件</th><th>＋2件</th><th>＋3件</th><th>＋5件</th><th class="gs">${Math.round(goal*100)}%まで</th><th>足せるID</th></tr></thead><tbody>`;
+    let needAll=0,shortAll=[],rows=0;
+    gs.forEach(x=>{if(x.others==null||x.others===0)return;rows++;
+      const now=anaRate(x.ours,x.others);const need=anaNeed(x.ours,x.others,goal);
+      const free=Object.keys(st).filter(id=>!st[id].failed&&st[id].apps.length<cap&&!st[id].days.has(x.g.slice(0,10))).map(Number).sort((p,q)=>q-p);
+      needAll+=need;if(need>free.length)shortAll.push(anaSlot(x));
+      const cell=n=>{const v=anaRate(x.ours+n,x.others);return `<td class="${anaCls(v)}">${anaPct(v)}</td>`;};
+      a+=`<tr><td class="l">${anaSlot(x)}</td><td class="${anaCls(now)}">${anaPct(now)}</td>${cell(1)}${cell(2)}${cell(3)}${cell(5)}<td class="gs ${need===0?'ana-ok':need>free.length?'ana-bad':''}">${need===0?'足りています':'＋'+need+'件'}</td><td class="l w">${free.length?free.length+'個（'+free.join('・')+'）':'<span class="ana-bad" style="padding:0 4px">なし</span>'}</td></tr>`;});
+    if(!rows)a+='<tr><td colspan="8" class="l">他団体の申込がある枠はありません。どの枠も今の申込のまま100%です。</td></tr>';
+    document.getElementById('anaAdd').innerHTML=a+'</tbody>';
+    const spare=18*cap-total;
+    document.getElementById('anaAddSum').innerHTML=rows?`<div class="ana-tiles" style="margin-top:12px"><div><b>${needAll}</b><span>目標までに足す合計</span></div><div><b>${spare}</b><span>今の予備</span></div><div><b class="${needAll>spare?'ana-bad':'ana-ok'}" style="background:none">${spare-needAll}</b><span>足した後の予備</span></div></div>`
+      +(shortAll.length?`<div class="ana-alert">足せるIDが足りない枠があります：${escH(shortAll.join('、'))}。目標を下げるか、ほかの枠の申込を移すことを検討してください。</div>`:'')
+      +(needAll>spare?`<div class="ana-alert">目標までに足す合計（${needAll}件）が、予備（${spare}件）を超えています。</div>`:''):'';
+  };
+
+  window.anaCsv=function(){
+    if(!ana)return;
+    const d=ana.d,q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+    const L=[['抽選分析',`${d.year}年${d.month}月`,`${d.checked_at} 時点`].map(q).join(',')];
+    L.push(['稽古枠','柔道場の表示','柔剣道場の表示','連盟 柔道場','連盟 柔剣道場','連盟','他団体','当選確率'].map(q).join(','));
+    (d.groups||[]).forEach(x=>{const c=x.counts||{},m=x.marks||{};const rt=x.others==null?'':(anaRate(x.ours,x.others)*100).toFixed(1)+'%';
+      L.push([anaSlot(x),c['柔道']!=null?`抽選(${c['柔道']})`:(m['柔道']||''),'柔剣' in c?(c['柔剣']!=null?`抽選(${c['柔剣']})`:(m['柔剣']||'')):'',
+        (x.ours_ids['柔道']||[]).length,(x.ours_ids['柔剣']||[]).length,x.ours,x.others??'不明',rt].map(q).join(','));});
+    L.push('');L.push(['番号','団体名','申込','柔道','柔剣','残り','他の施設'].map(q).join(','));
+    const st=anaIdState(d);
+    for(let i=1;i<=18;i++){const id=String(i),s=st[id];L.push([id,ana.names[id]||'',s.apps.map(anaLab).join(' / '),s.judo,s.kendo,(d.cap||4)-s.apps.length,s.other.join(' / ')].map(q).join(','));}
+    const blob=new Blob(['﻿'+L.join('\r\n')],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`抽選分析_${d.year}-${String(d.month).padStart(2,'0')}_${d.checked_at.replace(/[^0-9]/g,'')}.csv`;
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+  };
+
   window.showTab=function(tab){
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
     document.getElementById('tab-'+tab).classList.add('active');
-    ['cal','bulk','lottery','apply','list','add','news','photo','contact','manual'].forEach((t,i)=>{if(t===tab)document.querySelectorAll('nav button')[i].classList.add('active');});
+    ['cal','bulk','lottery','apply','analysis','list','add','news','photo','contact','manual'].forEach((t,i)=>{if(t===tab)document.querySelectorAll('nav button')[i].classList.add('active');});
     if(tab==='list')renderEventList();
     if(tab==='cal')renderCalendar();
     if(tab==='lottery')openLotteryTab();
     if(tab==='apply')openApplyTab();
+    if(tab==='analysis')openAnalysisTab();
     if(tab==='news')renderNewsList();
     if(tab==='photo'){loadPat();renderGalleryEventList();}
     if(tab==='contact'){loadContacts();}
