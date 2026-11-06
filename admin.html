@@ -742,7 +742,7 @@
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#c0392b;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">↻</div>
-            <div style="font-size:14px;line-height:1.7;"><b>最新の数を見たいときは「🔄 今すぐ読み取る」</b>を押す。10〜20分ほどで新しい数に変わります（画面を閉じても読み取りは続きます）。初めての端末では、GitHub の鍵（トークン）の登録が必要です（作り方はPDFマニュアル P.13）</div>
+            <div style="font-size:14px;line-height:1.7;"><b>最新の数を見たいときは「🔄 今すぐ読み取る」</b>を押す。10〜20分ほどで新しい数に変わります（画面を閉じても読み取りは続きます）。最初の1回だけ、GitHub の鍵（トークン）の登録が必要です。登録すると、ログインしたどの端末でも使えます（作り方はPDFマニュアル P.13）</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
@@ -1495,6 +1495,7 @@
     if(!ym){showToast('対象年月を選んでください');return;}
     info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
     let d=null,names={};
+    await anaLoadTok();
     // 鍵があれば GitHub から直接読む(raw の配信は数分古いことがあるため)。なければ raw から。
     if(anaTok()){try{const r=await anaGh('contents/plan/analysis_latest.json?ref=main',{headers:{Accept:'application/vnd.github.raw+json'}});if(r.ok)d=await r.json();}catch(e){}}
     if(!d){try{const r=await fetch(`${ANA_BASE}analysis_latest.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok)d=await r.json();}catch(e){}}
@@ -1512,10 +1513,19 @@
   };
 
   // ── 今すぐ読み取る(GitHub の「合気道 抽選分析」を動かす) ──
-  // 鍵(GitHub のトークン:aikido-chigasaki-monitor の Actions 読み書きだけ)は、この端末のブラウザにだけ保存する。
+  // 鍵(GitHub のトークン:aikido-chigasaki-monitor の Actions 読み書きだけ)は Firestore の lottery_settings/github に置く。
+  // lottery_settings は sagamiaikido1@gmail.com でログインした人だけが読み書きできる(Firestore のルール)。
+  // 1回保存すれば、ログインしたどの端末でも使える。前の版でこの端末に保存した鍵があれば、Firestore へ移す。
   const ANA_REPO='sagamiaikido1-rgb/aikido-chigasaki-monitor', ANA_KEY='anaGhToken';
-  let anaTimer=null;
-  function anaTok(){try{return localStorage.getItem(ANA_KEY)||'';}catch(e){return '';}}
+  let anaTimer=null, anaTokVal='', anaTokLoaded=false;
+  function anaTok(){return anaTokVal;}
+  async function anaLoadTok(){
+    if(anaTokLoaded)return anaTokVal;
+    try{const snap=await getDoc(doc(db,'lottery_settings','github'));if(snap.exists())anaTokVal=(snap.data().token||'').trim();}catch(e){console.warn('鍵を読めませんでした',e);}
+    if(!anaTokVal){let old='';try{old=localStorage.getItem(ANA_KEY)||'';}catch(e){}
+      if(old){anaTokVal=old;try{await setDoc(doc(db,'lottery_settings','github'),{token:old,updated_by:(auth.currentUser&&auth.currentUser.email)||'',updated_at:serverTimestamp()},{merge:true});localStorage.removeItem(ANA_KEY);}catch(e){}}}
+    anaTokLoaded=true;return anaTokVal;
+  }
   function anaGh(path,opt={}){
     return fetch(`https://api.github.com/repos/${ANA_REPO}/${path}`,{...opt,cache:'no-store',headers:{'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Authorization':`Bearer ${anaTok()}`,...(opt.headers||{})}});
   }
@@ -1523,27 +1533,32 @@
   function anaBtn(busy){const b=document.getElementById('anaRunBtn');b.disabled=busy;b.textContent=busy?'⏳ 読み取り中…':'🔄 今すぐ読み取る';}
 
   window.anaShowTokenForm=function(why){
-    anaRunMsg(`${why?`<b>${escH(why)}</b><br>`:''}「今すぐ読み取る」には、GitHub の鍵（トークン）の登録が必要です（この端末で1回だけ）。作り方はマニュアル「4-4 抽選分析」をご覧ください。<br>
+    anaRunMsg(`${why?`<b>${escH(why)}</b><br>`:''}「今すぐ読み取る」には、GitHub の鍵（トークン）の登録が必要です（1回だけ。登録すると、ログインしたどの端末でも使えます）。作り方はマニュアル「4-4 抽選分析」をご覧ください。<br>
       <input type="password" id="anaTokIn" placeholder="github_pat_ で始まる文字を貼り付け" autocomplete="off">
       <br><button class="btn-secondary" style="width:auto" onclick="anaSaveToken()">保存して読み取る</button>`,why?'ng':'');
   };
-  window.anaSaveToken=function(){
+  window.anaSaveToken=async function(){
     const v=(document.getElementById('anaTokIn').value||'').trim();
     if(!/^(github_pat_|ghp_)/.test(v)){showToast('github_pat_ で始まる鍵を貼り付けてください');return;}
-    try{localStorage.setItem(ANA_KEY,v);}catch(e){showToast('この端末では鍵を保存できませんでした');return;}
+    try{await setDoc(doc(db,'lottery_settings','github'),{token:v,updated_by:(auth.currentUser&&auth.currentUser.email)||'',updated_at:serverTimestamp()},{merge:true});}
+    catch(e){showToast('鍵を保存できませんでした：'+(e.code||e.message));return;}
+    anaTokVal=v;anaTokLoaded=true;try{localStorage.removeItem(ANA_KEY);}catch(e){}
     anaRunNow();
   };
-  window.anaForgetToken=function(){try{localStorage.removeItem(ANA_KEY);}catch(e){}anaRunMsg('この端末から鍵を削除しました。');};
+  window.anaForgetToken=async function(){
+    try{await setDoc(doc(db,'lottery_settings','github'),{token:'',updated_by:(auth.currentUser&&auth.currentUser.email)||'',updated_at:serverTimestamp()},{merge:true});}catch(e){showToast('鍵を削除できませんでした');return;}
+    anaTokVal='';try{localStorage.removeItem(ANA_KEY);}catch(e){}anaRunMsg('鍵を削除しました（すべての端末で使えなくなります）。');};
 
   window.anaRunNow=async function(){
     const ym=document.getElementById('anaMonth').value;
     if(!ym){showToast('対象年月を選んでください');return;}
+    await anaLoadTok();
     if(!anaTok()){anaShowTokenForm();return;}
     anaBtn(true);anaRunMsg('読み取りを頼んでいます…');
     let r;
     try{r=await anaGh('actions/workflows/analyze.yml/dispatches',{method:'POST',body:JSON.stringify({ref:'main',inputs:{month:ym}})});}
     catch(e){anaBtn(false);anaRunMsg('GitHub につながりませんでした。通信状態を確かめて、もう一度押してください。','ng');return;}
-    if(r.status===401||r.status===403||r.status===404){anaBtn(false);anaShowTokenForm('鍵が使えませんでした（期限切れ・権限不足の可能性）。新しい鍵を登録してください。');return;}
+    if(r.status===401||r.status===403||r.status===404){anaBtn(false);anaTokLoaded=false;anaShowTokenForm('鍵が使えませんでした（期限切れ・権限不足の可能性）。新しい鍵を登録してください。');return;}
     if(r.status!==204){anaBtn(false);anaRunMsg(`読み取りを始められませんでした（${r.status}）。少し待ってもう一度押してください。`,'ng');return;}
     try{sessionStorage.setItem('anaRunAt',String(Date.now()));}catch(e){}
     anaWatch(Date.now());
@@ -1562,7 +1577,7 @@
       if(!run||new Date(run.created_at).getTime()<startedAt-120000){anaRunMsg(`⏳ 読み取りの順番を待っています…（${mins}分経過）`);return;}
       if(run.status!=='completed'){anaRunMsg(`⏳ 市のサイトを読み取っています…（${mins}分経過。いつもは10〜20分）<br><span style="font-size:12px;color:var(--text2)">この画面を閉じても読み取りは続きます。あとで開けば新しい数が出ます。</span>`);return;}
       clearInterval(anaTimer);anaBtn(false);try{sessionStorage.removeItem('anaRunAt');}catch(e){}
-      if(run.conclusion==='success'){await new Promise(z=>setTimeout(z,8000));await loadAnalysis();anaRunMsg('✅ 最新の数に変わりました。<span style="float:right;font-size:12px"><button class="lnk" onclick="anaForgetToken()">この端末の鍵を削除</button></span>','ok');}
+      if(run.conclusion==='success'){await new Promise(z=>setTimeout(z,8000));await loadAnalysis();anaRunMsg('✅ 最新の数に変わりました。','ok');}
       else anaRunMsg('読み取りがうまくいきませんでした。少し時間をおいて、もう一度押してください。','ng');
     };
     tick();anaTimer=setInterval(tick,30000);
@@ -2355,6 +2370,5 @@
   };
 
 </script>
-<!-- 2026-11-06 抽選分析:今すぐ読み取るボタン -->
 </body>
 </html>
