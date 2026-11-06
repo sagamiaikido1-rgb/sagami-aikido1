@@ -227,6 +227,13 @@
     .ana-alert{margin-top:10px;padding:8px 12px;border-left:3px solid #b91c1c;background:#fff5f5;font-size:14px;}
     .ana-target{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:4px;flex-wrap:wrap;}
     .ana-target select{font:inherit;padding:5px 8px;border:1px solid var(--border);border-radius:6px;}
+    .ana-run{width:auto;margin-top:0;padding:10px 18px;}
+    .ana-run:disabled{opacity:.55;cursor:default;}
+    .ana-runbox{margin-top:12px;padding:12px 14px;border-radius:8px;background:#eef5fd;border-left:4px solid #378ADD;font-size:14px;line-height:1.8;}
+    .ana-runbox.ng{background:#fff5f5;border-left-color:#e53e3e;}
+    .ana-runbox.ok{background:#f0fdf4;border-left-color:#1D9E75;}
+    .ana-runbox input{font:inherit;width:100%;max-width:520px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;margin:6px 0;}
+    .ana-runbox .lnk{background:none;border:none;color:#2b6cb0;text-decoration:underline;cursor:pointer;font:inherit;padding:0;}
   </style>
 </head>
 <body>
@@ -366,12 +373,13 @@
     <div id="tab-analysis" class="tab-content">
       <div class="section-card">
         <h3>📊 抽選分析（茅ヶ崎・総合体育館 柔道場・柔剣道場）</h3>
-        <p class="ana-note" style="margin-top:0">申込期間（1〜15日）の毎日 朝7時・夜7時ごろに、市のサイトから抽選の件数と全IDの申込を読み取ります。申込や取消はしません。</p>
+        <p class="ana-note" style="margin-top:0">市のサイトから抽選の件数と全IDの申込を読み取って表示します（申込期間の1〜15日は朝7時・夜7時ごろに自動。ただしGitHubの都合で数時間遅れることがあります）。<b>最新の数を見たいときは「🔄 今すぐ読み取る」</b>を押してください（10〜20分かかります）。申込や取消はしません。</p>
         <div class="ana-bar">
-          <div class="month-select" style="margin:0"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="anaMonth"></div>
-          <button class="btn-secondary" onclick="loadAnalysis()">📥 読み込む</button>
+          <div class="month-select" style="margin:0"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="anaMonth" onchange="loadAnalysis()"></div>
+          <button class="btn-primary ana-run" id="anaRunBtn" onclick="anaRunNow()">🔄 今すぐ読み取る</button>
           <button class="btn-secondary" id="anaCsvBtn" onclick="anaCsv()" style="display:none">⬇ CSVで保存</button>
         </div>
+        <div id="anaRun"></div>
         <div id="anaInfo"></div>
       </div>
       <div id="anaBody" style="display:none">
@@ -730,7 +738,11 @@
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
-            <div style="font-size:14px;line-height:1.7;">「📊 抽選分析」タブを開く（申込中の月が自動で表示されます。別の月は「対象年月」を選んで「📥 読み込む」）</div>
+            <div style="font-size:14px;line-height:1.7;">「📊 抽選分析」タブを開く（申込中の月の、最後に読み取った数が自動で表示されます。別の月は「対象年月」を変えるだけで表示されます）</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="background:#c0392b;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">↻</div>
+            <div style="font-size:14px;line-height:1.7;"><b>最新の数を見たいときは「🔄 今すぐ読み取る」</b>を押す。10〜20分ほどで新しい数に変わります（画面を閉じても読み取りは続きます）。初めての端末では、GitHub の鍵（トークン）の登録が必要です（作り方はPDFマニュアル P.13）</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
@@ -753,7 +765,7 @@
           ✅ <b>足すかどうかは、先生と代表代行の判断です。</b>表は判断の材料です。
         </div>
         <div style="background:#eef5fd;border-left:4px solid #378ADD;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:12px;font-size:13px;line-height:1.8;">
-          🔄 <b>今すぐ最新の数を見たいとき（管理者向け）</b><br>GitHub の「Actions」→「合気道 抽選分析」→「Run workflow」。10〜20分ほどで新しい数に変わります（読み取りだけで、申込はしません）。
+          🕒 <b>いつの数かを確かめてください</b><br>自動の読み取り（朝7時・夜7時ごろ）は、GitHub の都合で数時間遅れることがあります。緑の帯の「◯時点の数」が古いときは「🔄 今すぐ読み取る」を押してください。鍵は人に見せず、「鍵が使えませんでした」と出たら作り直してください。
         </div>
       </div>
 
@@ -1483,18 +1495,82 @@
     if(!ym){showToast('対象年月を選んでください');return;}
     info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
     let d=null,names={};
-    try{const r=await fetch(`${ANA_BASE}analysis_latest.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok)d=await r.json();}catch(e){}
+    // 鍵があれば GitHub から直接読む(raw の配信は数分古いことがあるため)。なければ raw から。
+    if(anaTok()){try{const r=await anaGh('contents/plan/analysis_latest.json?ref=main',{headers:{Accept:'application/vnd.github.raw+json'}});if(r.ok)d=await r.json();}catch(e){}}
+    if(!d){try{const r=await fetch(`${ANA_BASE}analysis_latest.json?t=${Date.now()}`,{cache:'no-store'});if(r.ok)d=await r.json();}catch(e){}}
     try{const snap=await getDoc(doc(db,'lottery_settings','names'));if(snap.exists())names=snap.data().names||{};}catch(e){}
     if(!d||`${d.year}-${String(d.month).padStart(2,'0')}`!==ym){
-      info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の分析データはまだありません。<br>申込期間（1〜15日）の朝7時・夜7時ごろに自動で作られます。今すぐ作るときは、GitHub の Actions で「合気道 抽選分析」を動かしてください。</div>';
-      ana=null;return;
+      info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の分析データはまだありません。<br>「🔄 今すぐ読み取る」を押すと、10〜20分ほどで表示されます。</div>';
+      ana=null;anaCheckRunning();return;
     }
     ana={d,names};
     info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">${escH(d.checked_at)} 時点の数です。他団体は15日まで申し込めるので、数は変わります。</div>`;
     document.getElementById('anaBody').style.display='block';
     document.getElementById('anaCsvBtn').style.display='inline-block';
     anaRender();
+    anaCheckRunning();
   };
+
+  // ── 今すぐ読み取る(GitHub の「合気道 抽選分析」を動かす) ──
+  // 鍵(GitHub のトークン:aikido-chigasaki-monitor の Actions 読み書きだけ)は、この端末のブラウザにだけ保存する。
+  const ANA_REPO='sagamiaikido1-rgb/aikido-chigasaki-monitor', ANA_KEY='anaGhToken';
+  let anaTimer=null;
+  function anaTok(){try{return localStorage.getItem(ANA_KEY)||'';}catch(e){return '';}}
+  function anaGh(path,opt={}){
+    return fetch(`https://api.github.com/repos/${ANA_REPO}/${path}`,{...opt,cache:'no-store',headers:{'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Authorization':`Bearer ${anaTok()}`,...(opt.headers||{})}});
+  }
+  function anaRunMsg(html,cls=''){document.getElementById('anaRun').innerHTML=`<div class="ana-runbox ${cls}">${html}</div>`;}
+  function anaBtn(busy){const b=document.getElementById('anaRunBtn');b.disabled=busy;b.textContent=busy?'⏳ 読み取り中…':'🔄 今すぐ読み取る';}
+
+  window.anaShowTokenForm=function(why){
+    anaRunMsg(`${why?`<b>${escH(why)}</b><br>`:''}「今すぐ読み取る」には、GitHub の鍵（トークン）の登録が必要です（この端末で1回だけ）。作り方はマニュアル「4-4 抽選分析」をご覧ください。<br>
+      <input type="password" id="anaTokIn" placeholder="github_pat_ で始まる文字を貼り付け" autocomplete="off">
+      <br><button class="btn-secondary" style="width:auto" onclick="anaSaveToken()">保存して読み取る</button>`,why?'ng':'');
+  };
+  window.anaSaveToken=function(){
+    const v=(document.getElementById('anaTokIn').value||'').trim();
+    if(!/^(github_pat_|ghp_)/.test(v)){showToast('github_pat_ で始まる鍵を貼り付けてください');return;}
+    try{localStorage.setItem(ANA_KEY,v);}catch(e){showToast('この端末では鍵を保存できませんでした');return;}
+    anaRunNow();
+  };
+  window.anaForgetToken=function(){try{localStorage.removeItem(ANA_KEY);}catch(e){}anaRunMsg('この端末から鍵を削除しました。');};
+
+  window.anaRunNow=async function(){
+    const ym=document.getElementById('anaMonth').value;
+    if(!ym){showToast('対象年月を選んでください');return;}
+    if(!anaTok()){anaShowTokenForm();return;}
+    anaBtn(true);anaRunMsg('読み取りを頼んでいます…');
+    let r;
+    try{r=await anaGh('actions/workflows/analyze.yml/dispatches',{method:'POST',body:JSON.stringify({ref:'main',inputs:{month:ym}})});}
+    catch(e){anaBtn(false);anaRunMsg('GitHub につながりませんでした。通信状態を確かめて、もう一度押してください。','ng');return;}
+    if(r.status===401||r.status===403||r.status===404){anaBtn(false);anaShowTokenForm('鍵が使えませんでした（期限切れ・権限不足の可能性）。新しい鍵を登録してください。');return;}
+    if(r.status!==204){anaBtn(false);anaRunMsg(`読み取りを始められませんでした（${r.status}）。少し待ってもう一度押してください。`,'ng');return;}
+    try{sessionStorage.setItem('anaRunAt',String(Date.now()));}catch(e){}
+    anaWatch(Date.now());
+  };
+
+  // 実行中の読み取りを見守り、終わったら表示し直す
+  async function anaLatestRun(){
+    const r=await anaGh('actions/workflows/analyze.yml/runs?per_page=1');
+    if(!r.ok)return null;const j=await r.json();return (j.workflow_runs||[])[0]||null;
+  }
+  function anaWatch(startedAt){
+    clearInterval(anaTimer);anaBtn(true);
+    const tick=async()=>{
+      let run=null;try{run=await anaLatestRun();}catch(e){}
+      const mins=Math.floor((Date.now()-startedAt)/60000);
+      if(!run||new Date(run.created_at).getTime()<startedAt-120000){anaRunMsg(`⏳ 読み取りの順番を待っています…（${mins}分経過）`);return;}
+      if(run.status!=='completed'){anaRunMsg(`⏳ 市のサイトを読み取っています…（${mins}分経過。いつもは10〜20分）<br><span style="font-size:12px;color:var(--text2)">この画面を閉じても読み取りは続きます。あとで開けば新しい数が出ます。</span>`);return;}
+      clearInterval(anaTimer);anaBtn(false);try{sessionStorage.removeItem('anaRunAt');}catch(e){}
+      if(run.conclusion==='success'){await new Promise(z=>setTimeout(z,8000));await loadAnalysis();anaRunMsg('✅ 最新の数に変わりました。<span style="float:right;font-size:12px"><button class="lnk" onclick="anaForgetToken()">この端末の鍵を削除</button></span>','ok');}
+      else anaRunMsg('読み取りがうまくいきませんでした。少し時間をおいて、もう一度押してください。','ng');
+    };
+    tick();anaTimer=setInterval(tick,30000);
+  }
+  async function anaCheckRunning(){
+    if(!anaTok()||anaTimer&&document.getElementById('anaRunBtn').disabled)return;
+    try{const run=await anaLatestRun();if(run&&run.status!=='completed'&&run.event==='workflow_dispatch')anaWatch(new Date(run.created_at).getTime());}catch(e){}
+  }
 
   // IDごとの申込の数・その日に申し込んでいるか
   function anaIdState(d){
