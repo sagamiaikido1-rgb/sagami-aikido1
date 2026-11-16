@@ -325,8 +325,13 @@
     <!-- 抽選取込 -->
     <div id="tab-lottery" class="tab-content">
       <div class="section-card">
-        <h3>🎯 抽選結果の取込（茅ヶ崎）</h3>
-        <p style="font-size:13px;line-height:1.7;margin-bottom:10px;">毎月18日の朝6時に、全IDの抽選結果が自動で集計されます。<br>読み込むと、カレンダーとの違いが色分けで表示されます。確認してから「HPに反映」を押してください。</p>
+        <h3>🎯 抽選結果の取込</h3>
+        <div class="dojo-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <button class="dojo-tab chigasaki active" onclick="selectLotDojo('茅ヶ崎',this)">茅ヶ崎</button>
+          <button class="dojo-tab samukawa" onclick="selectLotDojo('寒川',this)">寒川</button>
+          <button class="dojo-tab hiratsuka" onclick="selectLotDojo('平塚',this)">平塚</button>
+        </div>
+        <p id="lotDesc" style="font-size:13px;line-height:1.7;margin-bottom:10px;">毎月18日の朝6時に、全IDの抽選結果が自動で集計されます。<br>読み込むと、カレンダーとの違いが色分けで表示されます。確認してから「HPに反映」を押してください。</p>
         <div class="month-select"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="lotMonth"></div>
         <button class="btn-secondary" onclick="loadLottery()">📥 集計結果を読み込む</button>
         <div id="lotInfo"></div>
@@ -617,7 +622,7 @@
         <table style="width:100%;border-collapse:collapse;font-size:13px;line-height:1.6;">
           <tr style="background:#1a1a2e;color:#fff;"><th style="padding:7px 8px;text-align:left;width:30%;">いつ</th><th style="padding:7px 8px;text-align:left;">やること</th></tr>
           <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月18日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">①「🔄 月次生成」で12月を登録（全部当選した前提の予定）<br>② 朝6時以降、「🎯 抽選取込」で茅ヶ崎の結果を反映 → <b>茅ヶ崎が確定</b></td></tr>
-          <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月中<br><span style="font-weight:normal;font-size:12px;">（寒川の発表後）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">土曜（寒川）の落選分を「📋 一覧・削除」で削除（手作業） → <b>寒川が確定</b></td></tr>
+          <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月中<br><span style="font-weight:normal;font-size:12px;">（寒川の発表後）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">15日の朝7時以降、「🎯 抽選取込」で<b>寒川</b>を選んで結果を反映 → <b>寒川が確定</b></td></tr>
           <tr style="background:#fdf9ef;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1日〜15日<br><span style="font-weight:normal;font-size:12px;">（1月分）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">決めた振り分けで各IDで申し込む（締切15日 23:59）。「📊 抽選分析」で当選確率を確認し、低い枠は先生と代表代行で判断して手で足す</td></tr>
           <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1〜2日<br><span style="font-weight:normal;font-size:12px;">（平塚の発表後）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">日曜（平塚）の落選分を「📋 一覧・削除」で削除（手作業） → <b>全道場が確定</b></td></tr>
           <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1日〜当日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">茅ヶ崎の落選枠は空き枠を自動で検索し、空きが出るとメールが届きます。予約できたら「➕ 個別追加」で登録。寒川・平塚の空きは手動で確認します。</td></tr>
@@ -1178,29 +1183,52 @@
 
   window.clearAddForm=function(){document.getElementById('addMemo').value='';}
 
-  // ── 抽選取込（茅ヶ崎） ──
-  // 集計プログラム（aikido-chigasaki-monitor）が18日朝に保存する結果ファイルを読む
-  const LOT_BASE='https://raw.githubusercontent.com/sagamiaikido1-rgb/aikido-chigasaki-monitor/main/summary/';
-  let lotPlan=null;
+  // ── 抽選取込（茅ヶ崎・寒川・平塚） ──
+  // 集計プログラム（aikido-chigasaki-monitor）が保存する結果ファイルを読む
+  const LOT_ROOT='https://raw.githubusercontent.com/sagamiaikido1-rgb/aikido-chigasaki-monitor/main/summary/';
+  const LOT_DOJOS={
+    '茅ヶ崎':{dir:'',when:'毎月18日の朝6時',months:2},
+    '寒川':{dir:'samukawa/',when:'毎月15日の朝7時（武道場畳・土曜12〜15時）',months:2},
+    '平塚':{dir:'hiratsuka/',when:'毎月2日の朝（第1武道場1/2面・日曜15〜17時）',months:1},
+  };
+  let lotPlan=null, lotDojo='茅ヶ崎';
+  const lotBase=()=>LOT_ROOT+LOT_DOJOS[lotDojo].dir;
 
   // 施設の枠 → HPの予定（月次生成・個別追加と同じ形式）
   function lotSlotToEvent(s){
     const label=getTimeLabel(s.start);
     let start=s.start,end=s.end;
-    if(label==='朝'){start='09:30';end='11:30';}
-    else if(label==='夜'){start='18:30';end='20:30';}
-    return {dojo:'茅ヶ崎',title:`茅ヶ崎 ${label}`,type:'一般稽古',date:s.date,start,end,memo:''};
+    if(lotDojo==='茅ヶ崎'){
+      if(label==='朝'){start='09:30';end='11:30';}
+      else if(label==='夜'){start='18:30';end='20:30';}
+    }else{
+      const reg=REGULAR_SCHEDULES.find(r=>r.dojo===lotDojo);
+      if(reg){start=reg.start;end=reg.end;}
+    }
+    return {dojo:lotDojo,title:`${lotDojo} ${getTimeLabel(start)}`,type:'一般稽古',date:s.date,start,end,memo:''};
   }
-  const lotKey=(date,start)=>`${date}|${getTimeLabel(start)}`;
+  // 寒川・平塚は1日1枠なので日付だけで照合する（施設の12:00とHPの12:30の違いを吸収）
+  const lotKey=(date,start)=>lotDojo==='茅ヶ崎'?`${date}|${getTimeLabel(start)}`:date;
+
+  window.selectLotDojo=function(dojo,el){
+    lotDojo=dojo;
+    document.querySelectorAll('#tab-lottery .dojo-tab').forEach(b=>b.classList.remove('active'));
+    if(el)el.classList.add('active');
+    document.getElementById('lotDesc').innerHTML=`${LOT_DOJOS[dojo].when}に、全IDの抽選結果が自動で集計されます。<br>読み込むと、カレンダーとの違いが色分けで表示されます。確認してから「HPに反映」を押してください。`;
+    document.getElementById('lotMonth').value='';
+    document.getElementById('lotInfo').innerHTML='';
+    document.getElementById('lotPreviewCard').style.display='none';
+    openLotteryTab();
+  };
 
   window.openLotteryTab=async function(){
     const inp=document.getElementById('lotMonth');
     if(inp.value)return;
     try{
-      const r=await fetch(LOT_BASE+'latest.json?t='+Date.now(),{cache:'no-store'});
+      const r=await fetch(lotBase()+'latest.json?t='+Date.now(),{cache:'no-store'});
       if(r.ok){const d=await r.json();inp.value=`${d.year}-${String(d.month).padStart(2,'0')}`;loadLottery();return;}
     }catch(e){}
-    const t=new Date();t.setMonth(t.getMonth()+2);
+    const t=new Date();t.setDate(1);t.setMonth(t.getMonth()+LOT_DOJOS[lotDojo].months);
     inp.value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
   };
 
@@ -1212,18 +1240,18 @@
     info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
     let data;
     try{
-      const r=await fetch(`${LOT_BASE}summary_${ym}.json?t=${Date.now()}`,{cache:'no-store'});
+      const r=await fetch(`${lotBase()}summary_${ym}.json?t=${Date.now()}`,{cache:'no-store'});
       if(!r.ok)throw new Error(r.status);
       data=await r.json();
     }catch(e){
-      info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の集計結果はまだありません。<br>集計は毎月18日の朝6時に行われます。</div>';
+      info.innerHTML=`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の${lotDojo}の集計結果はまだありません。<br>集計は${LOT_DOJOS[lotDojo].when}に行われます。</div>`;
       return;
     }
     const partial=(data.failed_ids||[]).length>0;
-    const notGenerated=!allEvents.some(e=>e.dojo==='茅ヶ崎'&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym));
-    // 既存の茅ヶ崎・一般稽古（同じ日・同じ区分で照合）
+    const notGenerated=!allEvents.some(e=>e.dojo===lotDojo&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym));
+    // 既存の一般稽古（茅ヶ崎は同じ日・同じ区分、寒川・平塚は同じ日で照合）
     const existing={};
-    allEvents.filter(e=>e.dojo==='茅ヶ崎'&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym)&&e.start)
+    allEvents.filter(e=>e.dojo===lotDojo&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym)&&e.start)
       .forEach(e=>{(existing[lotKey(e.date,e.start)]=existing[lotKey(e.date,e.start)]||[]).push(e);});
     const items=[];const seen=new Set();
     (data.secured||[]).forEach(s=>{
@@ -1241,6 +1269,10 @@
         ?{kind:'check',ev:e,note:'全IDで落選（一部IDが未確認のため削除しません）'}
         :{kind:'del',ev:e,note:'全IDで落選'}));
     });
+    (data.pending||[]).forEach(s=>{
+      const k=lotKey(s.date,s.start);if(seen.has(k))return;seen.add(k);
+      (existing[k]||[]).forEach(e=>items.push({kind:'check',ev:e,note:'抽選待ち・補欠当選など（そのまま残します）'}));
+    });
     Object.keys(existing).forEach(k=>{
       if(seen.has(k))return;
       existing[k].forEach(e=>items.push(e.source==='manual'
@@ -1251,7 +1283,7 @@
     lotPlan={ym,items};
     const n=t=>items.filter(i=>i.kind===t).length;
     info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">集計日時：${escH(data.generated_at||'')}<br>追加 ${n('add')}件 ／ 登録済み ${n('keep')}件 ／ 削除 ${n('del')}件 ／ 要確認 ${n('check')}件${n('manual')?` ／ 個別追加 ${n('manual')}件`:''}</div>`
-      +(notGenerated?`<div class="lot-note" style="background:#fff5f5;border-left:4px solid #e53e3e;">⚠ この月の茅ヶ崎の定例稽古がまだ登録されていません。<br>先に「🔄 月次生成」でこの月を登録してから取り込んでください（後から月次生成すると、落選した枠が再び登録されます）。</div>`:'')
+      +(notGenerated?`<div class="lot-note" style="background:#fff5f5;border-left:4px solid #e53e3e;">⚠ この月の${lotDojo}の定例稽古がまだ登録されていません。<br>先に「🔄 月次生成」でこの月を登録してから取り込んでください（後から月次生成すると、落選した枠が再び登録されます）。</div>`:'')
       +(partial?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 読み取れなかったIDがあります（ID番号 ${data.failed_ids.join(', ')}）。念のため削除は行いません。</div>`:'');
     renderLotCalendar();
     document.getElementById('lotPreviewCard').style.display='block';
@@ -1259,7 +1291,7 @@
 
   function renderLotCalendar(){
     const [y,m]=lotPlan.ym.split('-').map(Number);
-    document.getElementById('lotTitle').textContent=`${y}年${m}月 取込プレビュー`;
+    document.getElementById('lotTitle').textContent=`${lotDojo} ${y}年${m}月 取込プレビュー`;
     const grid=document.getElementById('lotGrid');grid.innerHTML='';
     ['日','月','火','水','木','金','土'].forEach(d=>{const h=document.createElement('div');h.className='cal-day-header';h.textContent=d;grid.appendChild(h);});
     const first=new Date(y,m-1,1).getDay(),last=new Date(y,m,0).getDate();
