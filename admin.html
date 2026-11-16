@@ -341,7 +341,7 @@
         <div class="lot-legend">
           <span><i style="background:#1D9E75"></i>追加される</span>
           <span><i style="background:#e5e7eb"></i>登録済み（そのまま）</span>
-          <span><i style="background:#fee2e2"></i>削除される（落選）</span>
+          <span><i style="background:#fee2e2"></i>削除される（落選・申込なし）</span>
           <span><i style="background:#fef3c7"></i>要確認（変更しない）</span>
           <span><i style="background:#e0f2fe"></i>個別追加（変更しない）</span>
         </div>
@@ -1275,9 +1275,12 @@
     });
     Object.keys(existing).forEach(k=>{
       if(seen.has(k))return;
+      // 確保できていない枠（申込なし・落選）は消す。あとで取れた分は「個別追加」で登録する（個別追加の予定は消さない）
       existing[k].forEach(e=>items.push(e.source==='manual'
         ?{kind:'manual',ev:e,note:'個別追加した予定のため変更しません'}
-        :{kind:'check',ev:e,note:'抽選結果にない枠（そのまま残します）'}));
+        :partial
+        ?{kind:'check',ev:e,note:'確保なし（一部IDが未確認のため削除しません）'}
+        :{kind:'del',ev:e,note:'確保なし（どのIDも申込なし）'}));
     });
     items.sort((a,b)=>a.ev.date.localeCompare(b.ev.date)||a.ev.start.localeCompare(b.ev.start));
     lotPlan={ym,items};
