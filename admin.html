@@ -334,6 +334,8 @@
         <p id="lotDesc" style="font-size:13px;line-height:1.7;margin-bottom:10px;">毎月18日の朝6時に、全IDの抽選結果が自動で集計されます。<br>読み込むと、カレンダーとの違いが色分けで表示されます。確認してから「HPに反映」を押してください。</p>
         <div class="month-select"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="lotMonth"></div>
         <button class="btn-secondary" onclick="loadLottery()">📥 集計結果を読み込む</button>
+        <button class="btn-secondary" id="lotRunBtn" onclick="runLotteryNow()" style="margin-top:8px;">🔄 今すぐ集計し直す</button>
+        <div id="lotRun"></div>
         <div id="lotInfo"></div>
       </div>
       <div class="section-card" id="lotPreviewCard" style="display:none">
@@ -1187,12 +1189,57 @@
   // 集計プログラム（aikido-chigasaki-monitor）が保存する結果ファイルを読む
   const LOT_ROOT='https://raw.githubusercontent.com/sagamiaikido1-rgb/aikido-chigasaki-monitor/main/summary/';
   const LOT_DOJOS={
-    '茅ヶ崎':{dir:'',when:'毎月18日の朝6時',months:2},
-    '寒川':{dir:'samukawa/',when:'毎月15日の朝7時（武道場畳・土曜）',months:2},
-    '平塚':{dir:'hiratsuka/',when:'毎月2日と11日の朝（第1武道場1/2面・日曜）',months:1},
+    '茅ヶ崎':{dir:'',when:'毎月18日の朝6時',months:2,wf:'summary.yml'},
+    '寒川':{dir:'samukawa/',when:'毎月15日の朝7時（武道場畳・土曜）',months:2,wf:'samukawa.yml'},
+    '平塚':{dir:'hiratsuka/',when:'毎月2日と11日の朝（第1武道場1/2面・日曜）',months:1,wf:'hiratsuka.yml'},
   };
-  let lotPlan=null, lotDojo='茅ヶ崎';
+  let lotPlan=null, lotDojo='茅ヶ崎', lotTimer=null;
   const lotBase=()=>LOT_ROOT+LOT_DOJOS[lotDojo].dir;
+  // 結果ファイルを読む。鍵があれば GitHub から直接（すぐ最新になる）、なければ公開URLから（数分遅れることがある）
+  async function lotFetch(name){
+    await anaLoadTok();
+    if(anaTok()){
+      try{const r=await anaGh(`contents/summary/${LOT_DOJOS[lotDojo].dir}${name}?ref=main`,{headers:{Accept:'application/vnd.github.raw+json'}});
+        if(r.ok)return await r.json();if(r.status===404)return null;}catch(e){}
+    }
+    const r=await fetch(`${lotBase()}${name}?t=${Date.now()}`,{cache:'no-store'});
+    return r.ok?await r.json():null;
+  }
+
+  // 「今すぐ集計し直す」：自宅パソコンでその道場の集計を動かし、終わったら読み込み直す（申込・取消はしない）
+  function lotRunMsg(html,cls=''){document.getElementById('lotRun').innerHTML=html?`<div class="ana-runbox ${cls}">${html}</div>`:'';}
+  function lotRunBtn(busy){const b=document.getElementById('lotRunBtn');b.disabled=busy;b.textContent=busy?'⏳ 集計中…':'🔄 今すぐ集計し直す';}
+  window.runLotteryNow=async function(){
+    const ym=document.getElementById('lotMonth').value, dojo=lotDojo, wf=LOT_DOJOS[dojo].wf;
+    if(!ym){showToast('対象年月を選んでください');return;}
+    if(!confirm(`${dojo}の${ym.replace('-','年')}月分を、今すぐ集計し直します。\n自宅パソコンの電源が入っている必要があります。よろしいですか？`))return;
+    await anaLoadTok();
+    if(!anaTok()){lotRunMsg('GitHub の鍵が登録されていません。「📊 抽選分析」タブの「今すぐ読み取る」で鍵を登録してから、もう一度押してください。','ng');return;}
+    lotRunBtn(true);lotRunMsg('集計を頼んでいます…');
+    let r;
+    try{r=await anaGh(`actions/workflows/${wf}/dispatches`,{method:'POST',body:JSON.stringify({ref:'main',inputs:{month:ym,send_mail:'0'}})});}
+    catch(e){lotRunBtn(false);lotRunMsg('GitHub につながりませんでした。通信状態を確かめて、もう一度押してください。','ng');return;}
+    if(r.status===401||r.status===403||r.status===404){lotRunBtn(false);lotRunMsg('鍵が使えませんでした（期限切れ・権限不足の可能性）。「📊 抽選分析」タブで新しい鍵を登録してください。','ng');return;}
+    if(r.status!==204){lotRunBtn(false);lotRunMsg(`集計を始められませんでした（${r.status}）。少し待ってもう一度押してください。`,'ng');return;}
+    lotWatch(Date.now(),dojo,wf,ym);
+  };
+  function lotWatch(startedAt,dojo,wf,ym){
+    clearInterval(lotTimer);lotRunBtn(true);
+    const tick=async()=>{
+      let run=null;
+      try{const r=await anaGh(`actions/workflows/${wf}/runs?per_page=1`);if(r.ok){const j=await r.json();run=(j.workflow_runs||[])[0]||null;}}catch(e){}
+      const mins=Math.floor((Date.now()-startedAt)/60000);
+      if(!run||new Date(run.created_at).getTime()<startedAt-120000){lotRunMsg(`⏳ 集計の順番を待っています…（${mins}分経過）<br><span style="font-size:12px;color:var(--text2)">自宅パソコンの電源が切れていると、電源を入れるまで始まりません。</span>`);return;}
+      if(run.status!=='completed'){lotRunMsg(`⏳ ${dojo}の予約サイトを読み取っています…（${mins}分経過。いつもは数分）<br><span style="font-size:12px;color:var(--text2)">この画面を閉じても集計は続きます。あとで「集計結果を読み込む」を押せば最新になります。</span>`);return;}
+      clearInterval(lotTimer);lotRunBtn(false);
+      if(run.conclusion==='success'){
+        await new Promise(z=>setTimeout(z,5000));
+        if(lotDojo===dojo){document.getElementById('lotMonth').value=ym;await loadLottery();}
+        lotRunMsg(`✅ ${dojo}の集計が終わり、最新の結果を読み込みました。`,'ok');
+      }else lotRunMsg('集計がうまくいきませんでした。一部のIDでログインできなかった可能性があります。GitHub の Actions のログを確認してください。','ng');
+    };
+    tick();lotTimer=setInterval(tick,20000);
+  }
 
   // 施設の枠（開始時刻）→ 稽古の区分とHPに出す時間（各道場の稽古時間表より）
   const LOT_SLOT_MAP={
@@ -1223,6 +1270,7 @@
     document.getElementById('lotMonth').value='';
     document.getElementById('lotInfo').innerHTML='';
     document.getElementById('lotPreviewCard').style.display='none';
+    if(!(document.getElementById('lotRunBtn')||{}).disabled)lotRunMsg('');
     openLotteryTab();
   };
 
@@ -1230,8 +1278,8 @@
     const inp=document.getElementById('lotMonth');
     if(inp.value)return;
     try{
-      const r=await fetch(lotBase()+'latest.json?t='+Date.now(),{cache:'no-store'});
-      if(r.ok){const d=await r.json();inp.value=`${d.year}-${String(d.month).padStart(2,'0')}`;loadLottery();return;}
+      const d=await lotFetch('latest.json');
+      if(d){inp.value=`${d.year}-${String(d.month).padStart(2,'0')}`;loadLottery();return;}
     }catch(e){}
     const t=new Date();t.setDate(1);t.setMonth(t.getMonth()+LOT_DOJOS[lotDojo].months);
     inp.value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
@@ -1245,14 +1293,15 @@
     info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
     let data;
     try{
-      const r=await fetch(`${lotBase()}summary_${ym}.json?t=${Date.now()}`,{cache:'no-store'});
-      if(!r.ok)throw new Error(r.status);
-      data=await r.json();
+      data=await lotFetch(`summary_${ym}.json`);
+      if(!data)throw new Error('none');
     }catch(e){
       info.innerHTML=`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の${lotDojo}の集計結果はまだありません。<br>集計は${LOT_DOJOS[lotDojo].when}に行われます。</div>`;
       return;
     }
     const partial=(data.failed_ids||[]).length>0;
+    // 確保も落選も1件もない＝抽選前に集計した可能性が高い。念のため何も削除しない
+    const empty=!(data.secured||[]).length&&!(data.lost||[]).length;
     const notGenerated=!allEvents.some(e=>e.dojo===lotDojo&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym));
     // 既存の一般稽古（茅ヶ崎は同じ日・同じ区分、寒川・平塚は同じ日で照合）
     const existing={};
@@ -1283,6 +1332,8 @@
       // 確保できていない枠（申込なし・落選）は消す。あとで取れた分は「個別追加」で登録する（個別追加の予定は消さない）
       existing[k].forEach(e=>items.push(e.source==='manual'
         ?{kind:'manual',ev:e,note:'個別追加した予定のため変更しません'}
+        :empty
+        ?{kind:'check',ev:e,note:'抽選結果がまだ出ていない可能性があるため削除しません'}
         :partial
         ?{kind:'check',ev:e,note:'確保なし（一部IDが未確認のため削除しません）'}
         :{kind:'del',ev:e,note:'確保なし（どのIDも申込なし）'}));
@@ -1292,6 +1343,7 @@
     const n=t=>items.filter(i=>i.kind===t).length;
     info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">集計日時：${escH(data.generated_at||'')}<br>追加 ${n('add')}件 ／ 登録済み ${n('keep')}件 ／ 削除 ${n('del')}件 ／ 要確認 ${n('check')}件${n('manual')?` ／ 個別追加 ${n('manual')}件`:''}</div>`
       +(notGenerated?`<div class="lot-note" style="background:#fff5f5;border-left:4px solid #e53e3e;">⚠ この月の${lotDojo}の定例稽古がまだ登録されていません。<br>先に「🔄 月次生成」でこの月を登録してから取り込んでください（後から月次生成すると、落選した枠が再び登録されます）。</div>`:'')
+      +(empty?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 当選・落選が1件もありません。抽選結果がまだ出ていない可能性があるため、削除は行いません。</div>`:'')
       +(partial?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 読み取れなかったIDがあります（ID番号 ${data.failed_ids.join(', ')}）。念のため削除は行いません。</div>`:'');
     renderLotCalendar();
     document.getElementById('lotPreviewCard').style.display='block';
