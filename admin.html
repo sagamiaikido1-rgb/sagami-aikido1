@@ -512,8 +512,8 @@
         </div>
         <div id="patError" style="display:none;margin-top:10px;padding:10px 14px;background:#fee2e2;border-radius:6px;font-size:12px;color:#991b1b;line-height:1.7;"></div>
         <p style="font-size:11px;color:var(--text2);margin-top:8px;">
-          ※ トークンはこの端末のみに保存されます。
-          <a href="https://github.com/settings/tokens/new?scopes=repo&description=sagami-aikido-gallery" target="_blank" style="color:var(--gold-light);">トークンを発行する →</a>
+          ※ トークンはFirebaseに保存され、ログインしたすべての端末・ブラウザで共通に使えます。
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=sagami-aikido1-gallery" target="_blank" style="color:var(--gold-light);">トークンを発行する →</a>
         </p>
       </div>
 
@@ -2105,53 +2105,67 @@
     else { el.style.display='none'; }
   }
 
-  function loadPat(){
-    const pat = localStorage.getItem('gh_pat') || '';
-    const el  = document.getElementById('githubPat');
-    const st  = document.getElementById('patStatus');
-    if(el && !el.value) el.value = pat;
-    if(st) st.textContent = pat ? '✅ 設定済み' : '⚠️ 未設定';
-    return pat;
+  // トークンは Firestore の lottery_settings/gallery に保存（sagamiaikido1@gmail.com でログインした人だけ読み書き可）。
+  // 1回保存すれば、ログインしたどの端末・どのブラウザでも使える。前の版でこの端末に保存したトークンがあれば Firestore へ移す。
+  const PAT_DOC = ()=>doc(db,'lottery_settings','gallery');
+  let galPatVal='', galPatLoaded=false;
+  function patStatus(txt){const st=document.getElementById('patStatus');if(st)st.textContent=txt;}
+  async function savePatToDb(v){
+    await setDoc(PAT_DOC(),{token:v,updated_by:(auth.currentUser&&auth.currentUser.email)||'',updated_at:serverTimestamp()},{merge:true});
+    galPatVal=v; galPatLoaded=true;
+    try{localStorage.removeItem('gh_pat');}catch(e){}
+  }
+  async function loadPat(force){
+    if(!galPatLoaded||force){
+      try{const snap=await getDoc(PAT_DOC());galPatVal=snap.exists()?(snap.data().token||'').trim():'';}catch(e){console.warn('トークンを読めませんでした',e);}
+      if(!galPatVal){let old='';try{old=localStorage.getItem('gh_pat')||'';}catch(e){}
+        if(old){try{await savePatToDb(old);}catch(e){galPatVal=old;}}}
+      galPatLoaded=true;
+    }
+    patStatus(galPatVal ? '✅ 設定済み（全端末共通）' : '⚠️ 未設定');
+    return galPatVal;
   }
 
-  window.savePat = function(){
+  window.savePat = async function(){
     const val = document.getElementById('githubPat').value.trim();
     if(!val){ showToast('トークンを入力してください'); return; }
     if(!val.startsWith('ghp_') && !val.startsWith('github_pat_')){
       showPatError('⚠️ トークンの形式が正しくありません。<br>「ghp_」または「github_pat_」で始まる文字列を入力してください。');
       return;
     }
-    localStorage.setItem('gh_pat', val);
-    document.getElementById('patStatus').textContent = '✅ 設定済み';
+    try{ await savePatToDb(val); }
+    catch(e){ showPatError('❌ 保存できませんでした：'+e.message); return; }
+    document.getElementById('githubPat').value='';
+    patStatus('✅ 設定済み（全端末共通）');
     showPatError('');
     showToast('✅ トークンを保存しました。「接続テスト」で確認してください。');
   };
 
   window.testPat = async function(){
-    const pat = document.getElementById('githubPat').value.trim() || localStorage.getItem('gh_pat') || '';
+    const typed = document.getElementById('githubPat').value.trim();
+    const pat = typed || await loadPat();
     if(!pat){ showPatError('⚠️ トークンを入力してから「接続テスト」を押してください。'); return; }
-    const st = document.getElementById('patStatus');
-    st.textContent = '🔄 確認中...';
+    patStatus('🔄 確認中...');
     showPatError('');
     try{
       const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`, {
         headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
       });
       if(res.ok){
-        st.textContent = '✅ 設定済み・接続OK';
-        localStorage.setItem('gh_pat', pat);
+        if(typed){ try{ await savePatToDb(typed); document.getElementById('githubPat').value=''; }catch(e){} }
+        patStatus('✅ 設定済み・接続OK（全端末共通）');
         showPatError('');
         showToast('✅ GitHubへの接続を確認しました');
       } else {
         const code = res.status;
-        st.textContent = '❌ 接続失敗';
-        if(code===401) showPatError('❌ <b>トークンが無効です（401）</b><br>トークンを再発行してください。<br><a href="https://github.com/settings/tokens/new?scopes=repo&description=sagami-aikido-gallery" target="_blank" style="color:#991b1b;">→ 新しいトークンを発行する</a>');
+        patStatus('❌ 接続失敗');
+        if(code===401) showPatError('❌ <b>トークンが無効です（401）</b><br>期限切れの可能性があります。トークンを再発行してください。<br><a href="https://github.com/settings/tokens" target="_blank" style="color:#991b1b;">→ トークンの一覧を開く</a>');
         else if(code===403) showPatError('❌ <b>権限が不足しています（403）</b><br>「repo」スコープにチェックを入れてトークンを再発行してください。');
         else if(code===404) showPatError(`❌ <b>リポジトリが見つかりません（404）</b><br>リポジトリ名を確認してください：${GH_OWNER}/${GH_REPO}`);
         else showPatError(`❌ エラー（${code}）が発生しました。トークンを再発行してください。`);
       }
     }catch(e){
-      st.textContent = '❌ 接続失敗';
+      patStatus('❌ 接続失敗');
       showPatError(`❌ ネットワークエラー：${e.message}`);
     }
   };
@@ -2225,7 +2239,7 @@
     if(!evId){ showToast('対象イベントを選択してください'); return; }
     if(!pendingGalleryPhotos.length){ showToast('写真を選んでください'); return; }
 
-    const pat = loadPat();
+    const pat = await loadPat(true);
     if(!pat){
       showToast('⚠️ GitHubトークンを設定してください');
       document.getElementById('githubPat').focus();
