@@ -1574,7 +1574,8 @@
     info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">`
       +(day1?`1日の申込案：${escH(day1.generated_at||'')} 作成`:'1日の申込案：なし')
       +`<br>見直し：${rev?escH(rev.checked_at||'')+' 時点の件数':'まだありません'}`
-      +`<br>1IDあたり最大 ${APL_CAP}件（総合体育館）、18IDで最大72件です。</div>`;
+      +`<br>1IDあたり最大 ${APL_CAP}件（総合体育館）、18IDで最大72件です。</div>`
+      +(day1&&day1.preview?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 1日の申込案は<b>仮の案</b>です（申込期間の前のため、休館日だけを除いて作りました）。1日0時すぎに空き状況（×・休館）を読んで作り直します。仮の案は確定できません。</div>`:'');
     aplRender();
   };
 
@@ -1702,7 +1703,9 @@
       document.getElementById('aplD1Table').innerHTML=t+'</tbody>';
       const nSel=aplTotal(c.addSel),nSkip=aplTotal(c.addAll)-nSel;
       document.getElementById('aplD1Sum').innerHTML=`<div><b>${nSel}</b><span>申し込む件数</span></div><div><b>${nSkip}</b><span>見送る件数</span></div><div><b>${aplTotal(c.cur)}</b><span>今の申込（そのまま）</span></div><div><b>${72-aplTotal(c.after)}</b><span>確定後の予備</span></div>`;
-      const b=document.getElementById('aplD1Go');b.disabled=!nSel;b.style.opacity=nSel?1:.5;
+      const pv=!!c.d.preview;
+      const b=document.getElementById('aplD1Go');b.disabled=!nSel||pv;b.style.opacity=(nSel&&!pv)?1:.5;
+      b.textContent=pv?'仮の案のため確定できません（1日に作り直します）':'✅ この内容で確定する';
       document.getElementById('aplKendoNote').textContent=`次に1日の申込案を作るときに使います（今の案は柔剣道場 ${c.d.sun_kendo}件・保持 ${c.d.sun_hold??0}件で作られています）。`;
     }else{
       const rows=(list,p,skipOf)=>list.map((x,n)=>{const sk=skipOf(n);return `<tr class="${sk?'skip':''}"><td>${n+1}</td><td><span class="apl-chip ${x.from?'x':'n'}">${escH(x.kind)}</span></td><td class="l">${aplWho(String(x.id))}</td><td class="l">${x.from?aplLab(x.from):'—'}</td><td class="l">${aplLab(x.to)}</td><td>+${(x.gain*100).toFixed(1)}pt</td><td>${aplSeg(p+n,sk,'実行する','見送る')}</td></tr>`;}).join('');
