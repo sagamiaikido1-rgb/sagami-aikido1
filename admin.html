@@ -209,6 +209,40 @@
     .apl-hopt{flex:1;min-width:120px;padding:8px;border:2px solid var(--border);border-radius:8px;background:var(--white);font:inherit;font-size:14px;cursor:pointer;line-height:1.5;}
     .apl-hopt.on{border-color:var(--navy);background:var(--navy);color:#fff;}
     .apl-reduced{margin-top:10px;padding:8px 12px;border-left:3px solid var(--gold);background:#fdf6e6;font-size:14px;}
+    /* 抽選申込(2026-11-19 iPhone向けの○×) */
+    .sp-card{max-width:560px;margin-left:auto;margin-right:auto}
+    .sp-title{font-size:20px;font-weight:700;margin-top:10px}
+    .sp-sub{font-size:14px;color:var(--text2);margin-top:2px}
+    .sp-warn{margin-top:10px;background:#fffbeb;border-left:4px solid #d4a017;padding:10px 12px;border-radius:6px;font-size:15px;line-height:1.6}
+    .sp-note{font-size:14px;color:var(--text2);line-height:1.6;margin-top:8px}
+    .sp-day{max-width:560px;margin:0 auto 12px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px}
+    .sp-day.low{border:2px solid #e53e3e;background:#fff8f8}
+    .sp-day.no{opacity:.55}
+    .sp-day.off{border-style:dashed;color:var(--text2);font-size:15px}
+    .sp-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .sp-name{font-size:19px;font-weight:700}
+    .sp-tag{font-size:12px;font-weight:400;color:var(--text2);margin-left:8px}
+    .sp-line{font-size:16px;margin-top:6px}
+    .sp-plan{font-size:17px;font-weight:700;margin-top:4px}
+    .sp-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;margin-top:10px}
+    .sp-ids{font-size:13px;color:var(--text2);line-height:1.5}
+    .sp-ox{display:flex;gap:8px;flex:none}
+    .sp-ox button{width:56px;height:48px;font-size:22px;border:2px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer}
+    .sp-ox button.on-o{border-color:#1D9E75;background:#e6f6ef}
+    .sp-ox button.on-x{border-color:#e53e3e;background:#fdecec}
+    .sp-room{display:flex;flex:none}
+    .sp-room button{min-width:52px;height:38px;font-size:16px;border:2px solid var(--border);background:var(--white);cursor:pointer}
+    .sp-room button:first-child{border-radius:8px 0 0 8px}.sp-room button:last-child{border-radius:0 8px 8px 0;margin-left:-2px}
+    .sp-room button.on{border-color:var(--navy);background:var(--navy);color:#fff;position:relative}
+    .sp-room.off{opacity:.5}
+    .sp-go{font-size:20px;padding:16px;width:100%}
+    #aplDays{display:grid;grid-template-columns:1fr;gap:12px;max-width:560px;margin:0 auto 12px}
+    #aplDays .sp-day{margin:0;max-width:none}
+    @media (min-width:900px){   /* iPad横・パソコンでは2列にして、スクロールを減らす */
+      #tab-apply .sp-card,#aplDays{max-width:1000px}
+      #aplDays{grid-template-columns:1fr 1fr}
+      #aplGoCard{max-width:480px}
+    }
     /* 抽選分析(2026-11 追加) */
     .ana-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
     .ana-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px;}
@@ -360,88 +394,18 @@
 
     <!-- 抽選申込 -->
     <div id="tab-apply" class="tab-content">
-      <div class="section-card">
-        <h3>🗳 抽選申込（茅ヶ崎・総合体育館 柔道場・柔剣道場）</h3>
+      <div class="section-card sp-card">
+        <h3>🗳 抽選申込（茅ヶ崎・総合体育館）</h3>
         <div class="apl-bar">
           <div class="month-select" style="margin:0"><label style="font-size:13px;color:var(--text2)">対象年月</label><input type="month" id="aplMonth"></div>
           <button class="btn-secondary" onclick="loadApply()">📥 読み込む</button>
         </div>
-        <div class="apl-bar" style="margin-top:12px">
-          <div class="apl-seg" role="group" aria-label="段階">
-            <button id="aplStDay1" onclick="aplSetStage('day1')">1日の申込</button>
-            <button id="aplStReview" onclick="aplSetStage('review')">2〜15日の見直し</button>
-          </div>
-          <div class="apl-seg" role="group" aria-label="画面">
-            <button id="aplVwStatus" onclick="aplSetView('status')">状況を見る</button>
-            <button id="aplVwDecide" onclick="aplSetView('decide')">決める</button>
-          </div>
-        </div>
-        <div id="aplInfo"></div>
+        <div id="aplHead"></div>
       </div>
-
-      <!-- 状況を見る -->
-      <div id="aplStatusView" style="display:none">
-        <div class="section-card">
-          <h3 id="aplSumTitle">予約枠の数</h3>
-          <div class="apl-tiles" id="aplTiles"></div>
-          <p class="apl-note" id="aplSkipped"></p>
-        </div>
-        <div class="section-card">
-          <h3>稽古枠ごとの件数と当選確率</h3>
-          <div class="apl-wrap"><table class="apl-t apl-combo" id="aplCombo"></table></div>
-          <p class="apl-note" id="aplRateNote"></p>
-        </div>
-        <div class="section-card">
-          <h3>ID別の申込表</h3>
-          <div class="apl-wrap"><table class="apl-t apl-grid" id="aplGrid"></table></div>
-          <p class="apl-note">● 申込済み（緑＝柔道場／紫＝柔剣道場）　＋ 1日に申し込む案</p>
-        </div>
-        <div class="section-card">
-          <h3>ID別の残り件数 <span id="aplIdHint" style="font-size:12px;font-weight:400;color:var(--text2)"></span></h3>
-          <div class="apl-wrap"><table class="apl-t" id="aplIds"></table></div>
-        </div>
-      </div>
-
-      <!-- 決める -->
-      <div id="aplDecideView" style="display:none">
-        <div class="section-card" id="aplD1">
-          <h3>1日に申し込む内容</h3>
-          <p class="apl-note" style="margin-top:0">枠ごとに「申し込む／見送る」を選び、最後に確定してください。今ある申込は取り消しません。</p>
-          <div class="apl-wrap"><table class="apl-t" id="aplD1Table"></table></div>
-          <div class="apl-tiles" id="aplD1Sum" style="margin-top:12px"></div>
-          <button class="btn-primary apl-big" id="aplD1Go" onclick="submitApply('day1')">✅ この内容で確定する</button>
-          <div class="apl-setting">
-            <label for="aplKendo">日曜朝のうち1日に柔剣道場で申し込む件数</label>
-            <input type="number" id="aplKendo" min="0" max="9" value="0">
-            <label for="aplHoldN">保持する件数</label>
-            <input type="number" id="aplHoldN" min="0" max="9" value="3">
-            <button class="btn-secondary" onclick="saveKendo()">保存</button>
-            <p class="apl-note" id="aplKendoNote"></p>
-          </div>
-        </div>
-        <div class="section-card" id="aplRv" style="display:none">
-          <h3>見直しの案</h3>
-          <p class="apl-note" style="margin-top:0">1件ずつ「実行する／見送る」を選び、最後に確定してください。</p>
-          <h4 class="apl-h4">案：追加（取り消さずに足す）</h4>
-          <div class="apl-wrap"><table class="apl-t" id="aplAdds"></table></div>
-          <div id="aplRefBox" style="display:none">
-            <h4 class="apl-h4">参考：取消→申込</h4>
-            <p class="apl-note" id="aplRefNote" style="margin-top:0"></p>
-            <div class="apl-wrap"><table class="apl-t" id="aplMoves"></table></div>
-          </div>
-          <h4 class="apl-h4">選んだ案を実行した後の当選確率</h4>
-          <div class="apl-wrap"><table class="apl-t" id="aplAfter"></table></div>
-          <div class="apl-tiles" id="aplRvSum" style="margin-top:12px"></div>
-          <button class="btn-primary apl-big" id="aplRvGo" onclick="submitApply('review')">✅ 選んだ案で確定する</button>
-        </div>
-        <div class="section-card" id="aplHold" style="display:none">
-          <h3>日曜朝の保持分（柔道場か柔剣道場か）</h3>
-          <p class="apl-note" style="margin-top:0">日曜朝は1日に柔道場6件で申し込み、3件は保持しています。10〜15日の件数を見て、保持分をどちらに足すか選んでください。<b>15日22:30までに決まらなければ、自動で柔道場に申し込みます。</b><br>
-          確保率＝柔道場か柔剣道場のどちらかを取れる確率、柔剣道場率＝部屋ごと（剣道場も）取れる確率。「剣道場だけ」の申込には居合などの関連団体も含まれます。</p>
-          <div id="aplHoldRows"></div>
-          <p class="apl-note" id="aplHoldNote"></p>
-          <button class="btn-primary apl-big" onclick="submitHold()">✅ 決めた保持分を申し込む</button>
-        </div>
+      <div id="aplDays"></div>
+      <div class="section-card sp-card" id="aplGoCard" style="display:none">
+        <button class="btn-primary sp-go" id="aplGo" onclick="submitDays()">確定する</button>
+        <p class="sp-note" id="aplGoNote"></p>
         <div id="aplStatus"></div>
       </div>
     </div>
@@ -483,6 +447,14 @@
           <div id="anaAddSum"></div>
           <p class="ana-note">「足せるID」は、上限（4件）に残りがあり、その日にまだ申し込んでいないIDです。番号の大きい順に並べています。日曜朝に足すときは柔剣道場を考えています。実際に足すかどうかは、先生と代表代行の判断です。</p>
         </div>
+      </div>
+      <div class="section-card">
+        <details id="anaHist" ontoggle="if(this.open)anaLoadHist()">
+          <summary style="cursor:pointer;font-weight:700;font-size:15px">🗂 IDごとの記録（参考）</summary>
+          <p class="ana-note">どのIDを、いつ、どの枠に申し込んだかの記録です（新しい仕組みで申し込んだ分。2027年2月分から）。後で「新しく登録したIDは当たりやすいか」を確かめるために残しています。</p>
+          <div class="ana-bar"><button class="btn-secondary" id="anaHistCsv" onclick="anaHistCsv()" style="display:none">⬇ CSVで保存</button></div>
+          <div id="anaHistBody"></div>
+        </details>
       </div>
     </div>
 
@@ -694,8 +666,8 @@
           <tr style="background:#1a1a2e;color:#fff;"><th style="padding:7px 8px;text-align:left;width:30%;">いつ</th><th style="padding:7px 8px;text-align:left;">やること</th></tr>
           <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月18日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">①「🔄 月次生成」で12月を登録（全部当選した前提の予定）<br>② 朝6時以降、「🎯 抽選取込」で茅ヶ崎の結果を反映 → <b>茅ヶ崎が確定</b></td></tr>
           <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">10月中<br><span style="font-weight:normal;font-size:12px;">（寒川の発表後）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">15日の朝7時以降、「🎯 抽選取込」で<b>寒川</b>を選んで結果を反映 → <b>寒川が確定</b></td></tr>
-          <tr style="background:#fdf9ef;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1日 0時すぎ</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">申込案のメールが届く →「🗳 抽選申込」の「決める」で選んで確定（日曜朝は柔道場6件。3件は保持）</td></tr>
-          <tr style="background:#fdf9ef;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月2日〜15日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">10〜15日に競合が出るとメールが届く →「🗳 抽選申込」で見直しの案と保持分（柔道場／柔剣道場）を決める。15日22:30に保持分の残りは柔道場へ（締切15日 23:59）</td></tr>
+          <tr style="background:#fdf9ef;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1日 0時すぎ</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">申込案のメールが届く →「🗳 抽選申込」で日ごとに○×を付けて確定（各枠6件）</td></tr>
+          <tr style="background:#fdf9ef;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月2日〜15日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">見込みが85%を切るとメールが届く →「🗳 抽選申込」で提案の日に○を付けて確定。15日21時に未確定の分、22:45に残りの予備を自動で申し込む（締切15日 23:59）</td></tr>
           <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1〜2日<br><span style="font-weight:normal;font-size:12px;">（平塚の発表後）</span></td><td style="padding:7px 8px;border-bottom:1px solid #eee;">日曜（平塚）の落選分を「📋 一覧・削除」で削除（手作業） → <b>全道場が確定</b></td></tr>
           <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">11月1日〜当日</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">茅ヶ崎の落選枠は空き枠を自動で検索し、空きが出るとメールが届きます。予約できたら「➕ 個別追加」で登録。寒川・平塚の空きは手動で確認します。</td></tr>
         </table>
@@ -779,54 +751,49 @@
       <div class="section-card" style="border-top:3px solid #b8860b;">
         <h3>🗳 抽選申込（毎月1日〜15日・茅ヶ崎）<span style="color:#b8860b;font-size:12px;margin-left:6px;">【2月分から】</span></h3>
         <p style="font-size:14px;margin-bottom:12px;line-height:1.8;">
-          茅ヶ崎・総合体育館の<b>柔道場と柔剣道場</b>の抽選について、<b>1日の申込</b>と<b>2〜15日の見直し</b>をこのタブで決めます。案は自動で作られ、<b>決めるのは先生と代表代行</b>です。すでに入っている申込（手で入れた分も含む）を勝手に取り消すことはありません。
+          茅ヶ崎・総合体育館の抽選は、<b>日ごとに○×を付けて「確定する」</b>を押すだけです。どのIDを使うかは自動で決まり、番号を（ ）で添えて表示します。iPhoneでも見やすい画面です。
         </p>
         <table style="width:100%;border-collapse:collapse;font-size:13px;line-height:1.6;margin-bottom:12px;">
-          <tr style="background:#1a1a2e;color:#fff;"><th style="padding:7px 8px;text-align:left;width:26%;">いつ</th><th style="padding:7px 8px;text-align:left;">自動で行うこと</th><th style="padding:7px 8px;text-align:left;width:30%;">先生・代表代行</th></tr>
-          <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">1日 0時すぎ</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">空き状況（×・休館）を読み、1日の申込案を作ってメール</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">「決める」で選んで確定</td></tr>
-          <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">1〜15日 毎日18時</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">件数を読んで記録し、見直しの案と保持分の確率を作る。メールは10〜15日に他団体の申込が増えたときだけ（15日は9時・15時・21時も読む）</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">必要なら「決める」で確定。保持分は「柔道場に足す／柔剣道場に足す」を選ぶ</td></tr>
-          <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">15日 22:30</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">まだ申し込んでいない保持分を申し込む（決まっていなければ柔道場）。結果は必ずメール</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">メールを確認</td></tr>
+          <tr style="background:#1a1a2e;color:#fff;"><th style="padding:7px 8px;text-align:left;width:24%;">いつ</th><th style="padding:7px 8px;text-align:left;">自動で行うこと</th><th style="padding:7px 8px;text-align:left;width:30%;">代表が行うこと</th></tr>
+          <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">1日 0時すぎ</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">空き状況を読み、各枠6件の案を作ってメール（まだ申し込まない）</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">○×（日曜朝は柔／柔剣も）を付けて確定。2、3日遅れてもよい</td></tr>
+          <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">確定のあと</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">30分ほどで○の日を申し込む</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">—</td></tr>
+          <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">2〜15日 18時</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">件数を読む。見込みが85%を切った日があればメール（15日は9時・15時も）</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">提案の日に○を付けて確定</td></tr>
+          <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">15日 18時</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">日曜朝の柔／柔剣の締め切り</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">—</td></tr>
+          <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">15日 21時</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">確定がない分（案・提案）を自動で申し込む</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">メールを見るだけ</td></tr>
+          <tr style="background:#f8f6f1;"><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">15日 22:45</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">残りの予備を、見込みの低い日から使い切る</td><td style="padding:7px 8px;border-bottom:1px solid #eee;">メールを見るだけ</td></tr>
           <tr><td style="padding:7px 8px;border-bottom:1px solid #eee;font-weight:bold;">15日 23:59</td><td style="padding:7px 8px;border-bottom:1px solid #eee;" colspan="2">申込の締切</td></tr>
         </table>
         <p style="font-size:14px;font-weight:bold;margin-bottom:8px;">画面の使い方</p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">1</div>
-            <div style="font-size:14px;line-height:1.7;">「🗳 抽選申込」タブを開く（申込中の月が自動で読み込まれます）</div>
+            <div style="font-size:14px;line-height:1.7;">「🗳 抽選申込」タブを開く（申込中の月が自動で出ます）</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">2</div>
-            <div style="font-size:14px;line-height:1.7;">「1日の申込」と「2〜15日の見直し」を切り替える（新しい方が自動で選ばれます）</div>
+            <div style="font-size:14px;line-height:1.7;">日ごとに ○ か × を押す。赤い枠の日は見込みが85%を切った日で、「提案：＋○件」を足すかどうかです</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">3</div>
-            <div style="font-size:14px;line-height:1.7;">「状況を見る」で、枠の数・稽古枠ごとの件数と当選確率・ID別の申込表を確認する（見るだけの画面です）</div>
+            <div style="font-size:14px;line-height:1.7;">日曜朝は「柔」「柔剣」を選べます（15日18時まで）。柔剣道場は部屋ごと取れますが、剣道場だけの団体とも争います</div>
           </div>
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">4</div>
-            <div style="font-size:14px;line-height:1.7;">「決める」で、1日の申込は枠ごとに「申し込む／見送る」、見直しは案ごとに「実行する／見送る」を選び、確定ボタンを押して「OK」。日曜朝の保持分は、下の欄で「柔道場に足す／柔剣道場に足す」を選んで「決めた保持分を申し込む」</div>
-          </div>
-          <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="background:#1a1a2e;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;">5</div>
-            <div style="font-size:14px;line-height:1.7;">日曜朝の柔剣道場・保持の件数は、「決める」の1日の申込の下で変えて「保存」（次の月の案から使われます）</div>
+            <div style="font-size:14px;line-height:1.7;">いちばん下の「確定する」を押して「OK」。30分ほどで申し込みます</div>
           </div>
         </div>
         <div style="font-size:13px;background:#f8f8f8;border-radius:6px;padding:10px 14px;margin-top:12px;line-height:1.9;">
-          <b>振り分けの決まり（2026年11月に決定）</b><br>
-          ・1枠9件（IDの残りが足りない月は8件）。日曜朝は<b>柔道場6件＋保持3件</b>（2026年11月18日に決定。件数は変えられます）<br>
-          ・保持分は1日には申し込まず、10〜15日の件数を見て柔道場か柔剣道場（剣道対策）に足す。15日22:30までに決まらなければ柔道場<br>
-          ・日曜朝が「×」の日は、日曜夜（柔道場）に1件だけ。水曜夜は柔道場だけ<br>
+          <b>決まり（2026年11月19日に決定）</b><br>
+          ・1日の案は各枠6件。日曜朝が「×」の日は、日曜夜（柔道場）に1件だけ<br>
+          ・見込み＝連盟の件数÷（連盟＋他団体）。85%を切った日に、戻る件数を足す<br>
+          ・IDは登録の新しい順に使う（17・18→15・16→6・7・8・12・14→9〜11→1〜5・13）<br>
           ・総合体育館で1IDあたり4件まで（18IDで最大72件）。同じIDは同じ日に1件まで<br>
-          ・必ず<b>総合体育館</b>の柔道場・柔剣道場に申し込む（市体育館に入れないよう注意）
-        </div>
-        <div style="background:#fffbeb;border-left:4px solid #d4a017;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:12px;font-size:13px;line-height:1.8;">
-          💡 <b>見直しの案</b>：取り消さずに足す「追加」の案が基本です。予備（72件の残り）を使い切って追加できないときだけ、「取消→申込」の案を<b>参考</b>として出します（はじめは「見送る」）。
+          ・取消は、申込済みの日曜朝を柔剣道場に切り替えるときだけ
         </div>
         <div style="background:#fff5f5;border-left:4px solid #e53e3e;padding:10px 14px;border-radius:0 6px 6px 0;margin-top:12px;font-size:13px;line-height:1.8;">
-          🛟 <b>うまくいかないとき（予備の手順）</b><br>「状況を見る」の表を見ながら、各IDで施設予約サイトから手で申し込みます。<b>締切の15日 23:59</b>までに済ませてください。
+          🛟 <b>うまくいかないとき（予備の手順）</b><br>メールの案を見ながら、各IDで施設予約サイトから手で申し込みます。<b>締切の15日 23:59</b>までに済ませてください。
         </div>
       </div>
-
       <div class="section-card" style="border-top:3px solid #1D9E75;">
         <h3>📊 抽選分析（毎月1日〜15日・茅ヶ崎）<span style="color:#1D9E75;font-size:12px;margin-left:6px;">【NEW】</span></h3>
         <p style="font-size:14px;margin-bottom:12px;line-height:1.8;">
@@ -1480,334 +1447,146 @@
   };
 
 
-  // ── 抽選申込（茅ヶ崎・総合体育館 柔道場・柔剣道場） 2026-11 改修 ──
-  // 1日の申込案   : aikido-chigasaki-monitor が1日0:05に作る plan/day1_YYYY-MM.json
-  // 2〜15日の見直し: 毎日18時(15日は9・15・21時も)に作る plan/revise_latest.json
-  // 日曜朝の保持分(2026-11-18 決定): 1日は柔道場6件で申し込み、3件は保持(day1 の hold)。
-  //   代表が「柔道場に足す／柔剣道場に足す」を決めると hold_choice と actions に書く。15日22:30までに決まらなければ柔道場。
-  // 「確定する」で Firestore の lottery_requests/{年月} に actions(IDごとの追加・取消)を保存 → GitHub Actions が登録する。
-  // 確定内容に書いた追加・取消だけを行う。書いていない申込(手で入れた分など)には触れない。
-  const APL_CAP=4, APL_IDS=Array.from({length:18},(_,i)=>String(i+1));
-  let apl=null;
+  // ── 抽選申込（茅ヶ崎・総合体育館）2026-11-19 決定の新しい流れ ──
+  // 自動処理(aikido-chigasaki-monitor の flow.py)が plan/flow_YYYY-MM.json に案と見込みを置く。
+  // 代表は日ごとに ○×（日曜朝は 柔／柔剣 も）を付けて確定するだけ。ID は（ ）で添えるだけ。
+  // 確定 → lottery_requests/{年月} の days = {稽古枠: {ok, room, ids}} → 登録処理が30分以内に申し込む。
+  // 15日21時に未承認の分、22:45 に残りの予備を自動で登録する（flow.py）。
+  const APL_TARGET=0.85;
+  let apl=null;   // {ym, st, doc, names, dec:{g:{ok,room}}}
 
-  const aplG=k=>k.slice(0,20);
-  const aplRate=(o,x)=>o>0?o/(o+x):0;
-  const aplDay=k=>{const d=new Date(k.slice(0,10)+'T00:00:00');return `${d.getMonth()+1}/${d.getDate()}(${'日月火水木金土'[d.getDay()]})`;};
-  const aplTime=k=>k.slice(11,13)==='09'?'朝':'夜';
-  const aplRoom=k=>k.endsWith(' 柔剣')?'柔剣':'柔道';
-  const aplLab=k=>`${aplDay(k)} ${aplTime(k)}・${aplRoom(k)==='柔剣'?'柔剣道場':'柔道場'}`;
-  const aplChip=(room,kind)=>(kind==='日曜夜'?'<span class="apl-chip n">夜</span> ':'')+`<span class="apl-chip ${room==='柔剣'?'k':'j'}">${room==='柔剣'?'柔剣道場':'柔道場'}</span>`;
-  const aplRc=r=>r<0.7?'apl-r-bad':r<0.85?'apl-r-warn':'apl-r-ok';
-  const aplPct=r=>(r*100).toFixed(1)+'%';
-  const aplWho=id=>`${id}${apl&&apl.names[id]?`（${escH(apl.names[id])}）`:''}`;
-  const aplInvert=byId=>{const o={};Object.entries(byId||{}).forEach(([id,l])=>l.forEach(k=>(o[k]=o[k]||[]).push(Number(id))));return o;};
-  const aplCnt=(st,g)=>Object.entries(st).filter(([k])=>aplG(k)===g).reduce((a,[,l])=>a+l.length,0);
-  const aplTotal=st=>Object.values(st).reduce((a,l)=>a+l.length,0);
-  const aplMerge=(a,b)=>{const o={};Object.entries(a).forEach(([k,l])=>o[k]=[...l]);Object.entries(b).forEach(([k,l])=>o[k]=[...(o[k]||[]),...l]);return o;};
-  const aplSeg=(key,skipped,y,n)=>`<div class="apl-seg sm"><button class="${skipped?'':'on'}" onclick="aplPick('${key}',0)">${y}</button><button class="${skipped?'on':''}" onclick="aplPick('${key}',1)">${n}</button></div>`;
-  function aplApply(st,acts,skipOf){
-    const a={};Object.entries(st).forEach(([k,l])=>a[k]=[...l]);
-    acts.forEach((x,n)=>{if(skipOf(n))return;if(x.from){const l=a[x.from]||[];const i=l.indexOf(x.id);if(i<0)return;l.splice(i,1);}
-      const day=x.to.slice(0,10);if(Object.entries(a).some(([k,l])=>k.slice(0,10)===day&&l.includes(x.id)))return;(a[x.to]=a[x.to]||[]).push(x.id);});
-    return a;
-  }
+  function aplDay(g){const d=new Date(g.slice(0,10)+'T00:00:00');return `${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）${g.slice(11,13)==='09'?'朝':'夜'}`;}
+  function aplWho(i){return String(i);}
+  function aplJstNow(){return new Date(Date.now()+9*3600e3);}   // 日本時間の年月日時を UTC の値として扱う
+  function aplDeadline(ym,day,h,mi){const [y,m]=ym.split('-').map(Number);const d=new Date(Date.UTC(y,m-3,day,h,mi||0));return d;} // 申込月(2か月前)の日時
+  function aplPct(v){return Math.round(v*100)+'%';}
+
   function aplStatusText(d){
     if(!d||!d.status)return '';
-    const st={'承認済み':'⏳ 確定を受け付けました。自動登録を待っています（最大30分ほど）',
-              '登録中':'⏳ いま登録しています…','登録済み':'✅ 登録が終わりました','一部失敗':'⚠ 一部の登録に失敗しました',
-              '確認のみ':'📝 登録予定を確認しました（試行中のため、まだ申込はしていません）'}[d.status]||d.status;
+    const st={'承認済み':'⏳ 確定を受け付けました。30分ほどで申し込みます',
+              '登録中':'⏳ いま申し込んでいます…','登録済み':'✅ 申し込みが終わりました','一部失敗':'⚠ 一部の申し込みに失敗しました',
+              '確認のみ':'📝 確認のみの設定のため、まだ申し込んでいません'}[d.status]||d.status;
     let t=`<b>${escH(st)}</b>`;
-    if(d.approved_by)t+=`<br><span style="font-size:13px;color:var(--text2)">確定：${escH(d.approved_by)}（${d.revision||1}回目・${escH(d.stage==='review'?'見直し':'1日の申込')}）</span>`;
-    if(d.result&&d.result.lines){t+=`<br><span style="font-size:13px;">${escH(d.result.checked_at||'')} の処理結果</span><br>`+d.result.lines.map(escH).join('<br>');}
+    if(d.result&&d.result.lines){t+=`<br><span style="font-size:13px;">${escH(d.result.checked_at||'')} の結果</span><br>`+d.result.lines.map(escH).join('<br>');}
     return `<div class="apl-status">${t}</div>`;
   }
 
-  // 見直しの案が出ていて、まだ確定していないときは、タブに印を出す
-  function aplReviseIsNew(rev,saved){
-    if(!rev||(!(rev.adds||[]).length&&!(rev.moves_ref||[]).length))return false;
-    const at=saved&&saved.approved_at&&saved.approved_at.toDate?saved.approved_at.toDate():null;
-    if(!at)return true;
-    const c=new Date((rev.checked_at||'').replace(' ','T')+':00+09:00');
-    return isNaN(c)||c>at;
-  }
   async function checkApplyBadge(){
     try{
-      const rev=await repoJson('plan/revise_latest.json');
-      if(!rev||rev.version!==2)return;
-      const ym=`${rev.year}-${String(rev.month).padStart(2,'0')}`;
+      const now=aplJstNow();const ym=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth()+2,1)).toISOString().slice(0,7);
+      if(now.getUTCDate()>15)return;
+      const st=await repoJson(`plan/flow_${ym}.json`);
+      if(!st||st.version!==3)return;
       let saved=null;
       try{const snap=await getDoc(doc(db,'lottery_requests',ym));if(snap.exists())saved=snap.data();}catch(e){}
-      document.getElementById('applyBadge').style.display=aplReviseIsNew(rev,saved)?'inline':'none';
+      const low=((st.check&&st.check.rows)||[]).some(r=>r.add&&r.add.length);
+      if(!saved||!saved.days||low){const b=document.querySelector('nav button[onclick*="apply"]');if(b&&!b.querySelector('.apl-badge'))b.insertAdjacentHTML('beforeend','<span class="apl-badge">●</span>');}
     }catch(e){}
   }
 
   window.openApplyTab=function(){
     const inp=document.getElementById('aplMonth');
-    if(inp.value)return;
-    const t=new Date();t.setDate(1);t.setMonth(t.getMonth()+(new Date().getDate()<=15?2:3));
-    inp.value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
-    loadApply();
+    if(!inp.value){const now=aplJstNow();const t=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth()+(now.getUTCDate()>15?3:2),1));inp.value=t.toISOString().slice(0,7);}
+    if(!apl||apl.ym!==inp.value)loadApply();
   };
 
   window.loadApply=async function(){
-    const ym=document.getElementById('aplMonth').value;
-    const info=document.getElementById('aplInfo');
-    document.getElementById('aplStatusView').style.display='none';
-    document.getElementById('aplDecideView').style.display='none';
-    if(!ym){showToast('対象年月を選んでください');return;}
-    info.innerHTML='<p style="font-size:13px;margin-top:10px;">読み込み中...</p>';
-    let day1=null,rev=null,saved=null,names={},rules={};
-    day1=await repoJson(`plan/day1_${ym}.json`);
-    {const d=await repoJson('plan/revise_latest.json');if(d&&d.version===2&&`${d.year}-${String(d.month).padStart(2,'0')}`===ym)rev=d;}
-    try{const snap=await getDoc(doc(db,'lottery_requests',ym));if(snap.exists())saved=snap.data();}catch(e){console.warn(e);}
-    try{const snap=await getDoc(doc(db,'lottery_settings','names'));if(snap.exists())names=snap.data().names||{};}catch(e){}
-    try{const snap=await getDoc(doc(db,'lottery_settings','rules'));if(snap.exists())rules=snap.data();}catch(e){}
-    document.getElementById('aplKendo').value=rules.sun_kendo??0;
-    document.getElementById('aplHoldN').value=rules.sun_hold??3;
-    if(!day1&&!rev){
-      info.innerHTML='<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">この月の申込案はまだありません。<br>1日の申込案は、申込月の1日0時すぎに自動で作られます。</div>'+aplStatusText(saved);
+    const ym=document.getElementById('aplMonth').value;if(!ym)return;
+    document.getElementById('aplHead').innerHTML='<p class="sp-note">読み込み中...</p>';
+    document.getElementById('aplDays').innerHTML='';document.getElementById('aplGoCard').style.display='none';
+    const st=await repoJson(`plan/flow_${ym}.json`);
+    let saved=null,names={};
+    try{const s=await getDoc(doc(db,'lottery_requests',ym));if(s.exists())saved=s.data();}catch(e){}
+    try{const s=await getDoc(doc(db,'lottery_settings','names'));if(s.exists())names=s.data().names||{};}catch(e){}
+    if(!st||st.version!==3){
+      document.getElementById('aplHead').innerHTML=`<p class="sp-note">この月の申込案はまだありません。毎月1日の0時すぎに自動で作られます。</p>`;
       apl=null;return;
     }
-    const stage=rev&&(!day1||(rev.checked_at||'')>(day1.generated_at||''))?'review':'day1';
-    apl={ym,day1,rev,doc:saved,names,rules,stage,view:'status',skipSlot:{},skip:{},
-      holdChoice:Object.assign({},(saved&&saved.hold_choice)||{})};
-    info.innerHTML=`<div class="lot-note" style="background:#f0fdf4;border-left:4px solid #1D9E75;">`
-      +(day1?`1日の申込案：${escH(day1.generated_at||'')} 作成`:'1日の申込案：なし')
-      +`<br>見直し：${rev?escH(rev.checked_at||'')+' 時点の件数':'まだありません'}`
-      +`<br>1IDあたり最大 ${APL_CAP}件（総合体育館）、18IDで最大72件です。</div>`
-      +(day1&&day1.preview?`<div class="lot-note" style="background:#fffbeb;border-left:4px solid #d4a017;">⚠ 1日の申込案は<b>仮の案</b>です（申込期間の前のため、休館日だけを除いて作りました）。1日0時すぎに空き状況（×・休館）を読んで作り直します。仮の案は確定できません。</div>`:'');
+    const dec={};
+    st.slots.forEach(s=>{const v=saved&&saved.days&&saved.days[s.g];dec[s.g]={ok:v?v.ok!==false:true,room:(v&&v.room)||s.room};});
+    apl={ym,st,doc:saved,names,dec};
     aplRender();
   };
 
-  window.aplSetStage=function(st){if(!apl)return;apl.stage=st;aplRender();};
-  window.aplSetView=function(v){if(!apl)return;apl.view=v;aplRender();};
-  window.aplPick=function(key,v){if(!apl)return;
-    if(key.startsWith('s|'))apl.skipSlot[key.slice(2)]=v===1;else apl.skip[key]=v===1;
-    aplRender();};
+  // その日の今の申込（部屋ごと）
+  function aplCur(g){
+    const cur=(apl.st.check&&apl.st.check.current)||apl.st.current||{};
+    return {judo:cur[g]||[],kenjo:cur[g+' 柔剣']||[]};
+  }
+  function aplRow(g){return ((apl.st.check&&apl.st.check.rows)||[]).find(r=>r.g===g)||null;}
+  function aplLocked(){   // 15日21時を過ぎたら、ここからは確定しない（自動で登録している）
+    const now=aplJstNow(),dl=aplDeadline(apl.ym,15,21);return now>=dl;}
+  function aplRoomLocked(){const now=aplJstNow(),dl=aplDeadline(apl.ym,15,18);return now>=dl;}
 
-  function aplCompute(){
-    const out={stage:apl.stage};
-    if(apl.stage==='day1'){
-      const d=apl.day1;if(!d)return null;
-      const cur=aplInvert(d.current);
-      const addAll=d.add||{};
-      const addSel={};Object.entries(addAll).forEach(([k,l])=>addSel[k]=apl.skipSlot[k]?[]:l);
-      const after=aplMerge(cur,addSel);
-      const slots1=d.slots.filter(s=>s.room!=='保持');
-      const groups=[];slots1.forEach(s=>{const g=aplG(s.key);if(!groups.some(x=>x.g===g))groups.push({g,kind:s.kind,date:s.date});});
-      const counts=d.counts||{};
-      const others={};groups.forEach(x=>{const g=x.g;const nj=counts[g]||0,nk=counts[g+' 柔剣'];
-        const ours=(cur[g]||[]).length+(cur[g+' 柔剣']||[]).length;  // 柔剣道場の抽選(n)はその時間帯の全部(2026-11-03 確認)
-        others[g]=Math.max((nk!=null?nk:nj)-ours,0);});
-      Object.assign(out,{d,cur,addAll,addSel,after,groups,others,slots:slots1});
-    }else{
-      const r=apl.rev;if(!r)return null;
-      const cur={};Object.entries(r.current||{}).forEach(([k,l])=>cur[k]=[...l]);
-      const adds=r.adds||[],moves=r.moves_ref||[];
-      const skipA=n=>!!apl.skip['a'+n],skipM=n=>apl.skip['m'+n]!==false;
-      const fin=aplApply(aplApply(cur,adds,skipA),moves,skipM);
-      const groups=(r.groups||[]).map(x=>({g:x.g,kind:x.kind,date:x.g.slice(0,10)}));
-      const slots=[];groups.forEach(x=>{(x.kind==='日曜朝'?['柔剣','柔道']:['柔道']).forEach(room=>slots.push({key:x.g+(room==='柔剣'?' 柔剣':''),date:x.date,kind:x.kind,room}));});
-      Object.assign(out,{r,cur,adds,moves,skipA,skipM,fin,after:cur,groups,others:r.others||{},slots});
-    }
-    return out;
+  // 確定するときに、その日に入れるID（1日の案＋今の申込＋足す案）
+  function aplIds(s){
+    const c=aplCur(s.g),r=aplRow(s.g),set=new Set([...(apl.st.plan[s.g]||[]),...c.judo,...c.kenjo,...((r&&r.add)||[])]);
+    return [...set];
   }
 
   function aplRender(){
-    const c=aplCompute();
-    ['aplStDay1','aplStReview'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',(i===0)===(apl.stage==='day1')));
-    ['aplVwStatus','aplVwDecide'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',(i===0)===(apl.view==='status')));
-    const sv=document.getElementById('aplStatusView'),dv=document.getElementById('aplDecideView');
-    if(!c){sv.style.display='none';dv.style.display='none';
-      document.getElementById('aplInfo').insertAdjacentHTML('beforeend','');
-      showToast(apl.stage==='day1'?'1日の申込案はまだありません':'見直しはまだありません');return;}
-    sv.style.display=apl.view==='status'?'block':'none';dv.style.display=apl.view==='decide'?'block':'none';
-    aplRenderStatus(c);aplRenderDecide(c);
-  }
-
-  function aplRenderStatus(c){
-    const day1=c.stage==='day1';
-    const nDays=k=>c.groups.filter(x=>x.kind===k).length;
-    const st=c.after; // 1日:選んだ案で申し込んだ後 / 見直し:今
-    if(day1){
-      document.getElementById('aplSumTitle').textContent='予約枠の数';
-      const target=c.slots.reduce((a,s)=>a+s.target,0);
-      const nHold=Object.values(c.d.hold||{}).reduce((a,l)=>a+l.length,0);
-      document.getElementById('aplTiles').innerHTML=`<div><b>${nDays('日曜朝')}</b><span>日曜朝の枠</span></div><div><b>${nDays('日曜夜')}</b><span>日曜夜の枠（朝が×）</span></div><div><b>${nDays('水曜夜')}</b><span>水曜夜の枠</span></div><div><b>${target}</b><span>1日に申し込む件数</span></div><div><b>${nHold}</b><span>日曜朝の保持</span></div><div><b>${72-aplTotal(c.cur)-aplTotal(c.addAll)-nHold}</b><span>予備（72件中）</span></div>`;
-      const sk=(c.d.skipped||[]).map(x=>`${aplDay(x.date+' ')} ${x.kind.slice(2)}（${x.why}）`);
-      let note=sk.length?'外した枠：'+sk.join('　'):'外した枠はありません。';
-      document.getElementById('aplSkipped').innerHTML=escH(note)+(c.d.per_slot<9?`<div class="apl-reduced">IDの残り件数（72件）では1枠9件が足りないため、1枠${c.d.per_slot}件にしています。</div>`:'')
-        +((c.d.short||[]).length?`<div class="apl-reduced">IDの残り件数が足りず、目標に届かない枠があります：${c.d.short.map(aplLab).join('、')}</div>`:'')
-        +((c.d.failed_ids||[]).length?`<div class="apl-reduced">読み取れなかったID（案から除外）：${c.d.failed_ids.join('・')}</div>`:'');
-    }else{
-      document.getElementById('aplSumTitle').textContent=`今の申込の状況（${c.r.checked_at||''} 時点）`;
-      const sum=c.groups.reduce((a,x)=>a+aplRate(aplCnt(st,x.g),c.others[x.g]||0),0);
-      const low=c.groups.filter(x=>aplRate(aplCnt(st,x.g),c.others[x.g]||0)<0.85).length;
-      document.getElementById('aplTiles').innerHTML=`<div><b>${c.groups.length}</b><span>稽古枠</span></div><div><b>${aplTotal(st)}</b><span>連盟の申込数</span></div><div><b>${sum.toFixed(2)}</b><span>当選確率の合計</span></div><div><b class="${low?'apl-ng':''}">${low}</b><span>確率85%未満の枠</span></div><div><b>${72-aplTotal(st)}</b><span>予備（72件中）</span></div>`;
-      document.getElementById('aplSkipped').textContent='';
-    }
-    // 稽古枠ごとの件数(部屋ごと)と当選確率(稽古枠ごと)
-    const showNow=day1&&aplTotal(c.cur)>0;
-    const left=day1?(showNow?['目標','現在','追加','申込後']:['目標','申込後']):['連盟'];
-    let t=`<thead><tr><th class="l" rowspan="2">稽古枠</th><th colspan="${left.length+1}">件数（部屋ごと）</th><th colspan="3" class="gs">当選確率（稽古枠ごと）</th></tr><tr><th>部屋</th>${left.map(x=>`<th>${x}</th>`).join('')}<th class="gs">連盟</th><th>他団体</th><th>当選確率</th></tr></thead><tbody>`;
-    c.groups.forEach(x=>{
-      const rs=c.slots.filter(s=>aplG(s.key)===x.g);const o=aplCnt(st,x.g),oth=c.others[x.g]||0,r=aplRate(o,oth),span=rs.length;
-      rs.forEach((s,j)=>{
-        const now=(c.cur[s.key]||[]).length,ad=day1?(c.addSel[s.key]||[]).length:0,aft=now+ad;
-        const cells=day1?(showNow?`<td>${s.target}</td><td>${now}</td><td>${ad?'+'+ad:'0'}</td>`:`<td>${s.target}</td>`)+`<td class="${aft>=s.target?'apl-ok':'apl-ng'}">${aft}</td>`:`<td>${now}</td>`;
-        const grp=j?'':`<td rowspan="${span}" class="gs">${o}</td><td rowspan="${span}">${oth}</td><td rowspan="${span}" class="${aplRc(r)}">${aplPct(r)}</td>`;
-        t+=`<tr class="${j?'':'top'}">${j?'':`<td class="l" rowspan="${span}">${aplDay(x.g)} ${x.kind.slice(2)}</td>`}<td>${aplChip(s.room,s.kind)}</td>${cells}${grp}</tr>`;
-      });
+    const st=apl.st,ck=st.check,[y,m]=apl.ym.split('-').map(Number);
+    const nPlan=Object.values(st.plan).reduce((a,v)=>a+v.length,0);
+    const nNow=Object.values((ck&&ck.current)||st.current||{}).reduce((a,v)=>a+v.length,0);
+    const sm=new Date(Date.UTC(y,m-3,1)).getUTCMonth()+1;
+    document.getElementById('aplHead').innerHTML=
+      `<div class="sp-title">${m}月分 抽選申込</div>`
+      +`<div class="sp-sub">締切 ${sm}/15 23:59・案${nPlan}件・申込済み${nNow}件・予備${72-Math.max(nPlan,nNow)}件</div>`
+      +(ck?`<div class="sp-sub">件数は ${escH(ck.at)} 時点です（毎日18時に読み直します）</div>`:'')
+      +(st.preview?`<div class="sp-warn">申込期間の前のため<b>仮の案</b>です。1日0時すぎに作り直します。仮の案は確定できません。</div>`:'')
+      +(aplLocked()?`<div class="sp-warn">15日21時を過ぎたため、残りは自動で申し込んでいます。ここでの確定はできません。</div>`:'');
+    let h='';
+    st.slots.forEach(s=>{
+      const d=apl.dec[s.g],c=aplCur(s.g),r=aplRow(s.g),room=d.room;
+      const ours=(room==='kenjo'?c.kenjo:c.judo).length;
+      const low=r&&r.add&&r.add.length;
+      const isSunAm=s.kind==='日曜朝';
+      let line1,line2='',ids='';
+      if(r&&r.room!==room){   // 柔／柔剣を切り替えた日: 移したときの見込み（柔剣道場は剣道場だけの団体とも争う）
+        const cn=(ck&&ck.counts)||{},all=c.judo.length+c.kenjo.length;
+        const n=room==='kenjo'?(cn[s.g+' 柔剣']??cn[s.g]??0):(cn[s.g]??0);
+        const o=Math.max(n-all,0);
+        line1=`${room==='kenjo'?'柔剣道場':'柔道場'}にすると 連盟${all}・他団体${o} → 見込み${aplPct(all+o?all/(all+o):1)}`;
+      }else if(r){line1=`連盟${r.ours}・他団体${r.others} → 見込み${aplPct(r.before)}`;}
+      else{line1=ours?`申込済み${ours}件`:'まだ申し込んでいません';}
+      if(low)line2=`<div class="sp-plan">提案：＋${r.add.length}件で見込み${aplPct(r.after)}</div>`;
+      const planIds=st.plan[s.g]||[];
+      ids=`${planIds.length}件（${planIds.join('・')}）`+(low?`<br>足す番号（${r.add.join('・')}）`:'');
+      const roomSel=isSunAm?`<div class="sp-room ${aplRoomLocked()?'off':''}"><button class="${room==='judo'?'on':''}" onclick="aplRoom('${s.g}','judo')">柔</button><button class="${room==='kenjo'?'on':''}" onclick="aplRoom('${s.g}','kenjo')">柔剣</button></div>`:'';
+      h+=`<div class="sp-day ${low?'low':''} ${d.ok?'':'no'}">
+        <div class="sp-top"><div class="sp-name">${aplDay(s.g)}${s.kind==='日曜夜'?'<span class="sp-tag">朝が×のため夜</span>':''}</div>${roomSel}</div>
+        <div class="sp-line">${line1}</div>${line2}
+        <div class="sp-bottom"><div class="sp-ids">${ids}</div>
+          <div class="sp-ox"><button class="${d.ok?'on-o':''}" onclick="aplOx('${s.g}',true)">○</button><button class="${d.ok?'':'on-x'}" onclick="aplOx('${s.g}',false)">×</button></div></div>
+      </div>`;
     });
-    const keys=new Set(c.slots.map(s=>s.key));
-    Object.entries(c.cur).filter(([k,l])=>!keys.has(k)&&l.length).forEach(([k,l])=>{t+=`<tr class="top"><td class="l">${aplLab(k)}</td><td><span class="apl-chip x">対象外</span></td><td colspan="${left.length+3}" class="l">${l.length}件の申込があります。取り消さずに残します（ID ${l.join('・')}）</td></tr>`;});
-    document.getElementById('aplCombo').innerHTML=t+'</tbody>';
-    document.getElementById('aplRateNote').textContent=(day1?'当選確率は、「決める」で「申し込む」を選んだ内容で申し込んだ場合です。他団体は1日0時すぎの件数です。':'')+'当選確率＝連盟の申込数÷（連盟＋他団体）。柔道場と柔剣道場の合計で数えます。緑＝85%以上、金＝70〜85%、赤＝70%未満。';
-    // ID別の申込表
-    const cols=[...c.slots].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.room==='柔剣'?-1:1));
-    let g='<thead><tr><th>番号</th><th class="nm">団体名</th>'+cols.map(s=>`<th>${aplDay(s.key)}<br>${s.kind.slice(2)}${s.kind==='日曜朝'?'<br>'+(s.room==='柔剣'?'柔剣':'柔道'):''}</th>`).join('')+'<th>件数</th></tr></thead><tbody>';
-    APL_IDS.forEach(id=>{const n=Number(id);let k=0;g+=`<tr><th>${id}</th><th class="nm">${escH(apl.names[id]||'')}</th>`;
-      cols.forEach(s=>{const e=(c.cur[s.key]||[]).includes(n),a=day1&&(c.addSel[s.key]||[]).includes(n);if(e||a)k++;
-        g+=`<td class="${e?'e'+(s.room==='柔剣'?' k':''):a?'a':''}">${e?'●':a?'＋':''}</td>`;});
-      Object.entries(c.cur).forEach(([kk,l])=>{if(!keys.has(kk)&&l.includes(n))k++;});
-      g+=`<td class="${k>APL_CAP?'apl-ng':''}">${k}</td></tr>`;});
-    document.getElementById('aplGrid').innerHTML=g+'</tbody>';
-    // ID別の残り(残りのあるIDだけ)
-    const plus=day1?c.addSel:{};
-    let it=`<thead><tr><th>番号</th><th class="l">団体名</th><th>現在 柔道</th><th>現在 柔剣</th><th>残り</th>${day1?'<th>追加 柔道</th><th>追加 柔剣</th><th>申込後の残り</th>':''}</tr></thead><tbody>`;
-    const tot={nj:0,nk:0,aj:0,ak:0};let shown=0;
-    APL_IDS.forEach(id=>{const n=Number(id);const nw={j:0,k:0},ad={j:0,k:0};
-      Object.entries(c.cur).forEach(([k,l])=>{if(l.includes(n))nw[aplRoom(k)==='柔剣'?'k':'j']++;});
-      Object.entries(plus).forEach(([k,l])=>{if(l.includes(n))ad[aplRoom(k)==='柔剣'?'k':'j']++;});
-      tot.nj+=nw.j;tot.nk+=nw.k;tot.aj+=ad.j;tot.ak+=ad.k;const lf=APL_CAP-nw.j-nw.k,af=lf-ad.j-ad.k;
-      if((day1?af:lf)===0)return;shown++;
-      it+=`<tr><th>${id}</th><td class="l">${escH(apl.names[id]||'')}</td><td>${nw.j}</td><td>${nw.k}</td><td>${lf}</td>${day1?`<td>${ad.j}</td><td>${ad.k}</td><td>${af}</td>`:''}</tr>`;});
-    if(!shown)it+=`<tr><td colspan="${day1?8:5}" class="l">どのIDも残りは0件です（72件を使い切り）。</td></tr>`;
-    const na=tot.nj+tot.nk;
-    it+=`</tbody><tfoot><tr><td colspan="2">計（全ID）</td><td>${tot.nj}</td><td>${tot.nk}</td><td>${72-na}</td>${day1?`<td>${tot.aj}</td><td>${tot.ak}</td><td>${72-na-tot.aj-tot.ak}</td>`:''}</tr></tfoot>`;
-    document.getElementById('aplIds').innerHTML=it;
-    document.getElementById('aplIdHint').textContent=`残りがあるIDだけを表示（18ID中${shown}ID）`;
-  }
-
-  function aplRenderDecide(c){
-    const day1=c.stage==='day1';
-    document.getElementById('aplD1').style.display=day1?'block':'none';
-    document.getElementById('aplRv').style.display=day1?'none':'block';
-    if(day1){
-      const pr=s=>{const g=aplG(s.key);return aplRate(aplCnt(c.after,g),c.others[g]||0);};
-      const list=c.slots.filter(s=>(c.addAll[s.key]||[]).length);
-      let t='<thead><tr><th class="l">枠</th><th>部屋</th><th>件数</th><th class="l">使うID番号</th><th>稽古枠の当選確率</th><th>判断</th></tr></thead><tbody>';
-      if(!list.length)t+='<tr><td colspan="6" class="l">新しく申し込む枠はありません（今の申込で目標に届いています）。</td></tr>';
-      list.forEach(s=>{const sk=!!apl.skipSlot[s.key];
-        t+=`<tr class="${sk?'skip':''}"><td class="l">${aplDay(s.key)} ${s.kind.slice(2)}</td><td>${aplChip(s.room,s.kind)}</td><td>${c.addAll[s.key].length}</td><td class="l">${c.addAll[s.key].join('・')}</td><td class="${aplRc(pr(s))}">${aplPct(pr(s))}</td><td>${aplSeg('s|'+s.key,sk,'申し込む','見送る')}</td></tr>`;});
-      document.getElementById('aplD1Table').innerHTML=t+'</tbody>';
-      const nSel=aplTotal(c.addSel),nSkip=aplTotal(c.addAll)-nSel;
-      document.getElementById('aplD1Sum').innerHTML=`<div><b>${nSel}</b><span>申し込む件数</span></div><div><b>${nSkip}</b><span>見送る件数</span></div><div><b>${aplTotal(c.cur)}</b><span>今の申込（そのまま）</span></div><div><b>${72-aplTotal(c.after)}</b><span>確定後の予備</span></div>`;
-      const pv=!!c.d.preview;
-      const b=document.getElementById('aplD1Go');b.disabled=!nSel||pv;b.style.opacity=(nSel&&!pv)?1:.5;
-      b.textContent=pv?'仮の案のため確定できません（1日に作り直します）':'✅ この内容で確定する';
-      document.getElementById('aplKendoNote').textContent=`次に1日の申込案を作るときに使います（今の案は柔剣道場 ${c.d.sun_kendo}件・保持 ${c.d.sun_hold??0}件で作られています）。`;
-    }else{
-      const rows=(list,p,skipOf)=>list.map((x,n)=>{const sk=skipOf(n);return `<tr class="${sk?'skip':''}"><td>${n+1}</td><td><span class="apl-chip ${x.from?'x':'n'}">${escH(x.kind)}</span></td><td class="l">${aplWho(String(x.id))}</td><td class="l">${x.from?aplLab(x.from):'—'}</td><td class="l">${aplLab(x.to)}</td><td>+${(x.gain*100).toFixed(1)}pt</td><td>${aplSeg(p+n,sk,'実行する','見送る')}</td></tr>`;}).join('');
-      const head='<thead><tr><th>No.</th><th>種類</th><th class="l">番号</th><th class="l">取消する枠</th><th class="l">申し込む枠</th><th>確率の合計</th><th>判断</th></tr></thead><tbody>';
-      document.getElementById('aplAdds').innerHTML=head+(c.adds.length?rows(c.adds,'a',c.skipA):'<tr><td colspan="7" class="l">追加の案はありません（どの追加も当選確率の合計が1%未満しか上がらないか、足せるIDがありません）。</td></tr>')+'</tbody>';
-      document.getElementById('aplRefBox').style.display=c.moves.length?'block':'none';
-      document.getElementById('aplRefNote').textContent=`追加では、これ以上当選確率を上げられません（追加をすべて行うと予備は残り${c.r.spare_left}件）。取消して別の枠に申し込み直す案を参考として出します。既定は「見送る」です。`;
-      document.getElementById('aplMoves').innerHTML=head+rows(c.moves,'m',c.skipM)+'</tbody>';
-      let h='<thead><tr><th class="l">稽古枠</th><th>今</th><th>実行後</th></tr></thead><tbody>';
-      c.groups.forEach(x=>{const oth=c.others[x.g]||0,o=aplCnt(c.cur,x.g),o2=aplCnt(c.fin,x.g),r=aplRate(o,oth),r2=aplRate(o2,oth);
-        h+=`<tr><td class="l">${aplDay(x.g)} ${x.kind.slice(2)}</td><td class="${aplRc(r)}">${o}件・${aplPct(r)}</td><td class="${aplRc(r2)}">${o2}件・${aplPct(r2)}</td></tr>`;});
-      document.getElementById('aplAfter').innerHTML=h+'</tbody>';
-      const sb=c.groups.reduce((a,x)=>a+aplRate(aplCnt(c.cur,x.g),c.others[x.g]||0),0),sa=c.groups.reduce((a,x)=>a+aplRate(aplCnt(c.fin,x.g),c.others[x.g]||0),0);
-      const nA=c.adds.filter((x,n)=>!c.skipA(n)).length,nM=c.moves.filter((x,n)=>!c.skipM(n)).length;
-      document.getElementById('aplRvSum').innerHTML=`<div><b>${sb.toFixed(2)}</b><span>今の確率の合計</span></div><div><b>${sa.toFixed(2)}</b><span>選んだ案を行った場合</span></div><div><b>${nA}</b><span>追加（実行する）</span></div><div><b>${nM}</b><span>取消→申込（実行する）</span></div><div><b>${72-aplTotal(c.fin)}</b><span>確定後の予備</span></div>`;
-      const b=document.getElementById('aplRvGo');b.disabled=!(nA+nM);b.style.opacity=(nA+nM)?1:.5;
-    }
-    aplRenderHold(c);
+    (st.skipped||[]).forEach(([dt,k,w])=>{const d=new Date(dt+'T00:00:00');h+=`<div class="sp-day off"><div class="sp-name">${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）${escH(k.replace('日曜','').replace('水曜',''))}</div><div class="sp-line">${/休館/.test(w)?'休館':'予約済み（×）'}のため申し込めません</div></div>`;});
+    document.getElementById('aplDays').innerHTML=h;
+    const gc=document.getElementById('aplGoCard');gc.style.display='block';
+    const btn=document.getElementById('aplGo'),dis=st.preview||aplLocked();
+    btn.disabled=dis;btn.style.opacity=dis?.5:1;
+    document.getElementById('aplGoNote').textContent=dis?'':'○の日を申し込みます（30分ほどかかります）。×の日は申し込みません。15日21時までに確定がない分は、自動で申し込みます。';
     document.getElementById('aplStatus').innerHTML=aplStatusText(apl.doc);
   }
+  window.aplOx=function(g,ok){if(!apl)return;apl.dec[g].ok=ok;aplRender();};
+  window.aplRoom=function(g,room){if(!apl)return;if(aplRoomLocked()){showToast('柔／柔剣の切り替えは15日18時までです');return;}apl.dec[g].room=room;aplRender();};
 
-  // ── 日曜朝の保持分 ──
-  // 見直しがあれば、その時点のまだ申し込んでいない保持と確率(rev.holds)。なければ1日の案の保持(確率なし)。
-  function aplHoldRows(){
-    if(apl.rev&&apl.rev.holds)return apl.rev.holds;
-    return Object.entries((apl.day1&&apl.day1.hold)||{}).map(([g,ids])=>({g,ids}));
-  }
-  function aplHoldActions(){   // 決めた保持分の追加 {ID:[枠]}
-    const out={};
-    aplHoldRows().forEach(r=>{const ch=apl.holdChoice[r.g];if(!ch)return;
-      r.ids.forEach(i=>(out[String(i)]=out[String(i)]||[]).push(ch==='kenjo'?r.g+' 柔剣':r.g));});
-    return out;
-  }
-  function aplRenderHold(c){
-    const rows=aplHoldRows(),card=document.getElementById('aplHold');
-    if(!rows.length){card.style.display='none';return;}
-    card.style.display='block';
-    const pct=v=>v==null?'－':Math.round(v*100)+'%';
-    let h='';
-    rows.forEach(r=>{
-      const ch=apl.holdChoice[r.g]||'';
-      const opt=(key,label,p)=>`<button class="apl-hopt${ch===key?' on':''}" onclick="aplPickHold('${r.g}','${key}')">${label}${p?`<br><span style="font-size:12px;">確保率 ${pct(p.secure)}・柔剣道場率 ${pct(p.kenjo)}</span>`:''}</button>`;
-      h+=`<div class="apl-hrow"><div style="font-weight:700">${aplDay(r.g)} 朝　保持 ${r.ids.length}件</div>
-        <div class="apl-note" style="margin:2px 0 6px">番号 ${r.ids.map(i=>aplWho(String(i))).join('・')}${r.judo_others!=null?`／柔道場を争う他団体 ${r.judo_others}件・剣道場だけ ${r.kendo_only}件`:''}</div>
-        <div class="apl-hopts">${opt('judo','柔道場に足す',r.judo)}${opt('kenjo','柔剣道場に足す',r.kenjo)}${opt('','まだ決めない',null)}</div></div>`;
-    });
-    document.getElementById('aplHoldRows').innerHTML=h;
-    document.getElementById('aplHoldNote').textContent=apl.rev&&apl.rev.holds?`${apl.rev.checked_at||''} 時点の件数で計算しています。`:'確率は、10日以降の件数チェックのあとに出ます（今は1日の案の保持だけを表示しています）。';
-  }
-  window.aplPickHold=function(g,key){if(!apl)return;apl.holdChoice[g]=key;aplRender();};
-  window.submitHold=async function(){
-    const add=aplHoldActions();
-    const picked=aplHoldRows().filter(r=>apl.holdChoice[r.g]);
-    if(!picked.length){showToast('「柔道場に足す」か「柔剣道場に足す」を選んでください');return;}
-    const txt=picked.map(r=>`${aplDay(r.g)} 朝：${apl.holdChoice[r.g]==='kenjo'?'柔剣道場':'柔道場'}に ${r.ids.length}件`).join('\n');
-    if(!confirm(`保持分を次のとおり申し込みます。よろしいですか？\n\n${txt}`))return;
-    // 今回の確定は保持分の追加だけ(前の確定の取消などを、もう一度行わないように)
-    const actions={};Object.entries(add).forEach(([id,l])=>{actions[id]={add:l,cancel:[]};});
-    const choice={};Object.entries(apl.holdChoice).forEach(([g,v])=>{if(v)choice[g]=v;});
+  window.submitDays=async function(){
+    if(!apl||apl.st.preview||aplLocked())return;
+    const days={};let nOk=0,nNo=0;
+    apl.st.slots.forEach(s=>{const d=apl.dec[s.g];days[s.g]={ok:d.ok,room:d.room,ids:d.ok?aplIds(s):[]};d.ok?nOk++:nNo++;});
+    const kenjo=apl.st.slots.filter(s=>apl.dec[s.g].ok&&apl.dec[s.g].room==='kenjo').map(s=>aplDay(s.g));
+    if(!confirm(`○ ${nOk}日を申し込みます（× ${nNo}日）。`+(kenjo.length?`\n柔剣道場：${kenjo.join('、')}`:'')+'\nよろしいですか？'))return;
+    const btn=document.getElementById('aplGo');btn.disabled=true;btn.textContent='保存中...';
     try{
       await setDoc(doc(db,'lottery_requests',apl.ym),{
-        ym:apl.ym,stage:'hold',actions,hold_choice:choice,status:'承認済み',revision:(apl.doc&&apl.doc.revision||0)+1,
+        ym:apl.ym,stage:'days',days,status:'承認済み',revision:((apl.doc&&apl.doc.revision)||0)+1,
         approved_by:(auth.currentUser&&auth.currentUser.email)||'',approved_at:serverTimestamp()
-      },{mergeFields:['ym','stage','actions','hold_choice','status','revision','approved_by','approved_at']});
-      showToast('✅ 受け付けました。30分ほどで自動で申し込みます');
+      },{mergeFields:['ym','stage','days','status','revision','approved_by','approved_at']});
+      showToast('✅ 受け付けました。30分ほどで申し込みます');
       await loadApply();
     }catch(e){console.error(e);showToast('⚠ 保存できませんでした：'+(e.code||e.message));}
-  };
-
-  window.saveKendo=async function(){
-    let v=parseInt(document.getElementById('aplKendo').value,10);if(isNaN(v))v=0;v=Math.max(0,Math.min(9,v));
-    let h=parseInt(document.getElementById('aplHoldN').value,10);if(isNaN(h))h=3;h=Math.max(0,Math.min(9-v,h));
-    try{
-      await setDoc(doc(db,'lottery_settings','rules'),{sun_kendo:v,sun_hold:h,updated_by:(auth.currentUser&&auth.currentUser.email)||'',updated_at:serverTimestamp()},{merge:true});
-      document.getElementById('aplKendo').value=v;document.getElementById('aplHoldN').value=h;
-      showToast(`日曜朝を 柔道場${9-v-h}件・柔剣道場${v}件・保持${h}件 にしました。次の申込案から使います`);
-    }catch(e){showToast('⚠ 保存できませんでした：'+(e.code||e.message));}
-  };
-
-  window.submitApply=async function(stage){
-    const c=aplCompute();if(!c)return;
-    const actions={};const put=(id,kind,k)=>{const a=actions[String(id)]=actions[String(id)]||{add:[],cancel:[]};a[kind].push(k);};
-    if(stage==='day1'){Object.entries(c.addSel).forEach(([k,l])=>l.forEach(id=>put(id,'add',k)));}
-    else{c.adds.forEach((x,n)=>{if(!c.skipA(n))put(x.id,'add',x.to);});c.moves.forEach((x,n)=>{if(!c.skipM(n)){put(x.id,'cancel',x.from);put(x.id,'add',x.to);}});}
-    const nAdd=Object.values(actions).reduce((a,x)=>a+x.add.length,0),nCan=Object.values(actions).reduce((a,x)=>a+x.cancel.length,0);
-    if(!nAdd&&!nCan){showToast('実行する案がありません');return;}
-    // 決めてある保持分(まだ申し込んでいない分)も一緒に書く(ここで消えないように)
-    Object.entries(aplHoldActions()).forEach(([id,l])=>l.forEach(k=>{const a=actions[id]=actions[id]||{add:[],cancel:[]};if(!a.add.includes(k))a.add.push(k);}));
-    const choice={};Object.entries(apl.holdChoice).forEach(([g,v])=>{if(v)choice[g]=v;});
-    if(!confirm(`追加 ${nAdd}件`+(nCan?`・取消 ${nCan}件`:'')+` で確定します。よろしいですか？\n（ここに書いていない申込には触れません）`))return;
-    const rev=(apl.doc&&apl.doc.revision||0)+1;
-    try{
-      await setDoc(doc(db,'lottery_requests',apl.ym),{
-        ym:apl.ym,stage,actions,hold_choice:choice,total_add:nAdd,total_cancel:nCan,status:'承認済み',revision:rev,
-        approved_by:(auth.currentUser&&auth.currentUser.email)||'',approved_at:serverTimestamp()
-      },{mergeFields:['ym','stage','actions','hold_choice','total_add','total_cancel','status','revision','approved_by','approved_at']});  // actions は前回の内容と混ぜずに置き換える
-      showToast('✅ 確定しました。自動で登録されます');
-      document.getElementById('applyBadge').style.display='none';
-      await loadApply();
-    }catch(e){
-      console.error(e);showToast('⚠ 保存できませんでした：'+(e.code||e.message));
-    }
+    btn.textContent='確定する';
   };
 
   // ── 抽選分析（2026-11 追加） ──
@@ -1827,6 +1606,38 @@
     const t=new Date();t.setDate(1);t.setMonth(t.getMonth()+(new Date().getDate()<=15?2:3));
     inp.value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}`;
     loadAnalysis();
+  };
+
+  // ── IDごとの記録（plan/history_YYYY-MM.jsonl、各IDの登録時期は plan/id_registered.json）──
+  let anaHist=null;
+  async function repoText(path){
+    await anaLoadTok();
+    if(anaTok()){
+      try{const r=await anaGh(`contents/${path}?ref=main`,{headers:{Accept:'application/vnd.github.raw+json'}});
+        if(r.ok)return await r.text();if(r.status===404)return null;}catch(e){}
+    }
+    try{const r=await fetch(`https://raw.githubusercontent.com/${ANA_REPO}/main/${path}?t=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():null;}catch(e){return null;}
+  }
+  window.anaLoadHist=async function(){
+    const ym=document.getElementById('anaMonth').value,box=document.getElementById('anaHistBody');
+    if(!ym){box.innerHTML='<p class="ana-note">上の「対象年月」を選んでください。</p>';return;}
+    box.innerHTML='<p class="ana-note">読み込み中...</p>';
+    const txt=await repoText(`plan/history_${ym}.jsonl`),reg=(await repoJson('plan/id_registered.json'))||{};
+    const rows=(txt||'').split('\n').filter(Boolean).map(l=>{try{return JSON.parse(l);}catch(e){return null;}}).filter(Boolean);
+    if(!rows.length){box.innerHTML='<p class="ana-note">この月の記録はまだありません。</p>';document.getElementById('anaHistCsv').style.display='none';return;}
+    const yr=i=>(reg.registered||{})[String(i)]||'';
+    anaHist={ym,rows,yr};
+    const day=g=>{const d=new Date(g.slice(0,10)+'T00:00:00');return `${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）${g.slice(11,13)==='09'?'朝':'夜'}`;};
+    let h='<div class="ana-wrap"><table class="ana-t"><tr><th>日時</th><th>ID</th><th>登録</th><th>枠</th><th>部屋</th><th>内容</th><th>きっかけ</th></tr>';
+    rows.forEach(r=>{h+=`<tr><td>${escH(r.at)}</td><td>${r.id}</td><td>${escH(yr(r.id))}</td><td>${day(r.slot)}</td><td>${r.room==='kenjo'?'柔剣':'柔道'}</td><td>${r.do==='cancel'?'取消':'申込'}</td><td>${escH(r.by)}</td></tr>`;});
+    box.innerHTML=h+'</table></div><p class="ana-note">当選・落選は、18日の抽選結果の取り込みの後に足す予定です。</p>';
+    document.getElementById('anaHistCsv').style.display='inline-block';
+  };
+  window.anaHistCsv=function(){
+    if(!anaHist)return;
+    const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+    const lines=[['日時','ID','登録','枠','部屋','内容','きっかけ'].map(q).join(',')].concat(anaHist.rows.map(r=>[r.at,r.id,anaHist.yr(r.id),r.slot,r.room==='kenjo'?'柔剣道場':'柔道場',r.do==='cancel'?'取消':'申込',r.by].map(q).join(',')));
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv'}));a.download=`ID別記録_${anaHist.ym}.csv`;a.click();
   };
 
   window.loadAnalysis=async function(){
