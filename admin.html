@@ -1463,11 +1463,16 @@
 
   function aplStatusText(d){
     if(!d||!d.status)return '';
-    const st={'承認済み':'⏳ 確定を受け付けました。30分ほどで申し込みます',
+    const st={'承認済み':(apl&&apl.st&&apl.st.preview)?'✅ 確定を保存しました。申込期間の初日0時すぎから申し込みます':'⏳ 確定を受け付けました。30分ほどで申し込みます',
               '登録中':'⏳ いま申し込んでいます…','登録済み':'✅ 申し込みが終わりました','一部失敗':'⚠ 一部の申し込みに失敗しました',
               '確認のみ':'📝 確認のみの設定のため、まだ申し込んでいません'}[d.status]||d.status;
     let t=`<b>${escH(st)}</b>`;
     if(d.result&&d.result.lines){t+=`<br><span style="font-size:13px;">${escH(d.result.checked_at||'')} の結果</span><br>`+d.result.lines.map(escH).join('<br>');}
+    // 申込のあと: 確定の内容と今の申込を見比べ、合わない分だけもう一度申し込む(入っている分は二重にならない)
+    if((d.status==='一部失敗'||d.status==='登録済み')&&aplJstNow().getUTCDate()<=15){
+      t+=`<div style="margin-top:8px;"><button class="btn btn-outline" id="aplRetry" onclick="aplRetry()" style="min-height:44px;">🔁 もう一度申し込む（合わない分だけ）</button>`+
+         `<div style="font-size:12px;color:#666;margin-top:4px;">確定した○×と今の申込を見比べ、足りない分だけ30分以内に申し込みます。</div></div>`;
+    }
     return `<div class="apl-status">${t}</div>`;
   }
 
@@ -1533,7 +1538,7 @@
       `<div class="sp-title">${m}月分 抽選申込</div>`
       +`<div class="sp-sub">締切 ${sm}/15 23:59・案${nPlan}件・申込済み${nNow}件・予備${72-Math.max(nPlan,nNow)}件</div>`
       +(ck?`<div class="sp-sub">件数は ${escH(ck.at)} 時点です（毎日18時に読み直します）</div>`:'')
-      +(st.preview?`<div class="sp-warn">申込期間の前のため<b>仮の案</b>です。1日0時すぎに作り直します。仮の案は確定できません。</div>`:'')
+      +(st.preview?`<div class="sp-warn">申込期間（${sm}月1日〜）の前の<b>仮の案</b>です。今のうちに○×を付けて確定しておけば、${sm}月1日0時すぎから順に申し込みます。</div>`:'')
       +(aplLocked()?`<div class="sp-warn">15日21時を過ぎたため、残りは自動で申し込んでいます。ここでの確定はできません。</div>`:'');
     let h='';
     st.slots.forEach(s=>{
@@ -1563,16 +1568,16 @@
     (st.skipped||[]).forEach(([dt,k,w])=>{const d=new Date(dt+'T00:00:00');h+=`<div class="sp-day off"><div class="sp-name">${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）${escH(k.replace('日曜','').replace('水曜',''))}</div><div class="sp-line">${/休館/.test(w)?'休館':'予約済み（×）'}のため申し込めません</div></div>`;});
     document.getElementById('aplDays').innerHTML=h;
     const gc=document.getElementById('aplGoCard');gc.style.display='block';
-    const btn=document.getElementById('aplGo'),dis=st.preview||aplLocked();
+    const btn=document.getElementById('aplGo'),dis=aplLocked();
     btn.disabled=dis;btn.style.opacity=dis?.5:1;
-    document.getElementById('aplGoNote').textContent=dis?'':'○の日を申し込みます（30分ほどかかります）。×の日は申し込みません。15日21時までに確定がない分は、自動で申し込みます。';
+    document.getElementById('aplGoNote').textContent=dis?'':(st.preview?`確定した内容は保存され、${sm}月1日0時すぎから順に申し込みます。それまでは何度でも直せます。`:'○の日を申し込みます（30分ほどかかります）。×の日は申し込みません。15日21時までに確定がない分は、自動で申し込みます。');
     document.getElementById('aplStatus').innerHTML=aplStatusText(apl.doc);
   }
   window.aplOx=function(g,ok){if(!apl)return;apl.dec[g].ok=ok;aplRender();};
   window.aplRoom=function(g,room){if(!apl)return;if(aplRoomLocked()){showToast('柔／柔剣の切り替えは15日18時までです');return;}apl.dec[g].room=room;aplRender();};
 
   window.submitDays=async function(){
-    if(!apl||apl.st.preview||aplLocked())return;
+    if(!apl||aplLocked())return;
     const days={};let nOk=0,nNo=0;
     apl.st.slots.forEach(s=>{const d=apl.dec[s.g];days[s.g]={ok:d.ok,room:d.room,ids:d.ok?aplIds(s):[]};d.ok?nOk++:nNo++;});
     const kenjo=apl.st.slots.filter(s=>apl.dec[s.g].ok&&apl.dec[s.g].room==='kenjo').map(s=>aplDay(s.g));
@@ -1583,10 +1588,22 @@
         ym:apl.ym,stage:'days',days,status:'承認済み',revision:((apl.doc&&apl.doc.revision)||0)+1,
         approved_by:(auth.currentUser&&auth.currentUser.email)||'',approved_at:serverTimestamp()
       },{mergeFields:['ym','stage','days','status','revision','approved_by','approved_at']});
-      showToast('✅ 受け付けました。30分ほどで申し込みます');
+      showToast(apl.st.preview?'✅ 保存しました。申込期間の初日から申し込みます':'✅ 受け付けました。30分ほどで申し込みます');
       await loadApply();
     }catch(e){console.error(e);showToast('⚠ 保存できませんでした：'+(e.code||e.message));}
     btn.textContent='確定する';
+  };
+
+  window.aplRetry=async function(){
+    if(!apl||!apl.doc)return;
+    if(!confirm('確定した○×と今の申込を見比べて、合わない分だけもう一度申し込みます。よろしいですか？'))return;
+    const btn=document.getElementById('aplRetry');if(btn){btn.disabled=true;btn.textContent='受付中...';}
+    try{
+      await setDoc(doc(db,'lottery_requests',apl.ym),{status:'承認済み',revision:(apl.doc.revision||0)+1,retries:0},
+                   {mergeFields:['status','revision','retries']});
+      showToast('✅ 受け付けました。30分以内に、合わない分だけ申し込みます');
+      await loadApply();
+    }catch(e){console.error(e);showToast('⚠ 受け付けられませんでした：'+(e.code||e.message));if(btn)btn.disabled=false;}
   };
 
   // ── 抽選分析（2026-11 追加） ──
