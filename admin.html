@@ -36,6 +36,8 @@
     .header-logo span{font-size:11px;color:rgba(255,255,255,0.5);font-weight:400;margin-left:6px;}
     .back-link{font-size:12px;color:rgba(255,255,255,0.6);text-decoration:none;border:1px solid rgba(255,255,255,0.2);padding:4px 10px;border-radius:4px;transition:all .2s;}
     .back-link:hover{color:var(--gold-light);border-color:var(--gold-light);}
+    .header-right{display:flex;align-items:center;gap:10px;}
+    .admin-version{font-size:12px;color:var(--gold-light);border:1px solid rgba(255,255,255,0.25);border-radius:4px;padding:4px 8px;white-space:nowrap;}
     #logoutBtn{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;}
 
     nav{display:flex;gap:4px;padding:10px 16px;background:var(--white);border-bottom:1px solid var(--border);overflow-x:auto;}
@@ -304,7 +306,10 @@
       <a class="header-logo" href="index.html">相模合気道連盟<span>スケジュール管理</span></a>
       <a class="back-link" href="index.html">← サイトへ戻る</a>
     </div>
-    <button id="logoutBtn" onclick="doLogout()">ログアウト</button>
+    <div class="header-right">
+      <span id="adminVersion" class="admin-version" title="この管理画面の版。更新したら日付が新しくなります">版 2026-11-22 b</span>
+      <button id="logoutBtn" onclick="doLogout()">ログアウト</button>
+    </div>
   </header>
   <nav>
     <button class="active" onclick="showTab('cal')">📅 カレンダー</button>
