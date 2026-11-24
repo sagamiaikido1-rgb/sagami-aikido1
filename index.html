@@ -575,6 +575,11 @@
       .hero { min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
       .hero-badge { align-self: center; }
     }
+    /* ── タブレット縦（iPad縦など）：トップ（ヒーロー）を画面いっぱいの高さにし、中身を上下中央に置く ── */
+    @media (min-width: 601px) and (max-width: 900px) {
+      .hero { min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
+      .hero-badge { align-self: center; }
+    }
     /* ── 高さの低い横長画面（ノートPCなど）：トップのボタンまで1画面に収める ── */
     @media (min-width: 601px) and (max-height: 700px) {
       .hero { padding-top: 76px; padding-bottom: 60px; }
