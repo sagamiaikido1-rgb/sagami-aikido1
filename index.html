@@ -212,6 +212,21 @@
     }
     .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.1); transform: translateY(-2px); }
 
+    /* ── 新着お知らせの1行表示（ヒーロー上の余白）と赤い点 ── */
+    .hero-news { position:absolute; top:24px; left:50%; transform:translateX(-50%); z-index:2; display:flex; align-items:center; gap:10px; max-width:calc(100% - 32px); box-sizing:border-box; padding:7px 16px 7px 8px; background:rgba(255,255,255,0.08); border:1px solid rgba(212,160,23,0.55); border-radius:999px; color:#fff; text-decoration:none; font-size:14px; line-height:1.4; white-space:nowrap; transition:background .2s; }
+    .hero-news[hidden] { display:none; }
+    .hero-news:hover { background:rgba(255,255,255,0.16); }
+    .hero-news-tag { flex:none; background:var(--gold-light); color:var(--navy); font-size:11px; font-weight:700; border-radius:999px; padding:2px 10px; }
+    .hero-news-tag.is-important { background:var(--accent-light); color:#fff; }
+    .hero-news-text { overflow:hidden; text-overflow:ellipsis; font-weight:600; min-width:0; }
+    .hero-news-more { flex:none; font-size:12px; opacity:0.8; }
+    .hero-news-arrow { flex:none; color:var(--gold-light); }
+    body.has-news nav > a[href="#news"]::before { content:''; position:absolute; top:4px; right:2px; width:7px; height:7px; border-radius:50%; background:var(--accent-light); }
+    body.has-news .hamburger { position:relative; }
+    body.has-news .hamburger::after { content:''; position:absolute; top:3px; right:2px; width:9px; height:9px; border-radius:50%; background:var(--accent-light); border:2px solid var(--navy); }
+    body.has-news .mobile-nav > a[href="#news"]::after { content:''; display:inline-block; width:7px; height:7px; margin-left:8px; border-radius:50%; background:var(--accent-light); vertical-align:middle; }
+    @media (max-width: 900px) { .hero-news { top:14px; font-size:13px; gap:8px; padding:6px 12px 6px 6px; } }
+
     /* ── セクション共通 ── */
     section { padding: 88px 24px; scroll-margin-top: 64px; }
     .section-inner { max-width: 1100px; margin: 0 auto; }
@@ -544,6 +559,29 @@
       #schedule .time-slot-badge { font-size: 10px; padding: 2px 8px; }
       #schedule .list-card-detail { font-size: 11.5px; }
     }
+    /* ── スマホ：トップ（ヒーロー）を1画面に収める ── */
+    @media (max-width: 600px) {
+      .hero { padding: 58px 16px 40px; }
+      .hero-badge { font-size: 10.5px; letter-spacing: 0.5px; padding: 5px 12px; margin-bottom: 16px; white-space: nowrap; max-width: 100%; box-sizing: border-box; }
+      .hero h1 { font-size: clamp(30px, 9vw, 38px); letter-spacing: 4px; margin-bottom: 8px; white-space: nowrap; }
+      .hero-sub { font-size: 11px; letter-spacing: 3px; margin-bottom: 18px; }
+      .hero-divider { margin-bottom: 18px; }
+      .hero p { font-size: 14px; line-height: 1.85; margin-bottom: 16px; }
+      .hero p:last-of-type { margin-bottom: 22px; }
+      .hero-btns { gap: 10px; flex-wrap: nowrap; }
+      .hero-btns .btn-primary, .hero-btns .btn-outline { padding-left: 14px; padding-right: 14px; font-size: 13.5px; letter-spacing: 0.5px; white-space: nowrap; }
+      .hero-news { top: 12px; }
+    }
+    /* ── 高さの低い横長画面（ノートPCなど）：トップのボタンまで1画面に収める ── */
+    @media (min-width: 601px) and (max-height: 700px) {
+      .hero { padding-top: 76px; padding-bottom: 60px; }
+      .hero-badge { margin-bottom: 18px; }
+      .hero h1 { font-size: clamp(38px, 5vw, 56px); margin-bottom: 12px; }
+      .hero-sub { margin-bottom: 22px; }
+      .hero-divider { margin-bottom: 22px; }
+      .hero p { line-height: 1.9; margin-bottom: 20px; }
+      .hero p:last-of-type { margin-bottom: 28px; }
+    }
   </style>
   <script type="application/ld+json">
   {
@@ -626,6 +664,12 @@
 
 <!-- ヒーロー -->
 <section class="hero" id="hero">
+  <a class="hero-news" id="heroNews" href="#news" hidden>
+    <span class="hero-news-tag" id="heroNewsTag">新着</span>
+    <span class="hero-news-text" id="heroNewsText"></span>
+    <span class="hero-news-more" id="heroNewsMore"></span>
+    <span class="hero-news-arrow" aria-hidden="true">›</span>
+  </a>
   <div class="hero-badge">公益財団法人合気会公認　／　神奈川県合気道連盟加盟</div>
   <h1>相模合気道連盟</h1>
   <div class="hero-sub">SAGAMI AIKIDO FEDERATION</div>
@@ -985,9 +1029,35 @@
           <span class="news-text">${n.text}${linkHtml ? '<br>'+linkHtml : ''}</span>
         </div>`;
       }).join('');
+      try{ showHeroNews(items); }catch(e){}
     }catch(e){
       container.innerHTML = '<div class="news-loading">読み込みに失敗しました</div>';
     }
+  }
+
+  // ── 新着お知らせをトップ（ヒーロー上の余白）とメニューの赤い点で知らせる ──
+  // 日付が今日から14日以内のお知らせを「新着」として扱う。なければ何も表示しない。
+  const NEW_DAYS = 14;
+  function newsDateOf(s){
+    const m = String(s||'').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+    return m ? new Date(+m[1], +m[2]-1, +m[3]) : null;
+  }
+  function plainText(html){
+    return (new DOMParser().parseFromString(String(html||''),'text/html').body.textContent||'').replace(/\s+/g,' ').trim();
+  }
+  function showHeroNews(items){
+    const today = new Date(); today.setHours(0,0,0,0);
+    const since = new Date(today); since.setDate(since.getDate() - NEW_DAYS);
+    const fresh = items.filter(n=>{ const d = newsDateOf(n.date); return d && d >= since; });
+    if(!fresh.length) return;
+    const n = fresh[0];
+    const tag = document.getElementById('heroNewsTag');
+    tag.textContent = n.category || '新着';
+    if(n.category === '重要') tag.classList.add('is-important');
+    document.getElementById('heroNewsText').textContent = plainText(n.text);
+    document.getElementById('heroNewsMore').textContent = fresh.length > 1 ? 'ほか' + (fresh.length-1) + '件' : '';
+    document.getElementById('heroNews').hidden = false;
+    document.body.classList.add('has-news');
   }
 
   loadHomeNews();
