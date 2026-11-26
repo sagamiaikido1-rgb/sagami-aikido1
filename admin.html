@@ -1253,7 +1253,7 @@
   const LOT_DOJOS={
     '茅ヶ崎':{dir:'',when:'毎月18日の朝6時',months:2,wf:'summary.yml'},
     '寒川':{dir:'samukawa/',when:'毎月15日の朝7時（武道場畳・土曜）',months:2,wf:'samukawa.yml'},
-    '平塚':{dir:'hiratsuka/',when:'毎月2日と11日の朝（第1武道場1/2面・日曜）',months:1,wf:'hiratsuka.yml'},
+    '平塚':{dir:'hiratsuka/',when:'毎月1日の昼と夕方、2日と11日の朝（第1武道場1/2面・日曜）',months:1,wf:'hiratsuka.yml'},
   };
   let lotPlan=null, lotDojo='茅ヶ崎', lotTimer=null;
   // 結果ファイルを読む。鍵があれば GitHub から直接（すぐ最新になる）、なければ公開URLから（数分遅れることがある）
@@ -1356,7 +1356,7 @@
     // 確保も落選も1件もない＝抽選前に集計した可能性が高い。念のため何も削除しない
     const empty=!(data.secured||[]).length&&!(data.lost||[]).length;
     const notGenerated=!allEvents.some(e=>e.dojo===lotDojo&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym));
-    // 既存の一般稽古（茅ヶ崎は同じ日・同じ区分、寒川・平塚は同じ日で照合）
+    // 既存の一般稽古（どの道場も同じ日・同じ区分で照合。同じ日に昼と夜の両方が取れたら両方出す）
     const existing={};
     allEvents.filter(e=>e.dojo===lotDojo&&e.type==='一般稽古'&&e.date&&e.date.startsWith(ym)&&e.start)
       .forEach(e=>{(existing[evKey(e)]=existing[evKey(e)]||[]).push(e);});
